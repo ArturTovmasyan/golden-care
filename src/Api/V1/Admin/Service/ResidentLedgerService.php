@@ -3,11 +3,16 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\KeyFinanceTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentLedgerNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Model\KeyFinanceType as KeyFinanceCategory;
+use App\Entity\KeyFinanceType;
 use App\Entity\Resident;
+use App\Entity\ResidentKeyFinanceDate;
 use App\Entity\ResidentLedger;
+use App\Repository\KeyFinanceTypeRepository;
 use App\Repository\ResidentLedgerRepository;
 use App\Repository\ResidentRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -108,6 +113,33 @@ class ResidentLedgerService extends BaseService implements IGridService
             $this->validate($residentLedger, null, ['api_admin_resident_ledger_add']);
 
             $this->em->persist($residentLedger);
+
+            //Add "Monthly Billing Cut Off Date" Key Finance Date
+            $residentKeyFinanceDate = new ResidentKeyFinanceDate();
+            $residentKeyFinanceDate->setLedger($residentLedger);
+
+            /** @var KeyFinanceTypeRepository $keyFinanceTypeRepo */
+            $keyFinanceTypeRepo = $this->em->getRepository(KeyFinanceType::class);
+
+            /** @var KeyFinanceType $keyFinanceType */
+            $keyFinanceType = $keyFinanceTypeRepo->findOneBy(['space' => $currentSpace, 'type' => KeyFinanceCategory::MONTHLY_BILLING_CUT_OFF_DATE]);
+
+            if ($keyFinanceType === null) {
+                throw new KeyFinanceTypeNotFoundException();
+            }
+
+            $residentKeyFinanceDate->setKeyFinanceType($keyFinanceType);
+
+            $now = new \DateTime('now');
+            $dateString = $now->format('Y-m') . '-18';
+            $date = new \DateTime($dateString);
+
+            $residentKeyFinanceDate->setDate($date);
+
+            $this->validate($residentKeyFinanceDate, null, ['api_admin_resident_key_finance_date_add']);
+
+            $this->em->persist($residentKeyFinanceDate);
+
             $this->em->flush();
             $this->em->getConnection()->commit();
 

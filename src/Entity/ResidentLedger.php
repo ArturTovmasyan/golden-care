@@ -54,7 +54,9 @@ class ResidentLedger implements PreviousAndNextItemsService
      *     "api_admin_resident_payment_received_item_list",
      *     "api_admin_resident_payment_received_item_get",
      *     "api_admin_resident_away_days_list",
-     *     "api_admin_resident_away_days_get"
+     *     "api_admin_resident_away_days_get",
+     *     "api_admin_resident_key_finance_date_list",
+     *     "api_admin_resident_key_finance_date_get"
      * })
      */
     private $id;
@@ -99,6 +101,12 @@ class ResidentLedger implements PreviousAndNextItemsService
      * @ORM\OneToMany(targetEntity="App\Entity\ResidentAwayDays", mappedBy="ledger", cascade={"remove", "persist"})
      */
     private $residentAwayDays;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentKeyFinanceDate", mappedBy="ledger", cascade={"remove", "persist"})
+     */
+    private $residentKeyFinanceDates;
 
     /**
      * @var int
@@ -243,6 +251,22 @@ class ResidentLedger implements PreviousAndNextItemsService
     public function setResidentAwayDays(ArrayCollection $residentAwayDays): void
     {
         $this->residentAwayDays = $residentAwayDays;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentKeyFinanceDates(): ArrayCollection
+    {
+        return $this->residentKeyFinanceDates;
+    }
+
+    /**
+     * @param ArrayCollection $residentKeyFinanceDates
+     */
+    public function setResidentKeyFinanceDates(ArrayCollection $residentKeyFinanceDates): void
+    {
+        $this->residentKeyFinanceDates = $residentKeyFinanceDates;
     }
 
     /**

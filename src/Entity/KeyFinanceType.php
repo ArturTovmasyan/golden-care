@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -72,7 +73,9 @@ class KeyFinanceType
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_key_finance_type_list",
-     *     "api_admin_key_finance_type_get"
+     *     "api_admin_key_finance_type_get",
+     *     "api_admin_resident_key_finance_date_list",
+     *     "api_admin_resident_key_finance_date_get"
      * })
      */
     private $id;
@@ -89,7 +92,9 @@ class KeyFinanceType
      * )
      * @Groups({
      *     "api_admin_key_finance_type_list",
-     *     "api_admin_key_finance_type_get"
+     *     "api_admin_key_finance_type_get",
+     *     "api_admin_resident_key_finance_date_list",
+     *     "api_admin_resident_key_finance_date_get"
      * })
      */
     private $type;
@@ -110,7 +115,9 @@ class KeyFinanceType
      * @ORM\Column(name="title", type="string", length=255)
      * @Groups({
      *     "api_admin_key_finance_type_list",
-     *     "api_admin_key_finance_type_get"
+     *     "api_admin_key_finance_type_get",
+     *     "api_admin_resident_key_finance_date_list",
+     *     "api_admin_resident_key_finance_date_get"
      * })
      */
     private $title;
@@ -127,7 +134,9 @@ class KeyFinanceType
      * })
      * @Groups({
      *     "api_admin_key_finance_type_list",
-     *     "api_admin_key_finance_type_get"
+     *     "api_admin_key_finance_type_get",
+     *     "api_admin_resident_key_finance_date_list",
+     *     "api_admin_resident_key_finance_date_get"
      * })
      */
     private $description;
@@ -148,6 +157,12 @@ class KeyFinanceType
      * })
      */
     private $space;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentKeyFinanceDate", mappedBy="keyFinanceType", cascade={"remove", "persist"})
+     */
+    private $residentKeyFinanceDates;
 
     public function getId(): ?int
     {
@@ -210,5 +225,21 @@ class KeyFinanceType
     public function setSpace(?Space $space): void
     {
         $this->space = $space;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentKeyFinanceDates(): ArrayCollection
+    {
+        return $this->residentKeyFinanceDates;
+    }
+
+    /**
+     * @param ArrayCollection $residentKeyFinanceDates
+     */
+    public function setResidentKeyFinanceDates(ArrayCollection $residentKeyFinanceDates): void
+    {
+        $this->residentKeyFinanceDates = $residentKeyFinanceDates;
     }
 }
