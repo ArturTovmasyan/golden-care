@@ -95,13 +95,6 @@ class ResidentLedger implements PreviousAndNextItemsService
      *     "api_admin_resident_ledger_add",
      *     "api_admin_resident_ledger_edit"
      * })
-     * @Assert\Regex(
-     *      pattern="/(^0$)|(^[1-9][0-9]*$)|(^[0-9]+(\.[0-9]{1,2})$)/",
-     *      message="The value entered is not a valid type. Examples of valid entries: '2000, 0.55, 100.34'.",
-     *      groups={
-     *          "api_admin_resident_ledger_add",
-     *          "api_admin_resident_ledger_edit"
-     * })
      * @Assert\Length(
      *      max = 10,
      *      maxMessage = "Amount cannot be longer than {{ limit }} characters",
@@ -123,16 +116,9 @@ class ResidentLedger implements PreviousAndNextItemsService
      *     "api_admin_resident_ledger_add",
      *     "api_admin_resident_ledger_edit"
      * })
-     * @Assert\Regex(
-     *      pattern="/(^0$)|(^[1-9][0-9]*$)|(^[0-9]+(\.[0-9]{1,2})$)/",
-     *      message="The value entered is not a valid type. Examples of valid entries: '2000, 0.55, 100.34'.",
-     *      groups={
-     *          "api_admin_resident_ledger_add",
-     *          "api_admin_resident_ledger_edit"
-     * })
      * @Assert\Length(
      *      max = 10,
-     *      maxMessage = "Amount cannot be longer than {{ limit }} characters",
+     *      maxMessage = "Balance Due cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_resident_ledger_add",
      *          "api_admin_resident_ledger_edit"

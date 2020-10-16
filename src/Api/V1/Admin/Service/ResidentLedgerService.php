@@ -136,11 +136,10 @@ class ResidentLedgerService extends BaseService implements IGridService
             //Calculate Amount
             $amount = $this->calculateAmount($currentSpace, $residentId, $now);
 
-            $residentLedger->setAmount($amount);
+            $residentLedger->setAmount(round($amount, 2));
 
             //Calculate Balance Due
-            $relationsAmount = $this->calculateRelationsAmount($currentSpace, $residentId, $now);
-            $currentMonthBalanceDue = $amount + $relationsAmount;
+            $currentMonthBalanceDue = $amount;
 
             //Calculate Previous Month Balance Due
             $previousDate = new \DateTime(date('Y-m-d', strtotime($now->format('Y-m-d')." first day of previous month")));
@@ -156,12 +155,11 @@ class ResidentLedgerService extends BaseService implements IGridService
             if ($previousLedger === null) {
                 //Calculate Previous Month Amount
                 $previousMonthAmount = $this->calculateAmount($currentSpace, $residentId, $previousDate);
-                $previousMonthRelationsAmount = $this->calculateRelationsAmount($currentSpace, $residentId, $previousDate);
 
-                $previousMonthBalanceDue = $previousMonthAmount + $previousMonthRelationsAmount;
+                $previousMonthBalanceDue = $previousMonthAmount;
             }
 
-            $residentLedger->setBalanceDue($currentMonthBalanceDue + $previousMonthBalanceDue);
+            $residentLedger->setBalanceDue(round($currentMonthBalanceDue + $previousMonthBalanceDue, 2));
 
             $this->validate($residentLedger, null, ['api_admin_resident_ledger_add']);
 
@@ -262,12 +260,12 @@ class ResidentLedgerService extends BaseService implements IGridService
 
     /**
      * @param $currentSpace
-     * @param $residentId
+     * @param $ledgerId
      * @param $now
      * @return int|mixed
      * @throws \Exception
      */
-    public function calculateRelationsAmount($currentSpace, $residentId, $now)
+    public function calculateRelationsAmount($currentSpace, $ledgerId, $now)
     {
         $dateStartFormatted = $now->format('m/01/Y 00:00:00');
         $dateEndFormatted = $now->format('m/t/Y 23:59:59');
@@ -277,7 +275,7 @@ class ResidentLedgerService extends BaseService implements IGridService
 
         /** @var ResidentExpenseItemRepository $residentExpenseItemRepo */
         $residentExpenseItemRepo = $this->em->getRepository(ResidentExpenseItem::class);
-        $residentExpenseItems = $residentExpenseItemRepo->getByInterval($currentSpace, null, $residentId, $dateStart, $dateEnd);
+        $residentExpenseItems = $residentExpenseItemRepo->getByInterval($currentSpace, null, $ledgerId, $dateStart, $dateEnd);
 
         $expenseItemAmount = 0;
         if (!empty($residentExpenseItems)) {
@@ -288,7 +286,7 @@ class ResidentLedgerService extends BaseService implements IGridService
 
         /** @var ResidentCreditDiscountItemRepository $residentCreditDiscountItemRepo */
         $residentCreditDiscountItemRepo = $this->em->getRepository(ResidentCreditDiscountItem::class);
-        $residentCreditDiscountItems = $residentCreditDiscountItemRepo->getByInterval($currentSpace, null, $residentId, $dateStart, $dateEnd);
+        $residentCreditDiscountItems = $residentCreditDiscountItemRepo->getByInterval($currentSpace, null, $ledgerId, $dateStart, $dateEnd);
 
         $creditDiscountItemAmount = 0;
         if (!empty($residentCreditDiscountItems)) {
@@ -299,7 +297,7 @@ class ResidentLedgerService extends BaseService implements IGridService
 
         /** @var ResidentPaymentReceivedItemRepository $residentPaymentReceivedItemRepo */
         $residentPaymentReceivedItemRepo = $this->em->getRepository(ResidentPaymentReceivedItem::class);
-        $residentPaymentReceivedItems = $residentPaymentReceivedItemRepo->getByInterval($currentSpace, null, $residentId, $dateStart, $dateEnd);
+        $residentPaymentReceivedItems = $residentPaymentReceivedItemRepo->getByInterval($currentSpace, null, $ledgerId, $dateStart, $dateEnd);
 
         $paymentReceivedItemAmount = 0;
         if (!empty($residentPaymentReceivedItems)) {
@@ -352,10 +350,10 @@ class ResidentLedgerService extends BaseService implements IGridService
             $now = $entity->getCreatedAt() ?? new \DateTime('now');
             $amount = $this->calculateAmount($currentSpace, $residentId, $now);
 
-            $entity->setAmount($amount);
+            $entity->setAmount(round($amount, 2));
 
             //Calculate Balance Due
-            $relationsAmount = $this->calculateRelationsAmount($currentSpace, $residentId, $now);
+            $relationsAmount = $this->calculateRelationsAmount($currentSpace, $entity->getId(), $now);
             $currentMonthBalanceDue = $amount + $relationsAmount;
 
             //Calculate Previous Month Balance Due
@@ -372,12 +370,12 @@ class ResidentLedgerService extends BaseService implements IGridService
             if ($previousLedger === null) {
                 //Calculate Previous Month Amount
                 $previousMonthAmount = $this->calculateAmount($currentSpace, $residentId, $previousDate);
-                $previousMonthRelationsAmount = $this->calculateRelationsAmount($currentSpace, $residentId, $previousDate);
+                $previousMonthRelationsAmount = $this->calculateRelationsAmount($currentSpace, $entity->getId(), $previousDate);
 
                 $previousMonthBalanceDue = $previousMonthAmount + $previousMonthRelationsAmount;
             }
 
-            $entity->setBalanceDue($currentMonthBalanceDue + $previousMonthBalanceDue);
+            $entity->setBalanceDue(round($currentMonthBalanceDue + $previousMonthBalanceDue, 2));
 
             $this->validate($entity, null, ['api_admin_resident_ledger_edit']);
 
