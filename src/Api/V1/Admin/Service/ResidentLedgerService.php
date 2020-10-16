@@ -4,18 +4,31 @@ namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\KeyFinanceTypeNotFoundException;
+use App\Api\V1\Common\Service\Exception\ResidentLedgerAlreadyExistException;
 use App\Api\V1\Common\Service\Exception\ResidentLedgerNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Api\V1\Component\Rent\RentPeriodFactory;
+use App\Entity\ResidentCreditDiscountItem;
+use App\Entity\ResidentExpenseItem;
+use App\Entity\ResidentPaymentReceivedItem;
+use App\Entity\ResidentRent;
 use App\Model\KeyFinanceType as KeyFinanceCategory;
 use App\Entity\KeyFinanceType;
 use App\Entity\Resident;
 use App\Entity\ResidentKeyFinanceDate;
 use App\Entity\ResidentLedger;
+use App\Model\RentPeriod;
 use App\Repository\KeyFinanceTypeRepository;
+use App\Repository\ResidentCreditDiscountItemRepository;
+use App\Repository\ResidentExpenseItemRepository;
 use App\Repository\ResidentLedgerRepository;
+use App\Repository\ResidentPaymentReceivedItemRepository;
+use App\Repository\ResidentRentRepository;
 use App\Repository\ResidentRepository;
+use App\Util\Common\ImtDateTimeInterval;
 use Doctrine\ORM\QueryBuilder;
+use function Matrix\trace;
 
 /**
  * Class ResidentLedgerService
@@ -110,6 +123,46 @@ class ResidentLedgerService extends BaseService implements IGridService
             $residentLedger = new ResidentLedger();
             $residentLedger->setResident($resident);
 
+
+            $now = new \DateTime('now');
+            /** @var ResidentLedgerRepository $repo */
+            $repo = $this->em->getRepository(ResidentLedger::class);
+            $existingLedger = $repo->getAddedYearAndMonthLedger($currentSpace, null, $residentId, $now);
+
+            if ($existingLedger !== null) {
+                throw new ResidentLedgerAlreadyExistException();
+            }
+
+            //Calculate Amount
+            $amount = $this->calculateAmount($currentSpace, $residentId, $now);
+
+            $residentLedger->setAmount($amount);
+
+            //Calculate Balance Due
+            $relationsAmount = $this->calculateRelationsAmount($currentSpace, $residentId, $now);
+            $currentMonthBalanceDue = $amount + $relationsAmount;
+
+            //Calculate Previous Month Balance Due
+            $previousDate = new \DateTime(date('Y-m-d', strtotime($now->format('Y-m-d')." first day of previous month")));
+            $dateStartFormatted = $previousDate->format('m/01/Y 00:00:00');
+            $dateEndFormatted = $previousDate->format('m/t/Y 23:59:59');
+            $dateStart = new \DateTime($dateStartFormatted);
+            $dateEnd = new \DateTime($dateEndFormatted);
+
+            /** @var ResidentLedger $previousLedger */
+            $previousLedger = $repo->getPreviousLedger($currentSpace, null, $residentId, $dateStart, $dateEnd);
+
+            $previousMonthBalanceDue = 0;
+            if ($previousLedger === null) {
+                //Calculate Previous Month Amount
+                $previousMonthAmount = $this->calculateAmount($currentSpace, $residentId, $previousDate);
+                $previousMonthRelationsAmount = $this->calculateRelationsAmount($currentSpace, $residentId, $previousDate);
+
+                $previousMonthBalanceDue = $previousMonthAmount + $previousMonthRelationsAmount;
+            }
+
+            $residentLedger->setBalanceDue($currentMonthBalanceDue + $previousMonthBalanceDue);
+
             $this->validate($residentLedger, null, ['api_admin_resident_ledger_add']);
 
             $this->em->persist($residentLedger);
@@ -154,6 +207,111 @@ class ResidentLedgerService extends BaseService implements IGridService
     }
 
     /**
+     * @param $currentSpace
+     * @param $residentId
+     * @param $now
+     * @return int|mixed
+     * @throws \Exception
+     */
+    public function calculateAmount($currentSpace, $residentId, $now)
+    {
+        $dateStartFormatted = $now->format('m/01/Y 00:00:00');
+        $dateEndFormatted = $now->format('m/t/Y 23:59:59');
+
+        $dateStart = new \DateTime($dateStartFormatted);
+        $dateEnd = new \DateTime($dateEndFormatted);
+        $diff = $dateEnd->diff($dateStart)->days + 1;
+
+        $subInterval = ImtDateTimeInterval::getWithDateTimes($dateStart, $dateEnd);
+
+        /** @var ResidentRentRepository $residentRentRepo */
+        $residentRentRepo = $this->em->getRepository(ResidentRent::class);
+        $data = $residentRentRepo->getAdmissionRoomRentDataForLedgerAmount($currentSpace, null, $subInterval, $residentId);
+        $rentPeriodFactory = RentPeriodFactory::getFactory($subInterval);
+
+        $amount = 0;
+        if (!empty($data)) {
+            foreach ($data as $rent) {
+                $discharged = $rent['discharged'] !== null ? new \DateTime($rent['discharged']) : $dateEnd;
+                $discharged->setTime(23,59,59);
+                $admitted = new \DateTime($rent['admitted']);
+                $admitted->setTime(0,0,0);
+                $admitted = $admitted < $dateStart ? $dateStart : $admitted;
+
+                $rentDiff = $discharged->diff($admitted)->days + 1;
+
+                if ($rentDiff >= $diff) {
+                    $calculationResults = [
+                        'days' => $diff,
+                        'amount' => $rent['amount'],
+                    ];
+                } else {
+                    $calculationResults = $rentPeriodFactory->calculateForRoomRentInterval(
+                        ImtDateTimeInterval::getWithDateTimes($admitted, $discharged),
+                        RentPeriod::MONTHLY,
+                        $rent['amount']
+                    );
+                }
+
+                $amount += $calculationResults['amount'];
+            }
+        }
+
+        return $amount;
+    }
+
+    /**
+     * @param $currentSpace
+     * @param $residentId
+     * @param $now
+     * @return int|mixed
+     * @throws \Exception
+     */
+    public function calculateRelationsAmount($currentSpace, $residentId, $now)
+    {
+        $dateStartFormatted = $now->format('m/01/Y 00:00:00');
+        $dateEndFormatted = $now->format('m/t/Y 23:59:59');
+
+        $dateStart = new \DateTime($dateStartFormatted);
+        $dateEnd = new \DateTime($dateEndFormatted);
+
+        /** @var ResidentExpenseItemRepository $residentExpenseItemRepo */
+        $residentExpenseItemRepo = $this->em->getRepository(ResidentExpenseItem::class);
+        $residentExpenseItems = $residentExpenseItemRepo->getByInterval($currentSpace, null, $residentId, $dateStart, $dateEnd);
+
+        $expenseItemAmount = 0;
+        if (!empty($residentExpenseItems)) {
+            foreach ($residentExpenseItems as $expenseItem) {
+                $expenseItemAmount += $expenseItem['amount'];
+            }
+        }
+
+        /** @var ResidentCreditDiscountItemRepository $residentCreditDiscountItemRepo */
+        $residentCreditDiscountItemRepo = $this->em->getRepository(ResidentCreditDiscountItem::class);
+        $residentCreditDiscountItems = $residentCreditDiscountItemRepo->getByInterval($currentSpace, null, $residentId, $dateStart, $dateEnd);
+
+        $creditDiscountItemAmount = 0;
+        if (!empty($residentCreditDiscountItems)) {
+            foreach ($residentCreditDiscountItems as $creditDiscountItem) {
+                $creditDiscountItemAmount += $creditDiscountItem['amount'];
+            }
+        }
+
+        /** @var ResidentPaymentReceivedItemRepository $residentPaymentReceivedItemRepo */
+        $residentPaymentReceivedItemRepo = $this->em->getRepository(ResidentPaymentReceivedItem::class);
+        $residentPaymentReceivedItems = $residentPaymentReceivedItemRepo->getByInterval($currentSpace, null, $residentId, $dateStart, $dateEnd);
+
+        $paymentReceivedItemAmount = 0;
+        if (!empty($residentPaymentReceivedItems)) {
+            foreach ($residentPaymentReceivedItems as $paymentReceivedItem) {
+                $paymentReceivedItemAmount += $paymentReceivedItem['amount'];
+            }
+        }
+
+        return $expenseItemAmount + $creditDiscountItemAmount + $paymentReceivedItemAmount;
+    }
+
+    /**
      * @param $id
      * @param array $params
      * @throws \Exception
@@ -189,6 +347,37 @@ class ResidentLedgerService extends BaseService implements IGridService
             }
 
             $entity->setResident($resident);
+
+            //Calculate amount
+            $now = $entity->getCreatedAt() ?? new \DateTime('now');
+            $amount = $this->calculateAmount($currentSpace, $residentId, $now);
+
+            $entity->setAmount($amount);
+
+            //Calculate Balance Due
+            $relationsAmount = $this->calculateRelationsAmount($currentSpace, $residentId, $now);
+            $currentMonthBalanceDue = $amount + $relationsAmount;
+
+            //Calculate Previous Month Balance Due
+            $previousDate = new \DateTime(date('Y-m-d', strtotime($now->format('Y-m-d')." first day of previous month")));
+            $dateStartFormatted = $previousDate->format('m/01/Y 00:00:00');
+            $dateEndFormatted = $previousDate->format('m/t/Y 23:59:59');
+            $dateStart = new \DateTime($dateStartFormatted);
+            $dateEnd = new \DateTime($dateEndFormatted);
+
+            /** @var ResidentLedger $previousLedger */
+            $previousLedger = $repo->getPreviousLedger($currentSpace, null, $residentId, $dateStart, $dateEnd);
+
+            $previousMonthBalanceDue = 0;
+            if ($previousLedger === null) {
+                //Calculate Previous Month Amount
+                $previousMonthAmount = $this->calculateAmount($currentSpace, $residentId, $previousDate);
+                $previousMonthRelationsAmount = $this->calculateRelationsAmount($currentSpace, $residentId, $previousDate);
+
+                $previousMonthBalanceDue = $previousMonthAmount + $previousMonthRelationsAmount;
+            }
+
+            $entity->setBalanceDue($currentMonthBalanceDue + $previousMonthBalanceDue);
 
             $this->validate($entity, null, ['api_admin_resident_ledger_edit']);
 

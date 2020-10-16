@@ -126,6 +126,13 @@ class ResidentExpenseItemService extends BaseService implements IGridService
             $this->validate($residentExpenseItem, null, ['api_admin_resident_expense_item_add']);
 
             $this->em->persist($residentExpenseItem);
+
+            //Re-Calculate Ledger Balance Due
+            $oldBalanceDue = $ledger->getBalanceDue();
+            $newBalanceDue = $oldBalanceDue + $residentExpenseItem->getAmount();
+            $ledger->setBalanceDue($newBalanceDue);
+            $this->em->persist($ledger);
+
             $this->em->flush();
             $this->em->getConnection()->commit();
 
@@ -201,6 +208,20 @@ class ResidentExpenseItemService extends BaseService implements IGridService
             $this->validate($entity, null, ['api_admin_resident_expense_item_edit']);
 
             $this->em->persist($entity);
+
+            //Re-Calculate Ledger Balance Due
+            $uow = $this->em->getUnitOfWork();
+            $uow->computeChangeSets();
+
+            $changeSet = $this->em->getUnitOfWork()->getEntityChangeSet($entity);
+
+            if (!empty($changeSet) && array_key_exists('amount', $changeSet)) {
+                $oldBalanceDue = $ledger->getBalanceDue();
+                $newBalanceDue = $oldBalanceDue + $changeSet['amount']['1'] - $changeSet['amount']['0'];
+                $ledger->setBalanceDue($newBalanceDue);
+                $this->em->persist($ledger);
+            }
+
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {

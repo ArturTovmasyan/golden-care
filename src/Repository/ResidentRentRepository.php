@@ -1615,4 +1615,80 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param ImtDateTimeInterval $reportInterval
+     * @param $residentId
+     * @return int|mixed|string
+     */
+    public function getAdmissionRoomRentDataForLedgerAmount(Space $space = null, array $entityGrants = null, ImtDateTimeInterval $reportInterval, $residentId)
+    {
+        /** @var ResidentAdmissionRepository $admissionRepo */
+        $admissionRepo = $this
+            ->getEntityManager()
+            ->getRepository(ResidentAdmission::class);
+
+        /** @var QueryBuilder $qb */
+        $qb = $admissionRepo
+            ->getResidentAdmissionIntervalQb($reportInterval);
+
+        $qb
+            ->from(ResidentRent::class, 'rr')
+            ->from(Resident::class, 'r')
+            ->andWhere('rr.resident = r')
+            ->andWhere('rr.resident = rar')
+            ->andWhere('(rr.end IS NULL OR rr.end > = ra.start) AND (ra.end IS NULL OR rr.start < = ra.end)')
+            ->andWhere('r.id = :residentId')
+            ->andWhere('ra.admissionType < :admissionType')
+            ->setParameter('residentId', $residentId)
+            ->setParameter('admissionType', AdmissionType::DISCHARGE)
+            ->select(
+                'r.id as id',
+                'r.firstName as firstName',
+                'r.lastName as lastName',
+                'ra.id as actionId',
+                'rr.id as rentId',
+                'rr.amount as amount',
+                '(CASE WHEN rr.start > = ra.start THEN rr.start ELSE ra.start END) as admitted',
+                '(CASE
+                    WHEN rr.end IS NULL AND ra.end IS NULL THEN ra.end
+                    WHEN ra.end IS NULL THEN rr.end
+                    WHEN rr.end IS NULL THEN ra.end
+                    WHEN rr.end < ra.end THEN rr.end
+                    ELSE ra.end END) as discharged'
+            );
+
+        if ($reportInterval) {
+            $qb
+                ->andWhere('rr.end IS NULL OR rr.end > = :start');
+            if ($reportInterval->getEnd()) {
+                $qb
+                    ->andWhere('rr.start < = :end');
+            }
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = rar.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_ARRAY);
+    }
 }

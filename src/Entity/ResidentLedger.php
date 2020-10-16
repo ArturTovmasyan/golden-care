@@ -30,6 +30,16 @@ use App\Annotation\Grid;
  *              "type"       = "date",
  *              "field"      = "rl.createdAt",
  *              "link"       = "/resident/ledger/:id"
+ *          },
+ *          {
+ *              "id"         = "amount",
+ *              "type"       = "number",
+ *              "field"      = "rl.amount"
+ *          },
+ *          {
+ *              "id"         = "balance_due",
+ *              "type"       = "number",
+ *              "field"      = "rl.balanceDue"
  *          }
  *     }
  * )
@@ -77,6 +87,62 @@ class ResidentLedger implements PreviousAndNextItemsService
      * })
      */
     private $resident;
+
+    /**
+     * @var float
+     * @ORM\Column(name="amount", type="float", length=10)
+     * @Assert\NotBlank(groups={
+     *     "api_admin_resident_ledger_add",
+     *     "api_admin_resident_ledger_edit"
+     * })
+     * @Assert\Regex(
+     *      pattern="/(^0$)|(^[1-9][0-9]*$)|(^[0-9]+(\.[0-9]{1,2})$)/",
+     *      message="The value entered is not a valid type. Examples of valid entries: '2000, 0.55, 100.34'.",
+     *      groups={
+     *          "api_admin_resident_ledger_add",
+     *          "api_admin_resident_ledger_edit"
+     * })
+     * @Assert\Length(
+     *      max = 10,
+     *      maxMessage = "Amount cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_resident_ledger_add",
+     *          "api_admin_resident_ledger_edit"
+     * })
+     * @Groups({
+     *     "api_admin_resident_ledger_list",
+     *     "api_admin_resident_ledger_get"
+     * })
+     */
+    private $amount = 0;
+
+    /**
+     * @var float
+     * @ORM\Column(name="balance_due", type="float", length=10)
+     * @Assert\NotBlank(groups={
+     *     "api_admin_resident_ledger_add",
+     *     "api_admin_resident_ledger_edit"
+     * })
+     * @Assert\Regex(
+     *      pattern="/(^0$)|(^[1-9][0-9]*$)|(^[0-9]+(\.[0-9]{1,2})$)/",
+     *      message="The value entered is not a valid type. Examples of valid entries: '2000, 0.55, 100.34'.",
+     *      groups={
+     *          "api_admin_resident_ledger_add",
+     *          "api_admin_resident_ledger_edit"
+     * })
+     * @Assert\Length(
+     *      max = 10,
+     *      maxMessage = "Amount cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_resident_ledger_add",
+     *          "api_admin_resident_ledger_edit"
+     * })
+     * @Groups({
+     *     "api_admin_resident_ledger_list",
+     *     "api_admin_resident_ledger_get"
+     * })
+     */
+    private $balanceDue = 0;
 
     /**
      * @var ArrayCollection
@@ -187,6 +253,38 @@ class ResidentLedger implements PreviousAndNextItemsService
     public function setResident(?Resident $resident): void
     {
         $this->resident = $resident;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getAmount(): ?float
+    {
+        return $this->amount;
+    }
+
+    /**
+     * @param float|null $amount
+     */
+    public function setAmount(?float $amount): void
+    {
+        $this->amount = $amount;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getBalanceDue(): ?float
+    {
+        return $this->balanceDue;
+    }
+
+    /**
+     * @param float|null $balanceDue
+     */
+    public function setBalanceDue(?float $balanceDue): void
+    {
+        $this->balanceDue = $balanceDue;
     }
 
     /**

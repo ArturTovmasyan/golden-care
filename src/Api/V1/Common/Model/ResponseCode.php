@@ -193,6 +193,7 @@ class ResponseCode
     const RESIDENT_AWAY_DAYS_NOT_FOUND_EXCEPTION                 = 793;
     const KEY_FINANCE_TYPE_NOT_FOUND_EXCEPTION                   = 794;
     const RESIDENT_KEY_FINANCE_DATE_NOT_FOUND_EXCEPTION          = 795;
+    const RESIDENT_LEDGER_ALREADY_EXIST_EXCEPTION                = 796;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -386,6 +387,7 @@ class ResponseCode
         self::RESIDENT_AWAY_DAYS_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Away Days not found.'],
         self::KEY_FINANCE_TYPE_NOT_FOUND_EXCEPTION                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Key Finance Type not found.'],
         self::RESIDENT_KEY_FINANCE_DATE_NOT_FOUND_EXCEPTION          => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Key Finance Date not found.'],
+        self::RESIDENT_LEDGER_ALREADY_EXIST_EXCEPTION                => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Ledger already exist for this year and month.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],

@@ -280,4 +280,59 @@ class ResidentCreditDiscountItemRepository extends EntityRepository implements R
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $id
+     * @param $startDate
+     * @param $endDate
+     * @return int|mixed|string
+     */
+    public function getByInterval(Space $space = null, array $entityGrants = null, $id, $startDate, $endDate)
+    {
+        $qb = $this
+            ->createQueryBuilder('rcdi')
+            ->select('rcdi.amount')
+            ->innerJoin(
+                ResidentLedger::class,
+                'rl',
+                Join::WITH,
+                'rl = rcdi.ledger'
+            )
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'r = rl.resident'
+            )
+            ->where('rl.id = :id')
+            ->andWhere('rcdi.date >= :startDate AND rcdi.date <= :endDate')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rcdi.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->orderBy('rcdi.date', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

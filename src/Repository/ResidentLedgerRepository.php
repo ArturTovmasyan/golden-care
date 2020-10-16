@@ -242,7 +242,7 @@ class ResidentLedgerRepository extends EntityRepository implements RelatedInfoIn
     {
         $qb = $this
             ->createQueryBuilder('rl')
-            ->select('rl.createdAt');
+            ->select('rl.amount');
 
         if ($mappedBy !== null && $id !== null) {
             $qb
@@ -289,5 +289,109 @@ class ResidentLedgerRepository extends EntityRepository implements RelatedInfoIn
         return $qb
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $id
+     * @param $date
+     * @return int|mixed|string|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getAddedYearAndMonthLedger(Space $space = null, array $entityGrants = null, $id, $date)
+    {
+        $dateStartFormatted = $date->format('m/01/Y 00:00:00');
+        $dateEndFormatted = $date->format('m/t/Y 23:59:59');
+        $startDate = new \DateTime($dateStartFormatted);
+        $endDate = new \DateTime($dateEndFormatted);
+
+        $qb = $this
+            ->createQueryBuilder('rl')
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'r = rl.resident'
+            )
+            ->where('r.id=:id')
+            ->andWhere('rl.createdAt >= :startDate AND rl.createdAt <= :endDate')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rl.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->orderBy('rl.createdAt', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $id
+     * @param $startDate
+     * @param $endDate
+     * @return int|mixed|string|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getPreviousLedger(Space $space = null, array $entityGrants = null, $id, $startDate, $endDate)
+    {
+        $qb = $this
+            ->createQueryBuilder('rl')
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'r = rl.resident'
+            )
+            ->where('r.id=:id')
+            ->andWhere('rl.createdAt >= :startDate AND rl.createdAt <= :endDate')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rl.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->orderBy('rl.createdAt', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

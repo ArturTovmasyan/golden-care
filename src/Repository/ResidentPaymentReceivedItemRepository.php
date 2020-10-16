@@ -280,4 +280,59 @@ class ResidentPaymentReceivedItemRepository extends EntityRepository implements 
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $id
+     * @param $startDate
+     * @param $endDate
+     * @return int|mixed|string
+     */
+    public function getByInterval(Space $space = null, array $entityGrants = null, $id, $startDate, $endDate)
+    {
+        $qb = $this
+            ->createQueryBuilder('rpri')
+            ->select('rpri.amount')
+            ->innerJoin(
+                ResidentLedger::class,
+                'rl',
+                Join::WITH,
+                'rl = rpri.ledger'
+            )
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'r = rl.resident'
+            )
+            ->where('rl.id = :id')
+            ->andWhere('rpri.date >= :startDate AND rpri.date <= :endDate')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rpri.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->orderBy('rpri.date', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
