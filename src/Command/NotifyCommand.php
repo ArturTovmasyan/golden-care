@@ -376,6 +376,7 @@ class NotifyCommand extends Command
 
         $ownerEmails = [];
         $logs = [];
+        $spaceName = '';
         /** @var ChangeLog $changeLog */
         foreach ($changeLogs as $changeLog) {
 
@@ -426,17 +427,16 @@ class NotifyCommand extends Command
                 'action' => $action,
                 'date' => $date,
             ];
+
+            if ($changeLog->getSpace() !== null) {
+                $spaceName = $changeLog->getSpace()->getName();
+            }
         }
 
         $emails = array_merge($emails, $ownerEmails);
         $emails = array_unique($emails);
 
         if (!empty($emails)) {
-            $spaceName = '';
-            if ($changeLog->getSpace() !== null) {
-                $spaceName = $changeLog->getSpace()->getName();
-            }
-
             $date = new \DateTime('now');
             $date->modify('-24 hours');
             $subject = 'Daily Leads System User Activity Summary - ' . $date->format('m/d/Y');
@@ -868,7 +868,7 @@ class NotifyCommand extends Command
 
                 $status = $this->mailer->sendNotification($emails, $subject, $body, $spaceName);
 
-                $this->saveEmailLog($status, $subject, $spaceName, $emails);
+                $this->saveEmailLog($status, $subject, $spaceName, $finalEmails);
             }
 
             $this->saveLeadWebEmailAsEmailed($webEmail);
