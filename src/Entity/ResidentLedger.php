@@ -40,6 +40,12 @@ use App\Annotation\Grid;
  *              "id"         = "balance_due",
  *              "type"       = "number",
  *              "field"      = "rl.balanceDue"
+ *          },
+ *          {
+ *              "id"         = "info",
+ *              "sortable"   = false,
+ *              "type"       = "json",
+ *              "field"      = "info"
  *          }
  *     }
  * )
@@ -129,6 +135,23 @@ class ResidentLedger implements PreviousAndNextItemsService
      * })
      */
     private $balanceDue = 0;
+
+    /**
+     * @var array $source
+     * @ORM\Column(name="source", type="json_array", nullable=true)
+     * @Assert\Count(
+     *      max = 10,
+     *      maxMessage = "You cannot enter more than {{ limit }} sources",
+     *      groups={
+     *          "api_admin_resident_ledger_add",
+     *          "api_admin_resident_ledger_edit"
+     * })
+     * @Groups({
+     *     "api_admin_resident_ledger_list",
+     *     "api_admin_resident_ledger_get"
+     * })
+     */
+    private $source = [];
 
     /**
      * @var ArrayCollection
@@ -271,6 +294,22 @@ class ResidentLedger implements PreviousAndNextItemsService
     public function setBalanceDue(?float $balanceDue): void
     {
         $this->balanceDue = $balanceDue;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSource(): array
+    {
+        return $this->source;
+    }
+
+    /**
+     * @param array $source
+     */
+    public function setSource(array $source): void
+    {
+        $this->source = $source;
     }
 
     /**

@@ -1657,7 +1657,8 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                     WHEN ra.end IS NULL THEN rr.end
                     WHEN rr.end IS NULL THEN ra.end
                     WHEN rr.end < ra.end THEN rr.end
-                    ELSE ra.end END) as discharged'
+                    ELSE ra.end END) as discharged',
+                'rr.source as sources'
             );
 
         if ($reportInterval) {

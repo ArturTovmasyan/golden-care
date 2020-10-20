@@ -25,6 +25,7 @@ class ResidentLedgerRepository extends EntityRepository implements RelatedInfoIn
     {
         $queryBuilder
             ->from(ResidentLedger::class, 'rl')
+            ->addSelect('SC_PAYMENT_SOURCE_DECORATOR(rl.source) AS info')
             ->innerJoin(
                 Resident::class,
                 'r',

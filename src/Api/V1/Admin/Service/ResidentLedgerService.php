@@ -123,7 +123,6 @@ class ResidentLedgerService extends BaseService implements IGridService
             $residentLedger = new ResidentLedger();
             $residentLedger->setResident($resident);
 
-
             $now = new \DateTime('now');
             /** @var ResidentLedgerRepository $repo */
             $repo = $this->em->getRepository(ResidentLedger::class);
@@ -134,7 +133,8 @@ class ResidentLedgerService extends BaseService implements IGridService
             }
 
             //Calculate Amount
-            $amount = $this->calculateAmount($currentSpace, $residentId, $now);
+            $amountData = $this->calculateAmountAndGetPaymentSources($currentSpace, $residentId, $now);
+            $amount = $amountData['amount'];
 
             $residentLedger->setAmount(round($amount, 2));
 
@@ -154,12 +154,15 @@ class ResidentLedgerService extends BaseService implements IGridService
             $previousMonthBalanceDue = 0;
             if ($previousLedger === null) {
                 //Calculate Previous Month Amount
-                $previousMonthAmount = $this->calculateAmount($currentSpace, $residentId, $previousDate);
+                $previousMonthAmountData = $this->calculateAmountAndGetPaymentSources($currentSpace, $residentId, $previousDate);
+                $previousMonthAmount = $previousMonthAmountData['amount'];
 
                 $previousMonthBalanceDue = $previousMonthAmount;
             }
 
             $residentLedger->setBalanceDue(round($currentMonthBalanceDue + $previousMonthBalanceDue, 2));
+
+            $residentLedger->setSource($amountData['paymentSources']);
 
             $this->validate($residentLedger, null, ['api_admin_resident_ledger_add']);
 
@@ -211,7 +214,7 @@ class ResidentLedgerService extends BaseService implements IGridService
      * @return int|mixed
      * @throws \Exception
      */
-    public function calculateAmount($currentSpace, $residentId, $now)
+    public function calculateAmountAndGetPaymentSources($currentSpace, $residentId, $now)
     {
         $dateStartFormatted = $now->format('m/01/Y 00:00:00');
         $dateEndFormatted = $now->format('m/t/Y 23:59:59');
@@ -228,6 +231,7 @@ class ResidentLedgerService extends BaseService implements IGridService
         $rentPeriodFactory = RentPeriodFactory::getFactory($subInterval);
 
         $amount = 0;
+        $paymentSources = [];
         if (!empty($data)) {
             foreach ($data as $rent) {
                 $discharged = $rent['discharged'] !== null ? new \DateTime($rent['discharged']) : $dateEnd;
@@ -252,10 +256,20 @@ class ResidentLedgerService extends BaseService implements IGridService
                 }
 
                 $amount += $calculationResults['amount'];
+
+                if (!empty($rent['sources'])) {
+                    foreach ($rent['sources'] as $source) {
+                        $paymentSources[] = $source;
+                    }
+
+                    $paymentSources = array_unique($paymentSources, SORT_REGULAR);
+                    $tempArr = array_unique(array_column($paymentSources, 'id'));
+                    $paymentSources = array_intersect_key($paymentSources, $tempArr);
+                }
             }
         }
 
-        return $amount;
+        return ['amount' => $amount, 'paymentSources' => $paymentSources];
     }
 
     /**
@@ -348,7 +362,8 @@ class ResidentLedgerService extends BaseService implements IGridService
 
             //Calculate amount
             $now = $entity->getCreatedAt() ?? new \DateTime('now');
-            $amount = $this->calculateAmount($currentSpace, $residentId, $now);
+            $amountData = $this->calculateAmountAndGetPaymentSources($currentSpace, $residentId, $now);
+            $amount = $amountData['amount'];
 
             $entity->setAmount(round($amount, 2));
 
@@ -369,7 +384,8 @@ class ResidentLedgerService extends BaseService implements IGridService
             $previousMonthBalanceDue = 0;
             if ($previousLedger === null) {
                 //Calculate Previous Month Amount
-                $previousMonthAmount = $this->calculateAmount($currentSpace, $residentId, $previousDate);
+                $previousMonthAmountData = $this->calculateAmountAndGetPaymentSources($currentSpace, $residentId, $previousDate);
+                $previousMonthAmount = $previousMonthAmountData['amount'];
                 $previousMonthRelationsAmount = $this->calculateRelationsAmount($currentSpace, $entity->getId(), $previousDate);
 
                 $previousMonthBalanceDue = $previousMonthAmount + $previousMonthRelationsAmount;
