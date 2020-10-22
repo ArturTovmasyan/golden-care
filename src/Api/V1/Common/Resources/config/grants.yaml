@@ -165,10 +165,10 @@ persistence:
           title: 'Credits/Discounts Item'
           class: App\Entity\CreditDiscountItem
           route: api_admin_credit_discount_item_list
-        key_finance_type:
-          title: 'KeyFinanceType'
-          class: App\Entity\KeyFinanceType
-          route: api_admin_key_finance_type_list
+        key_finance_dates:
+          title: 'KeyFinanceDates'
+          class: App\Entity\KeyFinanceDates
+          route: api_admin_key_finance_dates_list
 
         notification_type:
           title: 'NotificationType'
@@ -441,10 +441,6 @@ persistence:
           title: 'ResidentPaymentReceivedItem'
           class: App\Entity\ResidentPaymentReceivedItem
           route: api_admin_resident_payment_received_item_list
-        resident_key_finance_date:
-          title: 'ResidentKeyFinanceDate'
-          class: App\Entity\ResidentKeyFinanceDate
-          route: api_admin_resident_key_finance_date_list
 
         admission:
           title: 'ResidentAdmission'

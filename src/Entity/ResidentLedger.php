@@ -178,12 +178,6 @@ class ResidentLedger implements PreviousAndNextItemsService
     private $residentAwayDays;
 
     /**
-     * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\ResidentKeyFinanceDate", mappedBy="ledger", cascade={"remove", "persist"})
-     */
-    private $residentKeyFinanceDates;
-
-    /**
      * @var int
      */
     private $previousId;
@@ -374,22 +368,6 @@ class ResidentLedger implements PreviousAndNextItemsService
     public function setResidentAwayDays(ArrayCollection $residentAwayDays): void
     {
         $this->residentAwayDays = $residentAwayDays;
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getResidentKeyFinanceDates(): ArrayCollection
-    {
-        return $this->residentKeyFinanceDates;
-    }
-
-    /**
-     * @param ArrayCollection $residentKeyFinanceDates
-     */
-    public function setResidentKeyFinanceDates(ArrayCollection $residentKeyFinanceDates): void
-    {
-        $this->residentKeyFinanceDates = $residentKeyFinanceDates;
     }
 
     /**

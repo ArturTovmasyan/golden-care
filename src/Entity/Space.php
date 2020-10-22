@@ -161,8 +161,8 @@ class Space
      *     "api_lead_email_review_type_get",
      *     "api_lead_web_email_list",
      *     "api_lead_web_email_get",
-     *     "api_admin_key_finance_type_list",
-     *     "api_admin_key_finance_type_get"
+     *     "api_admin_key_finance_dates_list",
+     *     "api_admin_key_finance_dates_get"
      * })
      */
     private $id;
@@ -276,8 +276,8 @@ class Space
      *     "api_lead_email_review_type_get",
      *     "api_lead_web_email_list",
      *     "api_lead_web_email_get",
-     *     "api_admin_key_finance_type_list",
-     *     "api_admin_key_finance_type_get"
+     *     "api_admin_key_finance_dates_list",
+     *     "api_admin_key_finance_dates_get"
      * })
      */
     private $name;
@@ -566,9 +566,9 @@ class Space
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\KeyFinanceType", mappedBy="space", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\KeyFinanceDates", mappedBy="space", cascade={"remove", "persist"})
      */
-    private $keyFinanceTypes;
+    private $keyFinanceDates;
 
     /**
      * Space constructor.
@@ -1365,16 +1365,16 @@ class Space
     /**
      * @return ArrayCollection
      */
-    public function getKeyFinanceTypes(): ArrayCollection
+    public function getKeyFinanceDates(): ArrayCollection
     {
-        return $this->keyFinanceTypes;
+        return $this->keyFinanceDates;
     }
 
     /**
-     * @param ArrayCollection $keyFinanceTypes
+     * @param ArrayCollection $keyFinanceDates
      */
-    public function setKeyFinanceTypes(ArrayCollection $keyFinanceTypes): void
+    public function setKeyFinanceDates(ArrayCollection $keyFinanceDates): void
     {
-        $this->keyFinanceTypes = $keyFinanceTypes;
+        $this->keyFinanceDates = $keyFinanceDates;
     }
 }
