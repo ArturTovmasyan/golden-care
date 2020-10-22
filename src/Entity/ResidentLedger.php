@@ -65,8 +65,10 @@ class ResidentLedger implements PreviousAndNextItemsService
      *     "api_admin_resident_ledger_get",
      *     "api_admin_resident_expense_item_list",
      *     "api_admin_resident_expense_item_get",
-     *     "api_admin_resident_credit_discount_item_list",
-     *     "api_admin_resident_credit_discount_item_get",
+     *     "api_admin_resident_credit_item_list",
+     *     "api_admin_resident_credit_item_get",
+     *     "api_admin_resident_discount_item_list",
+     *     "api_admin_resident_discount_item_get",
      *     "api_admin_resident_payment_received_item_list",
      *     "api_admin_resident_payment_received_item_get",
      *     "api_admin_resident_away_days_list",
@@ -161,9 +163,15 @@ class ResidentLedger implements PreviousAndNextItemsService
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\ResidentCreditDiscountItem", mappedBy="ledger", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentCreditItem", mappedBy="ledger", cascade={"remove", "persist"})
      */
-    private $residentCreditDiscountItems;
+    private $residentCreditItems;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentDiscountItem", mappedBy="ledger", cascade={"remove", "persist"})
+     */
+    private $residentDiscountItems;
 
     /**
      * @var ArrayCollection
@@ -325,17 +333,33 @@ class ResidentLedger implements PreviousAndNextItemsService
     /**
      * @return ArrayCollection
      */
-    public function getResidentCreditDiscountItems(): ArrayCollection
+    public function getResidentCreditItems(): ArrayCollection
     {
-        return $this->residentCreditDiscountItems;
+        return $this->residentCreditItems;
     }
 
     /**
-     * @param ArrayCollection $residentCreditDiscountItems
+     * @param ArrayCollection $residentCreditItems
      */
-    public function setResidentCreditDiscountItems(ArrayCollection $residentCreditDiscountItems): void
+    public function setResidentCreditItems(ArrayCollection $residentCreditItems): void
     {
-        $this->residentCreditDiscountItems = $residentCreditDiscountItems;
+        $this->residentCreditItems = $residentCreditItems;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentDiscountItems(): ArrayCollection
+    {
+        return $this->residentDiscountItems;
+    }
+
+    /**
+     * @param ArrayCollection $residentDiscountItems
+     */
+    public function setResidentDiscountItems(ArrayCollection $residentDiscountItems): void
+    {
+        $this->residentDiscountItems = $residentDiscountItems;
     }
 
     /**

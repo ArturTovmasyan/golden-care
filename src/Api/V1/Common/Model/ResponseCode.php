@@ -182,17 +182,19 @@ class ResponseCode
     const EXPENSE_ITEM_NOT_FOUND_EXCEPTION                       = 782;
     const HOSPICE_PROVIDER_NOT_FOUND_EXCEPTION                   = 783;
     const HOSPICE_PROVIDER_NOT_BE_BLANK_EXCEPTION                = 784;
-    const CREADIT_DISCOUNT_ITEM_NOT_FOUND_EXCEPTION              = 785;
+    const CREADIT_ITEM_NOT_FOUND_EXCEPTION                       = 785;
     const CAN_BE_CHANGED_IS_REQUIRED_EXCEPTION                   = 786;
     const LEAD_EMAIL_REVIEW_TYPE_NOT_FOUND_EXCEPTION             = 787;
     const LEAD_WEB_EMAIL_NOT_FOUND_EXCEPTION                     = 788;
     const RESIDENT_LEDGER_NOT_FOUND_EXCEPTION                    = 789;
     const RESIDENT_EXPENSE_ITEM_NOT_FOUND_EXCEPTION              = 790;
-    const RESIDENT_CREADIT_DISCOUNT_ITEM_NOT_FOUND_EXCEPTION     = 791;
+    const RESIDENT_CREADIT_ITEM_NOT_FOUND_EXCEPTION              = 791;
     const RESIDENT_PAYMENT_RECEIVED_ITEM_NOT_FOUND_EXCEPTION     = 792;
     const RESIDENT_AWAY_DAYS_NOT_FOUND_EXCEPTION                 = 793;
     const KEY_FINANCE_DATES_NOT_FOUND_EXCEPTION                  = 794;
+    const DISCOUNT_ITEM_NOT_FOUND_EXCEPTION                      = 795;
     const RESIDENT_LEDGER_ALREADY_EXIST_EXCEPTION                = 796;
+    const RESIDENT_DISCOUNT_ITEM_NOT_FOUND_EXCEPTION             = 797;
     const INCORRECT_REPORT_PARAMETER                             = 800;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
@@ -375,17 +377,19 @@ class ResponseCode
         self::EXPENSE_ITEM_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Expense Item not found.'],
         self::HOSPICE_PROVIDER_NOT_FOUND_EXCEPTION                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Hospice Provider not found.'],
         self::HOSPICE_PROVIDER_NOT_BE_BLANK_EXCEPTION                => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Please select a Hospice Provider.'],
-        self::CREADIT_DISCOUNT_ITEM_NOT_FOUND_EXCEPTION              => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Credit/Discount Item not found.'],
+        self::CREADIT_ITEM_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Credit Item not found.'],
         self::CAN_BE_CHANGED_IS_REQUIRED_EXCEPTION                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Can be Changed is required when default amount provided.'],
         self::LEAD_EMAIL_REVIEW_TYPE_NOT_FOUND_EXCEPTION             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Email Review Type not found.'],
         self::LEAD_WEB_EMAIL_NOT_FOUND_EXCEPTION                     => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Web Email not found.'],
         self::RESIDENT_LEDGER_NOT_FOUND_EXCEPTION                    => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Ledger not found.'],
         self::RESIDENT_EXPENSE_ITEM_NOT_FOUND_EXCEPTION              => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Expense Item not found.'],
-        self::RESIDENT_CREADIT_DISCOUNT_ITEM_NOT_FOUND_EXCEPTION     => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Credit/Discount Item not found.'],
+        self::RESIDENT_CREADIT_ITEM_NOT_FOUND_EXCEPTION              => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Credit Item not found.'],
         self::RESIDENT_PAYMENT_RECEIVED_ITEM_NOT_FOUND_EXCEPTION     => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Payment Received Item not found.'],
         self::RESIDENT_AWAY_DAYS_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Away Days not found.'],
         self::KEY_FINANCE_DATES_NOT_FOUND_EXCEPTION                  => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Key Finance Dates not found.'],
+        self::DISCOUNT_ITEM_NOT_FOUND_EXCEPTION                      => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Discount Item not found.'],
         self::RESIDENT_LEDGER_ALREADY_EXIST_EXCEPTION                => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Ledger already exist for this year and month.'],
+        self::RESIDENT_DISCOUNT_ITEM_NOT_FOUND_EXCEPTION             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Discount Item not found.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],

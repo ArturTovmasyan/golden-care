@@ -3,24 +3,21 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
-use App\Api\V1\Common\Service\Exception\KeyFinanceTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentLedgerAlreadyExistException;
 use App\Api\V1\Common\Service\Exception\ResidentLedgerNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Api\V1\Component\Rent\RentPeriodFactory;
-use App\Entity\ResidentCreditDiscountItem;
+use App\Entity\ResidentCreditItem;
+use App\Entity\ResidentDiscountItem;
 use App\Entity\ResidentExpenseItem;
 use App\Entity\ResidentPaymentReceivedItem;
 use App\Entity\ResidentRent;
-use App\Model\KeyFinanceType as KeyFinanceCategory;
-use App\Entity\KeyFinanceType;
 use App\Entity\Resident;
-use App\Entity\ResidentKeyFinanceDate;
 use App\Entity\ResidentLedger;
 use App\Model\RentPeriod;
-use App\Repository\KeyFinanceTypeRepository;
-use App\Repository\ResidentCreditDiscountItemRepository;
+use App\Repository\ResidentCreditItemRepository;
+use App\Repository\ResidentDiscountItemRepository;
 use App\Repository\ResidentExpenseItemRepository;
 use App\Repository\ResidentLedgerRepository;
 use App\Repository\ResidentPaymentReceivedItemRepository;
@@ -28,7 +25,6 @@ use App\Repository\ResidentRentRepository;
 use App\Repository\ResidentRepository;
 use App\Util\Common\ImtDateTimeInterval;
 use Doctrine\ORM\QueryBuilder;
-use function Matrix\trace;
 
 /**
  * Class ResidentLedgerService
@@ -167,33 +163,6 @@ class ResidentLedgerService extends BaseService implements IGridService
             $this->validate($residentLedger, null, ['api_admin_resident_ledger_add']);
 
             $this->em->persist($residentLedger);
-
-            //Add "Monthly Billing Cut Off Date" Key Finance Date
-            $residentKeyFinanceDate = new ResidentKeyFinanceDate();
-            $residentKeyFinanceDate->setLedger($residentLedger);
-
-            /** @var KeyFinanceTypeRepository $keyFinanceTypeRepo */
-            $keyFinanceTypeRepo = $this->em->getRepository(KeyFinanceType::class);
-
-            /** @var KeyFinanceType $keyFinanceType */
-            $keyFinanceType = $keyFinanceTypeRepo->findOneBy(['space' => $currentSpace, 'type' => KeyFinanceCategory::MONTHLY_BILLING_CUT_OFF_DATE]);
-
-            if ($keyFinanceType === null) {
-                throw new KeyFinanceTypeNotFoundException();
-            }
-
-            $residentKeyFinanceDate->setKeyFinanceType($keyFinanceType);
-
-            $now = new \DateTime('now');
-            $dateString = $now->format('Y-m') . '-18';
-            $date = new \DateTime($dateString);
-
-            $residentKeyFinanceDate->setDate($date);
-
-            $this->validate($residentKeyFinanceDate, null, ['api_admin_resident_key_finance_date_add']);
-
-            $this->em->persist($residentKeyFinanceDate);
-
             $this->em->flush();
             $this->em->getConnection()->commit();
 
@@ -298,14 +267,25 @@ class ResidentLedgerService extends BaseService implements IGridService
             }
         }
 
-        /** @var ResidentCreditDiscountItemRepository $residentCreditDiscountItemRepo */
-        $residentCreditDiscountItemRepo = $this->em->getRepository(ResidentCreditDiscountItem::class);
-        $residentCreditDiscountItems = $residentCreditDiscountItemRepo->getByInterval($currentSpace, null, $ledgerId, $dateStart, $dateEnd);
+        /** @var ResidentCreditItemRepository $residentCreditItemRepo */
+        $residentCreditItemRepo = $this->em->getRepository(ResidentCreditItem::class);
+        $residentCreditItems = $residentCreditItemRepo->getByInterval($currentSpace, null, $ledgerId, $dateStart, $dateEnd);
 
-        $creditDiscountItemAmount = 0;
-        if (!empty($residentCreditDiscountItems)) {
-            foreach ($residentCreditDiscountItems as $creditDiscountItem) {
-                $creditDiscountItemAmount += $creditDiscountItem['amount'];
+        $creditItemAmount = 0;
+        if (!empty($residentCreditItems)) {
+            foreach ($residentCreditItems as $creditItem) {
+                $creditItemAmount += $creditItem['amount'];
+            }
+        }
+
+        /** @var ResidentDiscountItemRepository $residentDiscountItemRepo */
+        $residentDiscountItemRepo = $this->em->getRepository(ResidentDiscountItem::class);
+        $residentDiscountItems = $residentDiscountItemRepo->getByInterval($currentSpace, null, $ledgerId, $dateStart, $dateEnd);
+
+        $discountItemAmount = 0;
+        if (!empty($residentDiscountItems)) {
+            foreach ($residentDiscountItems as $residentDiscountItem) {
+                $discountItemAmount += $residentDiscountItem['amount'];
             }
         }
 
@@ -320,7 +300,7 @@ class ResidentLedgerService extends BaseService implements IGridService
             }
         }
 
-        return $expenseItemAmount + $creditDiscountItemAmount + $paymentReceivedItemAmount;
+        return $expenseItemAmount - $creditItemAmount - $discountItemAmount + $paymentReceivedItemAmount;
     }
 
     /**

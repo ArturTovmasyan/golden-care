@@ -161,10 +161,14 @@ persistence:
           title: 'ExpenseItem'
           class: App\Entity\ExpenseItem
           route: api_admin_expense_item_list
-        credit_discount_item:
-          title: 'Credits/Discounts Item'
-          class: App\Entity\CreditDiscountItem
-          route: api_admin_credit_discount_item_list
+        credit_item:
+          title: 'CreditItem'
+          class: App\Entity\CreditItem
+          route: api_admin_credit_item_list
+        discount_item:
+          title: 'DiscountItem'
+          class: App\Entity\DiscountItem
+          route: api_admin_discount_item_list
         key_finance_dates:
           title: 'KeyFinanceDates'
           class: App\Entity\KeyFinanceDates
@@ -429,10 +433,14 @@ persistence:
           title: 'ResidentExpenseItem'
           class: App\Entity\ResidentExpenseItem
           route: api_admin_resident_expense_item_list
-        resident_credit_discount_item:
-          title: 'Resident Credits/Discounts Item'
-          class: App\Entity\ResidentCreditDiscountItem
-          route: api_admin_resident_credit_discount_item_list
+        resident_credit_item:
+          title: 'Resident Credits Item'
+          class: App\Entity\ResidentCreditItem
+          route: api_admin_resident_credit_item_list
+        resident_discount_item:
+          title: 'Resident Discounts Item'
+          class: App\Entity\ResidentDiscountItem
+          route: api_admin_resident_discount_item_list
         resident_away_days:
           title: 'ResidentAwayDays'
           class: App\Entity\ResidentAwayDays

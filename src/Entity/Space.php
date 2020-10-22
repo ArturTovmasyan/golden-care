@@ -155,8 +155,10 @@ class Space
      *     "api_admin_expense_item_get",
      *     "api_admin_hospice_provider_list",
      *     "api_admin_hospice_provider_get",
-     *     "api_admin_credit_discount_item_list",
-     *     "api_admin_credit_discount_item_get",
+     *     "api_admin_credit_item_list",
+     *     "api_admin_credit_item_get",
+     *     "api_admin_discount_item_list",
+     *     "api_admin_discount_item_get",
      *     "api_lead_email_review_type_list",
      *     "api_lead_email_review_type_get",
      *     "api_lead_web_email_list",
@@ -270,8 +272,10 @@ class Space
      *     "api_admin_expense_item_get",
      *     "api_admin_hospice_provider_list",
      *     "api_admin_hospice_provider_get",
-     *     "api_admin_credit_discount_item_list",
-     *     "api_admin_credit_discount_item_get",
+     *     "api_admin_credit_item_list",
+     *     "api_admin_credit_item_get",
+     *     "api_admin_discount_item_list",
+     *     "api_admin_discount_item_get",
      *     "api_lead_email_review_type_list",
      *     "api_lead_email_review_type_get",
      *     "api_lead_web_email_list",
@@ -548,9 +552,15 @@ class Space
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\CreditDiscountItem", mappedBy="space", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\CreditItem", mappedBy="space", cascade={"remove", "persist"})
      */
-    private $creditDiscountItems;
+    private $creditItems;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\DiscountItem", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $discountItems;
 
     /**
      * @var ArrayCollection
@@ -1317,17 +1327,33 @@ class Space
     /**
      * @return ArrayCollection
      */
-    public function getCreditDiscountItems(): ArrayCollection
+    public function getCreditItems(): ArrayCollection
     {
-        return $this->creditDiscountItems;
+        return $this->creditItems;
     }
 
     /**
-     * @param ArrayCollection $creditDiscountItems
+     * @param ArrayCollection $creditItems
      */
-    public function setCreditDiscountItems(ArrayCollection $creditDiscountItems): void
+    public function setCreditItems(ArrayCollection $creditItems): void
     {
-        $this->creditDiscountItems = $creditDiscountItems;
+        $this->creditItems = $creditItems;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getDiscountItems(): ArrayCollection
+    {
+        return $this->discountItems;
+    }
+
+    /**
+     * @param ArrayCollection $discountItems
+     */
+    public function setDiscountItems(ArrayCollection $discountItems): void
+    {
+        $this->discountItems = $discountItems;
     }
 
     /**
