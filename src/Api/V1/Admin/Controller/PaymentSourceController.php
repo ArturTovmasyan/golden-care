@@ -99,7 +99,7 @@ class PaymentSourceController extends BaseController
         $id = $paymentSourceService->add(
             [
                 'title' => $request->get('title'),
-                'away_reduction' => $request->get('away_reduction'),
+                'private_pay' => $request->get('private_pay'),
                 'period' => $request->get('period'),
                 'amount' => $request->get('amount'),
                 'care_level_adjustment' => $request->get('care_level_adjustment'),
@@ -108,7 +108,7 @@ class PaymentSourceController extends BaseController
                 'date_of_birth' => $request->get('date_of_birth'),
                 'field_name' => $request->get('field_name'),
                 'field_text' => $request->get('field_text'),
-                'reduce_for_away_days' => $request->get('reduce_for_away_days')
+                'only_for_occupied_days' => $request->get('only_for_occupied_days')
             ]
         );
 
@@ -135,7 +135,7 @@ class PaymentSourceController extends BaseController
             $id,
             [
                 'title' => $request->get('title'),
-                'away_reduction' => $request->get('away_reduction'),
+                'private_pay' => $request->get('private_pay'),
                 'period' => $request->get('period'),
                 'amount' => $request->get('amount'),
                 'care_level_adjustment' => $request->get('care_level_adjustment'),
@@ -144,7 +144,7 @@ class PaymentSourceController extends BaseController
                 'date_of_birth' => $request->get('date_of_birth'),
                 'field_name' => $request->get('field_name'),
                 'field_text' => $request->get('field_text'),
-                'reduce_for_away_days' => $request->get('reduce_for_away_days')
+                'only_for_occupied_days' => $request->get('only_for_occupied_days')
             ]
         );
 

@@ -80,7 +80,7 @@ class PaymentSourceService extends BaseService implements IGridService
 
             $paymentSource = new PaymentSource();
             $paymentSource->setTitle($params['title']);
-            $paymentSource->setAwayReduction((bool)$params['away_reduction']);
+            $paymentSource->setPrivatePay((bool)$params['private_pay']);
             $paymentSource->setPeriod($period);
             $paymentSource->setCareLevelAdjustment($careLevelAdjustment);
             $paymentSource->setSpace($space);
@@ -88,7 +88,7 @@ class PaymentSourceService extends BaseService implements IGridService
             $paymentSource->setDateOfBirth((bool)$params['date_of_birth']);
             $paymentSource->setFieldName($params['field_name']);
             $paymentSource->setFieldText($params['field_text']);
-            $paymentSource->setReduceForAwayDays((bool)$params['reduce_for_away_days']);
+            $paymentSource->setOnlyForOccupiedDays((bool)$params['only_for_occupied_days']);
 
             $this->validate($paymentSource, null, ['api_admin_payment_source_add']);
 
@@ -148,7 +148,7 @@ class PaymentSourceService extends BaseService implements IGridService
             $careLevelAdjustment = (bool)$params['care_level_adjustment'];
 
             $entity->setTitle($params['title']);
-            $entity->setAwayReduction((bool)$params['away_reduction']);
+            $entity->setPrivatePay((bool)$params['private_pay']);
             $entity->setPeriod($period);
             $entity->setCareLevelAdjustment($careLevelAdjustment);
             $entity->setSpace($space);
@@ -156,7 +156,7 @@ class PaymentSourceService extends BaseService implements IGridService
             $entity->setDateOfBirth((bool)$params['date_of_birth']);
             $entity->setFieldName($params['field_name']);
             $entity->setFieldText($params['field_text']);
-            $entity->setReduceForAwayDays((bool)$params['reduce_for_away_days']);
+            $entity->setOnlyForOccupiedDays((bool)$params['only_for_occupied_days']);
 
             $this->validate($entity, null, ['api_admin_payment_source_edit']);
 

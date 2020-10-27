@@ -44,9 +44,9 @@ use App\Annotation\Grid;
  *              "link"       = ":edit"
  *          },
  *          {
- *              "id"         = "away_reduction",
+ *              "id"         = "private_pay",
  *              "type"       = "boolean",
- *              "field"      = "ps.awayReduction"
+ *              "field"      = "ps.privatePay"
  *          },
  *          {
  *              "id"         = "period",
@@ -63,6 +63,11 @@ use App\Annotation\Grid;
  *              "id"         = "care_level_adjustment",
  *              "type"       = "boolean",
  *              "field"      = "ps.careLevelAdjustment"
+ *          },
+ *          {
+ *              "id"         = "only_for_occupied_days",
+ *              "type"       = "boolean",
+ *              "field"      = "ps.onlyForOccupiedDays"
  *          },
  *          {
  *              "id"         = "space",
@@ -118,15 +123,16 @@ class PaymentSource
      */
     private $title;
 
+
     /**
      * @var bool
-     * @ORM\Column(name="away_reduction", type="boolean", options={"default" = 0})
+     * @ORM\Column(name="private_pay", type="boolean")
      * @Groups({
      *     "api_admin_payment_source_list",
      *     "api_admin_payment_source_get"
      * })
      */
-    private $awayReduction;
+    private $privatePay;
 
     /**
      * @var int
@@ -266,13 +272,13 @@ class PaymentSource
 
     /**
      * @var bool
-     * @ORM\Column(name="reduce_for_away_days", type="boolean")
+     * @ORM\Column(name="only_for_occupied_days", type="boolean")
      * @Groups({
      *     "api_admin_payment_source_list",
      *     "api_admin_payment_source_get"
      * })
      */
-    private $reduceForAwayDays;
+    private $onlyForOccupiedDays;
 
     /**
      * @var ArrayCollection
@@ -344,17 +350,17 @@ class PaymentSource
     /**
      * @return bool
      */
-    public function isAwayReduction(): bool
+    public function isPrivatePay(): bool
     {
-        return $this->awayReduction;
+        return $this->privatePay;
     }
 
     /**
-     * @param bool $awayReduction
+     * @param bool $privatePay
      */
-    public function setAwayReduction(bool $awayReduction): void
+    public function setPrivatePay(bool $privatePay): void
     {
-        $this->awayReduction = $awayReduction;
+        $this->privatePay = $privatePay;
     }
 
     /**
@@ -504,17 +510,17 @@ class PaymentSource
     /**
      * @return bool
      */
-    public function isReduceForAwayDays(): bool
+    public function isOnlyForOccupiedDays(): bool
     {
-        return $this->reduceForAwayDays;
+        return $this->onlyForOccupiedDays;
     }
 
     /**
-     * @param bool $reduceForAwayDays
+     * @param bool $onlyForOccupiedDays
      */
-    public function setReduceForAwayDays(bool $reduceForAwayDays): void
+    public function setOnlyForOccupiedDays(bool $onlyForOccupiedDays): void
     {
-        $this->reduceForAwayDays = $reduceForAwayDays;
+        $this->onlyForOccupiedDays = $onlyForOccupiedDays;
     }
 
     /**
