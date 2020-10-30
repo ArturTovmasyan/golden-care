@@ -1,0 +1,7 @@
+{% spaceless %}
+Lead,Responsible Person,Care Type,Owner,Primary Facility,Date,Reason,Notes,Created By
+{% for lead in data.leads %}
+"{{ lead.leadFullName|raw }}","{{ lead.rpFullName|raw }}",{% if lead.careType %}"{{ lead.careType|raw }}"{% else %}N/A{% endif %},"{{ lead.ownerFullName|raw }}",{% if lead.primaryFacility %}"{{ lead.primaryFacility|raw }}"{% else %}N/A{% endif %},{% if lead.date %}{{ lead.date|date("m/d/Y") }}{% else %}N/A{% endif %},{% if lead.reason %}"{{ lead.reason|raw }}"{% else %}N/A{% endif %},{% if lead.notes %}"{{ lead.notes|raw }}"{% else %}N/A{% endif %},{% if lead.createdByFullName %}"{{ lead.createdByFullName|raw }}"{% else %}N/A{% endif %}
+
+{% endfor %}
+{% endspaceless %}

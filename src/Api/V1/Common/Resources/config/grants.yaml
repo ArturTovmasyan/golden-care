@@ -642,6 +642,8 @@ report:
           title: "Activity List Report"
         lead:
           title: "Lead List Report"
+        closed-lead:
+          title: "Closed Lead List Report"
         referral:
           title: "Referral List Report"
         outreach:

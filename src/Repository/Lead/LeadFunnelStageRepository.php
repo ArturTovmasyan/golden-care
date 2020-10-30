@@ -3,12 +3,15 @@
 namespace App\Repository\Lead;
 
 use App\Api\V1\Component\RelatedInfoInterface;
+use App\Entity\Facility;
+use App\Entity\Lead\CareType;
 use App\Entity\Lead\FunnelStage;
 use App\Entity\Lead\Lead;
 use App\Entity\Lead\LeadFunnelStage;
 use App\Entity\Lead\StageChangeReason;
 use App\Entity\Space;
 use App\Entity\User;
+use App\Model\Lead\State;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -344,6 +347,109 @@ class LeadFunnelStageRepository extends EntityRepository implements RelatedInfoI
         }
 
         return $qb
+            ->orderBy('lfs.date', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $startDate
+     * @param $endDate
+     * @param array|null $typeIds
+     * @return int|mixed|string
+     */
+    public function getClosedLeads(Space $space = null, array $entityGrants = null, $startDate, $endDate, array $typeIds = null)
+    {
+        $qb = $this
+            ->createQueryBuilder('lfs')
+            ->select(
+                "CONCAT(l.firstName, ' ', l.lastName) as leadFullName",
+                "CONCAT(l.responsiblePersonFirstName, ' ', l.responsiblePersonLastName) as rpFullName",
+                'ct.title as careType',
+                "CONCAT(o.firstName, ' ', o.lastName) as ownerFullName",
+                'f.name as primaryFacility',
+                'lfs.date as date',
+                'scr.title as reason',
+                'lfs.notes as notes',
+                "CONCAT(u.firstName, ' ', u.lastName) as createdByFullName"
+            )
+            ->innerJoin(
+                FunnelStage::class,
+                'fs',
+                Join::WITH,
+                'fs = lfs.stage'
+            )
+            ->innerJoin(
+                Lead::class,
+                'l',
+                Join::WITH,
+                'l = lfs.lead'
+            )
+            ->innerJoin(
+                User::class,
+                'o',
+                Join::WITH,
+                'o = l.owner'
+            )
+            ->leftJoin(
+                CareType::class,
+                'ct',
+                Join::WITH,
+                'ct = l.careType'
+            )
+            ->innerJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = l.primaryFacility'
+            )
+            ->leftJoin(
+                StageChangeReason::class,
+                'scr',
+                Join::WITH,
+                'scr = lfs.reason'
+            )
+            ->leftJoin(
+                User::class,
+                'u',
+                Join::WITH,
+                'u = lfs.createdBy'
+            )
+            ->where('lfs.date >= :startDate AND lfs.date <= :endDate AND l.state = :state')
+            ->andWhere('l.spam = 0')
+            ->andWhere('lfs.date = (SELECT MAX(mfs.date) FROM App:Lead\LeadFunnelStage mfs JOIN mfs.lead ml WHERE ml.id = l.id GROUP BY ml.id)')
+            ->setParameter('state', State::TYPE_CLOSED)
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate);
+
+        if ($typeIds) {
+            $qb
+                ->andWhere('f.id IN (:typeIds)')
+                ->setParameter('typeIds', $typeIds);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = fs.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('lfs.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->groupBy('l.id')
             ->orderBy('lfs.date', 'DESC')
             ->getQuery()
             ->getResult();

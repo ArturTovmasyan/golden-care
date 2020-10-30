@@ -8,7 +8,7 @@ class SourcePeriod
      * Types
      */
     const DAILY = 1;
-    const WEEKLY = 2;
+//    const WEEKLY = 2;
     const MONTHLY = 3;
 
     /**
@@ -16,7 +16,7 @@ class SourcePeriod
      */
     private static $typeNames = [
         self::DAILY => 'Daily',
-        self::WEEKLY => 'Weekly',
+//        self::WEEKLY => 'Weekly',
         self::MONTHLY => 'Monthly',
     ];
 
@@ -25,7 +25,7 @@ class SourcePeriod
      */
     private static $typeDefaultNames = [
         'Daily' => '1',
-        'Weekly' => '2',
+//        'Weekly' => '2',
         'Monthly' => '3',
     ];
 
@@ -34,7 +34,7 @@ class SourcePeriod
      */
     private static $typeValues = [
         self::DAILY,
-        self::WEEKLY,
+//        self::WEEKLY,
         self::MONTHLY,
     ];
 
