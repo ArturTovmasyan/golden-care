@@ -414,11 +414,6 @@ class ResidentService extends BaseService implements IGridService
 
             $this->validate($resident, null, ['api_admin_resident_edit']);
 
-            $photo = !empty($params['photo']) ? $params['photo'] : null;
-
-            // save image
-            $this->saveImage($resident, $photo);
-
             // save admission
             /** @var ResidentAdmissionRepository $admissionRepo */
             $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
@@ -449,6 +444,11 @@ class ResidentService extends BaseService implements IGridService
             }
 
             $this->em->persist($resident);
+
+            $photo = !empty($params['photo']) ? $params['photo'] : null;
+
+            // save image
+            $this->saveImage($resident, $photo);
 
             $this->em->flush();
 
