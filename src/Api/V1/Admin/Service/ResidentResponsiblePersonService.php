@@ -59,8 +59,26 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
 
             /** @var ResidentResponsiblePersonRepository $repo */
             $repo = $this->em->getRepository(ResidentResponsiblePerson::class);
+            $responsiblePersons = $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentId);
 
-            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentId);
+                if (!empty($responsiblePersons) && isset($params[0]['financially'])) {
+                $financiallyResponsiblePersons = [];
+                /** @var ResidentResponsiblePerson $responsiblePerson */
+                foreach ($responsiblePersons as $responsiblePerson) {
+                    if (!empty($responsiblePerson->getRoles())) {
+                        /** @var ResponsiblePersonRole $role */
+                        foreach ($responsiblePerson->getRoles() as $role) {
+                            if ($role->isFinancially() === true) {
+                                $financiallyResponsiblePersons[] = $responsiblePerson;
+                                break;
+                            }
+                        }
+                    }
+                }
+$a = $financiallyResponsiblePersons;
+                return $financiallyResponsiblePersons;
+            }
+            return $responsiblePersons;
         }
 
         throw new ResidentNotFoundException();

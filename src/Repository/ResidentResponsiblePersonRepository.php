@@ -111,6 +111,7 @@ class ResidentResponsiblePersonRepository extends EntityRepository implements Re
                 Join::WITH,
                 'rps = rp.salutation'
             )
+            ->leftJoin('rrp.roles', 'rs')
             ->where('r.id = :id')
             ->setParameter('id', $id);
 

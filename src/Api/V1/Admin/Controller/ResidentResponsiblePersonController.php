@@ -65,7 +65,10 @@ class ResidentResponsiblePersonController extends BaseController
             ResidentResponsiblePerson::class,
             'api_admin_resident_responsible_person_list',
             $residentResponsiblePersonService,
-            ['resident_id' => $request->get('resident_id')]
+            [
+                'resident_id' => $request->get('resident_id'),
+                'financially' => $request->get('financially')
+            ]
         );
     }
 
