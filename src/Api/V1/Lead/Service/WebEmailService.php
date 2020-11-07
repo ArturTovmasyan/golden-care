@@ -94,7 +94,7 @@ class WebEmailService extends BaseService implements IGridService
                 }
 
                 $subject = null;
-                if (!empty($params['Subject']) && (stripos($params['Subject'], 'new submission') !== false || stripos($params['Subject'], 'new form entry') !== fals)) {
+                if (!empty($params['Subject']) && (stripos($params['Subject'], 'new submission') !== false || stripos($params['Subject'], 'new form entry') !== false)) {
                     $subject = $params['Subject'];
                 }
 
