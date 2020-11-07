@@ -94,7 +94,7 @@ class WebEmailService extends BaseService implements IGridService
                 }
 
                 $subject = null;
-                if (!empty($params['Subject']) && stripos($params['Subject'], 'new submission') !== false) {
+                if (!empty($params['Subject']) && (stripos($params['Subject'], 'new submission') !== false || stripos($params['Subject'], 'new form entry') !== fals)) {
                     $subject = $params['Subject'];
                 }
 
@@ -129,6 +129,16 @@ class WebEmailService extends BaseService implements IGridService
                             if (in_array($potentialName, $value->getPotentialNames(), false)) {
                                 $facility = $value;
                                 break;
+                            }
+                        }
+
+                        if ($facility === null) {
+                            /** @var Facility $value */
+                            foreach ($facilities as $value) {
+                                if (stripos($params['Subject'], $value->getName()) !== false) {
+                                    $facility = $value;
+                                    break;
+                                }
                             }
                         }
                     }

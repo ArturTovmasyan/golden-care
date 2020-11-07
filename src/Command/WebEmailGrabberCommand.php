@@ -118,12 +118,30 @@ class WebEmailGrabberCommand extends Command
             'New submission from Contact Form',
             'New submission from Contact Us',
             'New submission from Contact Us (Footer)',
+            'New submission from Footer Form',
+            'New Submission from CiminoCare Contact Form',
+            'New Submission from Auburn Oaks Contact Form',
+            'New Submission from Citrus Heights Terrace Contact Form',
+            'New Submission from Burlingame Villa Contact Form',
+            'New Submission from Country Club Manor Contact Form',
+            'New Submission from Courtyard Terrace Contact Form',
+            'New Submission from Fruitridge Villa Contact Form',
+            'New Submission from Mills Estate Villa Contact Form',
+            'New Submission from Orangeburg Manor Contact Form',
+            'New Submission from Portola Gardens Contact Form',
+            'New Submission from River Fountains of Lodi Contact Form',
+            'New Submission from Walnut House Contact Form',
+            'New Submission from Grand River Villa Contact Form',
+            'New Submission from Camlu Assisted Living Community Contact Form',
+            'New Form Entry: Camlu Contact Form',
         ];
 
         $message_map = [
             'Message',
             'Comments and/or Special Requests',
-            'How can we help you?'
+            'How can we help you?',
+            'How Can We Help You?:',
+            'Questions or comments'
         ];
 
         $data = null;
