@@ -234,6 +234,12 @@ class WebEmailGrabberCommand extends Command
                 unset($data['Last Name']);
             }
 
+            if (array_key_exists('Phone Number', $data)) {
+                $data['Phone'] = $data['Phone Number'];
+
+                unset($data['Phone Number']);
+            }
+
             if (array_key_exists($messageKey, $data)) {
                 $data['Spam'] = $this->checkForSpam($data[$messageKey]);
             }
