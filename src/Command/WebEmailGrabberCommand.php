@@ -153,18 +153,24 @@ class WebEmailGrabberCommand extends Command
             $data = ['From' => $from, 'Subject' => $subject];
 
             if ($table->count() > 0) {
-                /** @var Dom\Collection $tds */
-                $tds = $table[0]->find('tr > td');
+                if (stripos($subject, 'new form entry:') !== false) {
+                    /** @var Dom\Collection $tds */
+                    $tds = $table[0]->find('tr > td > div > div');
+                    $data['test'] = $tds;
+                } else {
+                    /** @var Dom\Collection $tds */
+                    $tds = $table[0]->find('tr > td');
 
-                for ($i = 0; $i < $tds->count(); $i += 3) {
-                    $header = strip_tags($tds[$i]->find('strong')->innerHTML);
+                    for ($i = 0; $i < $tds->count(); $i += 3) {
+                        $header = strip_tags($tds[$i]->find('strong')->innerHTML);
 
-                    if (\in_array($header, $message_map, false)) {
-                        $header = 'Message';
+                        if (\in_array($header, $message_map, false)) {
+                            $header = 'Message';
+                        }
+
+                        $value = preg_replace('#<br\s*/?\s*>#', "\r\n", $tds[$i + 2]->innerHTML);
+                        $data[$header] = trim(strip_tags($value));
                     }
-
-                    $value = preg_replace('#<br\s*/?\s*>#', "\r\n", $tds[$i + 2]->innerHTML);
-                    $data[$header] = trim(strip_tags($value));
                 }
             } else {
                 $div = $dom->find('div[contains(@class, "a3s")]');
@@ -207,6 +213,8 @@ class WebEmailGrabberCommand extends Command
 
             if (array_key_exists('Message', $data)) {
                 $data['Spam'] = $this->checkForSpam($data['Message']);
+            } else {
+                $data['Spam'] = true;
             }
         }
 
