@@ -213,8 +213,6 @@ class WebEmailGrabberCommand extends Command
 
             if (array_key_exists('Message', $data)) {
                 $data['Spam'] = $this->checkForSpam($data['Message']);
-            } else {
-                $data['Spam'] = true;
             }
         }
 
