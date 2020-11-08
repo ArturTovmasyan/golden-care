@@ -166,6 +166,36 @@ class WebEmailGrabberCommand extends Command
                     $value = preg_replace('#<br\s*/?\s*>#', "\r\n", $tds[$i + 2]->innerHTML);
                     $data[$header] = trim(strip_tags($value));
                 }
+            } else {
+                $div = $dom->find('div[contains(@class, "a3s")]');
+                /** @var Dom\Collection $datum */
+                $datum = $div[0];
+                $parent = $datum->parent;
+                $innerHtml = $parent->innerHtml;
+
+                $innerHtmlArray = explode('---', $innerHtml);
+                $text = $innerHtmlArray[0];
+
+                $messageKeyForExplode = 'How Can We Help You?: ';
+                $messageKey = 'Message';
+                $data[$messageKey] = '';
+                if (stripos($text, $messageKeyForExplode) !== false) {
+                    $textArray = explode($messageKeyForExplode, $text);
+
+                    $message = preg_replace('#<br\s*/?\s*>#', "\r\n", $textArray[1]);
+                    $data[$messageKey] = $message;
+
+                    $keyValueArray = explode('<br />', $textArray[0]);
+
+                    if (!empty($keyValueArray)) {
+                        foreach ($keyValueArray as $item) {
+                            $keyValue = explode(': ', $item);
+                            if (count($keyValue) === 2) {
+                                $data[$keyValue[0]] = $keyValue[1];
+                            }
+                        }
+                    }
+                }
             }
 
             if (array_key_exists('First Name', $data) && array_key_exists('Last Name', $data)) {
