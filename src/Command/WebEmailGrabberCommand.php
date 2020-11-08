@@ -152,11 +152,35 @@ class WebEmailGrabberCommand extends Command
 
             $data = ['From' => $from, 'Subject' => $subject];
 
+            $messageKey = 'Message';
             if ($table->count() > 0) {
                 if (stripos($subject, 'new form entry:') !== false) {
-                    /** @var Dom\Collection $tds */
-                    $tds = $table[0]->find('tr > td > div > div');
-                    $data['test'] = $tds;
+                    /** @var Dom\Collection $div */
+                    $div = $table[0]->find('tr > td > table > tr > td > div > div');
+                    $innerHtml = $div->innerHtml;
+                    $innerHtmlArray = explode('</h2> <br />', $innerHtml);
+                    $text = preg_replace('#<br\s*/?\s*>#', "\r\n", $innerHtmlArray[1]);
+                    $text = trim(strip_tags($text));
+
+                    $messageKeyForExplode = 'Questions or comments';
+                    $data[$messageKey] = '';
+                    if (stripos($text, $messageKeyForExplode) !== false) {
+                        $textArray = explode($messageKeyForExplode, $text);
+
+                        $textFirst = explode('First name, last name', $textArray[0]);
+                        $textName = explode('Email', $textFirst[1]);
+                        $data['Name'] = trim($textName[0]);
+                        $data['Email'] = trim($textName[1]);
+
+                        $textLast = explode('Phone', $textArray[1]);
+                        $data[$messageKey] = $textLast[0];
+                        if (stripos($textLast[1], 'choose one') !== false) {
+                            $textPhone = explode('Choose one', $textLast[1]);
+                            $data['Phone'] = trim($textPhone[0]);
+                        } else {
+                            $data['Phone'] = trim($textLast[1]);
+                        }
+                    }
                 } else {
                     /** @var Dom\Collection $tds */
                     $tds = $table[0]->find('tr > td');
@@ -165,7 +189,7 @@ class WebEmailGrabberCommand extends Command
                         $header = strip_tags($tds[$i]->find('strong')->innerHTML);
 
                         if (\in_array($header, $message_map, false)) {
-                            $header = 'Message';
+                            $header = $messageKey;
                         }
 
                         $value = preg_replace('#<br\s*/?\s*>#', "\r\n", $tds[$i + 2]->innerHTML);
@@ -183,7 +207,6 @@ class WebEmailGrabberCommand extends Command
                 $text = $innerHtmlArray[0];
 
                 $messageKeyForExplode = 'How Can We Help You?: ';
-                $messageKey = 'Message';
                 $data[$messageKey] = '';
                 if (stripos($text, $messageKeyForExplode) !== false) {
                     $textArray = explode($messageKeyForExplode, $text);
@@ -211,8 +234,8 @@ class WebEmailGrabberCommand extends Command
                 unset($data['Last Name']);
             }
 
-            if (array_key_exists('Message', $data)) {
-                $data['Spam'] = $this->checkForSpam($data['Message']);
+            if (array_key_exists($messageKey, $data)) {
+                $data['Spam'] = $this->checkForSpam($data[$messageKey]);
             }
         }
 

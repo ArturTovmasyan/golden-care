@@ -75,7 +75,7 @@ class WebEmailService extends BaseService implements IGridService
     public function add(array $params)
     {
         $spam = true;
-        if (!empty($params['Spam'])) {
+        if (array_key_exists('Spam', $params)) {
             $spam = (bool)$params['Spam'];
         }
 
