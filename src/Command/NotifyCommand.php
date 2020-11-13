@@ -322,6 +322,7 @@ class NotifyCommand extends Command
                     $allEmails = $emails;
                 }
                 $allEmails = array_unique($allEmails);
+                $allEmails = array_values($allEmails);
 
                 //for sms
                 if ($isSms && $activity->getLead() !== null) {
@@ -435,6 +436,7 @@ class NotifyCommand extends Command
 
         $emails = array_merge($emails, $ownerEmails);
         $emails = array_unique($emails);
+        $emails = array_values($emails);
 
         if (!empty($emails)) {
             $date = new \DateTime('now');
@@ -480,6 +482,7 @@ class NotifyCommand extends Command
                 //for email
                 $allEmails = array_merge($emails, $activityUserEmails);
                 $allEmails = array_unique($allEmails);
+                $allEmails = array_values($allEmails);
             }
 
             // Sending email notification per activity
@@ -531,6 +534,7 @@ class NotifyCommand extends Command
                 //for email
                 $allEmails = array_merge($emails, $activityUserEmails);
                 $allEmails = array_unique($allEmails);
+                $allEmails = array_values($allEmails);
             }
 
             // Sending email notification per activity
@@ -607,6 +611,7 @@ class NotifyCommand extends Command
                             //for email
                             $allEmails = array_merge($emails, $rpEmails);
                             $allEmails = array_unique($allEmails);
+                            $allEmails = array_values($allEmails);
 
                             // Sending email notification per increase
                             if ($isEmail && !empty($allEmails)) {
@@ -742,6 +747,7 @@ class NotifyCommand extends Command
 
         $emails = array_merge($emails, $webEmailEmails, $notReviewWebEmailsEmails);
         $emails = array_unique($emails);
+        $emails = array_values($emails);
 
         if (!empty($emails) && (!empty($webs) || !empty($notReviews))) {
             $subject = $subjectText . ' - ' . $date->format('m/d/Y');
@@ -856,6 +862,7 @@ class NotifyCommand extends Command
 
             $finalEmails = array_merge($emails, $webEmailEmails);
             $finalEmails = array_unique($finalEmails);
+            $finalEmails = array_values($finalEmails);
 
             if ($isEmail && !empty($finalEmails) && !empty($webs)) {
                 $subject = $subjectText . ' - ' . $date->format('m/d/Y');
