@@ -793,13 +793,12 @@ class NotifyCommand extends Command
         foreach ($webEmails as $webEmail) {
             $spaceName = $webEmail->getSpace() !== null ? $webEmail->getSpace()->getName() : '';
 
-            $roleName = $webEmail->getFacility() !== null ? 'Facility Admin' : 'Administrator';
+            $roleNames = $webEmail->getFacility()  !== null ? ['Facility Admin', 'Marketing'] : ['Administrator', 'Marketing'];
 
             /** @var RoleRepository $roleRepo */
             $roleRepo = $this->em->getRepository(Role::class);
 
-            /** @var Role $role */
-            $role = $roleRepo->findOneBy(['name' => strtolower($roleName)]);
+            $roles = $roleRepo->findByNames($roleNames);
 
             /** @var UserRepository $userRepo */
             $userRepo = $this->em->getRepository(User::class);
@@ -807,8 +806,12 @@ class NotifyCommand extends Command
             $webs = [];
             $webEmailEmails = [];
             $webEmailUserIds = [];
-            if ($role !== null) {
-                $userFacilityIds = $userRepo->getEnabledUserFacilityIdsByRoles($currentSpace, null, [$role->getId()]);
+            if (!empty($roles)) {
+                $roleIds = array_map(static function (Role $item) {
+                    return $item->getId();
+                }, $roles);
+
+                $userFacilityIds = $userRepo->getEnabledUserFacilityIdsByRoles($currentSpace, null, $roleIds);
 
                 if (!empty($userFacilityIds)) {
                     $facilityIds = $webEmail->getFacility() !== null ? [$webEmail->getFacility()->getId()] : [];

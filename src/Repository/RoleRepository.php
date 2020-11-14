@@ -57,6 +57,22 @@ class RoleRepository extends EntityRepository implements RelatedInfoInterface
     }
 
     /**
+     * @param $names
+     * @return mixed
+     */
+    public function findByNames($names)
+    {
+        $qb = $this
+            ->createQueryBuilder('r')
+            ->where('r.name IN (:names)')
+            ->setParameter('names', $names);
+
+        return $qb->groupBy('r.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @return mixed
      */
     public function getDefaultRole()
