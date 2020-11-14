@@ -309,7 +309,7 @@ class Mailer
         $mailer = $this->container->get('mailer');
         $message = (new \Swift_Message($subject))
             ->setFrom(self::FROM)
-            ->setBcc($emails)
+            ->setCc($emails)
             ->setBody($body, self::BODY);
 
         $status = $mailer->send($message);
