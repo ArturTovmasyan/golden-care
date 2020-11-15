@@ -434,11 +434,11 @@ class NotifyCommand extends Command
             }
         }
 
-        $emails = array_merge($emails, $ownerEmails);
-        $emails = array_unique($emails);
-        $emails = array_values($emails);
+        $allEmails = array_merge($emails, $ownerEmails);
+        $allEmails = array_unique($allEmails);
+        $allEmails = array_values($allEmails);
 
-        if (!empty($emails)) {
+        if (!empty($allEmails)) {
             $date = new \DateTime('now');
             $date->modify('-24 hours');
             $subject = 'Daily Leads System User Activity Summary - ' . $date->format('m/d/Y');
@@ -448,9 +448,9 @@ class NotifyCommand extends Command
                 'subject' => $subject
             ));
 
-            $status = $this->mailer->sendNotification($emails, $subject, $body, $spaceName);
+            $status = $this->mailer->sendNotification($allEmails, $subject, $body, $spaceName);
 
-            $this->saveEmailLog($status, $subject, $spaceName, $emails);
+            $this->saveEmailLog($status, $subject, $spaceName, $allEmails);
         }
     }
 
@@ -745,11 +745,11 @@ class NotifyCommand extends Command
             ];
         }
 
-        $emails = array_merge($emails, $webEmailEmails, $notReviewWebEmailsEmails);
-        $emails = array_unique($emails);
-        $emails = array_values($emails);
+        $allEmails = array_merge($emails, $webEmailEmails, $notReviewWebEmailsEmails);
+        $allEmails = array_unique($allEmails);
+        $allEmails = array_values($allEmails);
 
-        if (!empty($emails) && (!empty($webs) || !empty($notReviews))) {
+        if (!empty($allEmails) && (!empty($webs) || !empty($notReviews))) {
             $subject = $subjectText . ' - ' . $date->format('m/d/Y');
 
             $body = $this->container->get('templating')->render('@api_notification/web-email.email.html.twig', array(
@@ -758,9 +758,9 @@ class NotifyCommand extends Command
                 'subject' => $subject
             ));
 
-            $status = $this->mailer->sendNotification($emails, $subject, $body, $spaceName);
+            $status = $this->mailer->sendNotification($allEmails, $subject, $body, $spaceName);
 
-            $this->saveEmailLog($status, $subject, $spaceName, $emails);
+            $this->saveEmailLog($status, $subject, $spaceName, $allEmails);
         }
     }
 
@@ -876,7 +876,7 @@ class NotifyCommand extends Command
                     'subject' => $subject
                 ));
 
-                $status = $this->mailer->sendNotification($emails, $subject, $body, $spaceName);
+                $status = $this->mailer->sendNotification($finalEmails, $subject, $body, $spaceName);
 
                 $this->saveEmailLog($status, $subject, $spaceName, $finalEmails);
             }
