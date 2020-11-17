@@ -144,6 +144,7 @@ class NotifyCommand extends Command
                 }
                 $emails = array_merge($notificationEmails, $userEmails);
                 $emails = array_unique($emails);
+                $emails = array_values($emails);
 
                 switch ($notification->getType()->getCategory()) {
                     case NotificationTypeCategoryType::TYPE_SIXTY_DAYS_REPORT:
@@ -307,7 +308,7 @@ class NotifyCommand extends Command
 
         /** @var Activity $activity */
         foreach ($activities as $activity) {
-            $allEmails = [];
+            $allActivityEmails = [];
 
             $subject = 'Activity Reminder ' . $activity->getTitle();
             if ($activity->getType() !== null && $activity->getType()->isDueDate() && $activity->getDueDate() <= new \DateTime('now')) {
@@ -317,12 +318,12 @@ class NotifyCommand extends Command
             if ($activity->getAssignTo()) {
                 //for email
                 if ($activity->getAssignTo()->isEnabled()) {
-                    $allEmails = array_merge($emails, [$activity->getAssignTo()->getEmail()]);
+                    $allActivityEmails = array_merge($emails, [$activity->getAssignTo()->getEmail()]);
                 } else {
-                    $allEmails = $emails;
+                    $allActivityEmails = $emails;
                 }
-                $allEmails = array_unique($allEmails);
-                $allEmails = array_values($allEmails);
+                $allActivityEmails = array_unique($allActivityEmails);
+                $allActivityEmails = array_values($allActivityEmails);
 
                 //for sms
                 if ($isSms && $activity->getLead() !== null) {
@@ -347,7 +348,7 @@ class NotifyCommand extends Command
             }
 
             // Sending email notification per activity
-            if ($isEmail && !empty($allEmails)) {
+            if ($isEmail && !empty($allActivityEmails)) {
                 $spaceName = '';
                 if ($activity->getStatus() !== null && $activity->getStatus()->getSpace() !== null) {
                     $spaceName = $activity->getStatus()->getSpace()->getName();
@@ -359,9 +360,9 @@ class NotifyCommand extends Command
                     'subject' => $subject
                 ));
 
-                $status = $this->mailer->sendNotification($allEmails, $subject, $body, $spaceName);
+                $status = $this->mailer->sendNotification($allActivityEmails, $subject, $body, $spaceName);
 
-                $this->saveEmailLog($status, $subject, $spaceName, $allEmails);
+                $this->saveEmailLog($status, $subject, $spaceName, $allActivityEmails);
             }
         }
     }
@@ -434,11 +435,11 @@ class NotifyCommand extends Command
             }
         }
 
-        $allEmails = array_merge($emails, $ownerEmails);
-        $allEmails = array_unique($allEmails);
-        $allEmails = array_values($allEmails);
+        $allChangeLogEmails = array_merge($emails, $ownerEmails);
+        $allChangeLogEmails = array_unique($allChangeLogEmails);
+        $allChangeLogEmails = array_values($allChangeLogEmails);
 
-        if (!empty($allEmails)) {
+        if (!empty($allChangeLogEmails)) {
             $date = new \DateTime('now');
             $date->modify('-24 hours');
             $subject = 'Daily Leads System User Activity Summary - ' . $date->format('m/d/Y');
@@ -448,9 +449,9 @@ class NotifyCommand extends Command
                 'subject' => $subject
             ));
 
-            $status = $this->mailer->sendNotification($allEmails, $subject, $body, $spaceName);
+            $status = $this->mailer->sendNotification($allChangeLogEmails, $subject, $body, $spaceName);
 
-            $this->saveEmailLog($status, $subject, $spaceName, $allEmails);
+            $this->saveEmailLog($status, $subject, $spaceName, $allChangeLogEmails);
         }
     }
 
@@ -466,7 +467,7 @@ class NotifyCommand extends Command
 
         /** @var FacilityEvent $activity */
         foreach ($activities as $activity) {
-            $allEmails = [];
+            $allFacilityActivityEmails = [];
 
             $subject = 'Facility Activity Reminder - ' . $activity->getTitle();
 
@@ -480,13 +481,13 @@ class NotifyCommand extends Command
                 }
 
                 //for email
-                $allEmails = array_merge($emails, $activityUserEmails);
-                $allEmails = array_unique($allEmails);
-                $allEmails = array_values($allEmails);
+                $allFacilityActivityEmails = array_merge($emails, $activityUserEmails);
+                $allFacilityActivityEmails = array_unique($allFacilityActivityEmails);
+                $allFacilityActivityEmails = array_values($allFacilityActivityEmails);
             }
 
             // Sending email notification per activity
-            if ($isEmail && !empty($allEmails)) {
+            if ($isEmail && !empty($allFacilityActivityEmails)) {
                 $spaceName = '';
                 if ($activity->getFacility() !== null && $activity->getFacility()->getSpace() !== null) {
                     $spaceName = $activity->getFacility()->getSpace()->getName();
@@ -497,9 +498,9 @@ class NotifyCommand extends Command
                     'subject' => $subject
                 ));
 
-                $status = $this->mailer->sendNotification($allEmails, $subject, $body, $spaceName);
+                $status = $this->mailer->sendNotification($allFacilityActivityEmails, $subject, $body, $spaceName);
 
-                $this->saveEmailLog($status, $subject, $spaceName, $allEmails);
+                $this->saveEmailLog($status, $subject, $spaceName, $allFacilityActivityEmails);
             }
         }
     }
@@ -516,7 +517,7 @@ class NotifyCommand extends Command
 
         /** @var CorporateEvent $activity */
         foreach ($activities as $activity) {
-            $allEmails = [];
+            $allCorporateActivityEmails = [];
 
             $isDone = $activity->getDefinition() !== null ? $activity->getDefinition()->isDone() : false;
             $subjectText = $isDone ? 'Corporate Activity Task Reminder - ' : 'Corporate Activity Reminder - ';
@@ -532,13 +533,13 @@ class NotifyCommand extends Command
                 }
 
                 //for email
-                $allEmails = array_merge($emails, $activityUserEmails);
-                $allEmails = array_unique($allEmails);
-                $allEmails = array_values($allEmails);
+                $allCorporateActivityEmails = array_merge($emails, $activityUserEmails);
+                $allCorporateActivityEmails = array_unique($allCorporateActivityEmails);
+                $allCorporateActivityEmails = array_values($allCorporateActivityEmails);
             }
 
             // Sending email notification per activity
-            if ($isEmail && !empty($allEmails)) {
+            if ($isEmail && !empty($allCorporateActivityEmails)) {
                 $spaceName = '';
                 if ($activity->getDefinition() !== null && $activity->getDefinition()->getSpace() !== null) {
                     $spaceName = $activity->getDefinition()->getSpace()->getName();
@@ -549,9 +550,9 @@ class NotifyCommand extends Command
                     'subject' => $subject
                 ));
 
-                $status = $this->mailer->sendNotification($allEmails, $subject, $body, $spaceName);
+                $status = $this->mailer->sendNotification($allCorporateActivityEmails, $subject, $body, $spaceName);
 
-                $this->saveEmailLog($status, $subject, $spaceName, $allEmails);
+                $this->saveEmailLog($status, $subject, $spaceName, $allCorporateActivityEmails);
             }
         }
     }
@@ -609,12 +610,12 @@ class NotifyCommand extends Command
                             }
 
                             //for email
-                            $allEmails = array_merge($emails, $rpEmails);
-                            $allEmails = array_unique($allEmails);
-                            $allEmails = array_values($allEmails);
+                            $allRentIncreaseEmails = array_merge($emails, $rpEmails);
+                            $allRentIncreaseEmails = array_unique($allRentIncreaseEmails);
+                            $allRentIncreaseEmails = array_values($allRentIncreaseEmails);
 
                             // Sending email notification per increase
-                            if ($isEmail && !empty($allEmails)) {
+                            if ($isEmail && !empty($allRentIncreaseEmails)) {
                                 $spaceName = '';
                                 if ($resident->getSpace() !== null) {
                                     $spaceName = $resident->getSpace()->getName();
@@ -626,9 +627,9 @@ class NotifyCommand extends Command
                                     'subject' => $subject
                                 ));
 
-                                $status = $this->mailer->sendNotification($allEmails, $subject, $body, $spaceName);
+                                $status = $this->mailer->sendNotification($allRentIncreaseEmails, $subject, $body, $spaceName);
 
-                                $this->saveEmailLog($status, $subject, $spaceName, $allEmails);
+                                $this->saveEmailLog($status, $subject, $spaceName, $allRentIncreaseEmails);
                             }
                         }
                     }
@@ -694,9 +695,9 @@ class NotifyCommand extends Command
 
         $webEmails = $repo->getNotSpamWebEmailList($currentSpace, $this->grantService->getCurrentUserEntityGrants(WebEmail::class), $startDate, $endDate);
 //        $notReviewWebEmails = $repo->getNotReviewedWebEmailList($currentSpace, $this->grantService->getCurrentUserEntityGrants(WebEmail::class), $startDate);
-        $notReviewWebEmails = [];
+//        $notReviewWebEmails = [];
 
-        $webEmailEmails = [];
+        $allWebEmailEmails = [];
         $notReviewWebEmailsEmails = [];
         $webs = [];
         $notReviews = [];
@@ -705,7 +706,7 @@ class NotifyCommand extends Command
             $spaceName = $webEmail['space'];
 
             if ($webEmail['uId'] !== null && $webEmail['enabled'] !== null && (bool)$webEmail['enabled'] === true) {
-                $webEmailEmails[] = $webEmail['email'];
+                $allWebEmailEmails[] = $webEmail['email'];
             }
 
             $webs[] = [
@@ -723,33 +724,33 @@ class NotifyCommand extends Command
             ];
         }
 
-        foreach ($notReviewWebEmails as $notReviewWebEmail) {
-            $spaceName = $notReviewWebEmail['space'];
+//        foreach ($notReviewWebEmails as $notReviewWebEmail) {
+//            $spaceName = $notReviewWebEmail['space'];
+//
+//            if ($notReviewWebEmail['uId'] !== null && $notReviewWebEmail['enabled'] !== null && (bool)$notReviewWebEmail['enabled'] === true) {
+//                $notReviewWebEmailsEmails[] = $notReviewWebEmail['email'];
+//            }
+//
+//            $notReviews[] = [
+//                'id' => $notReviewWebEmail['id'],
+//                'date' => $notReviewWebEmail['date']->format('m/d/Y'),
+//                'subject' => $notReviewWebEmail['subject'],
+//                'name' => $notReviewWebEmail['name'],
+//                'email' => $notReviewWebEmail['webEmail'],
+//                'phone' => $notReviewWebEmail['phone'],
+//                'message' => $notReviewWebEmail['message'],
+//                'facility' => $notReviewWebEmail['facility'],
+//                'review' => $notReviewWebEmail['review'],
+//                'firstName' => $notReviewWebEmail['firstName'],
+//                'lastName' => $notReviewWebEmail['lastName'],
+//            ];
+//        }
 
-            if ($notReviewWebEmail['uId'] !== null && $notReviewWebEmail['enabled'] !== null && (bool)$notReviewWebEmail['enabled'] === true) {
-                $notReviewWebEmailsEmails[] = $notReviewWebEmail['email'];
-            }
+        $allLeadWebEmailEmails = array_merge($emails, $allWebEmailEmails, $notReviewWebEmailsEmails);
+        $allLeadWebEmailEmails = array_unique($allLeadWebEmailEmails);
+        $allLeadWebEmailEmails = array_values($allLeadWebEmailEmails);
 
-            $notReviews[] = [
-                'id' => $notReviewWebEmail['id'],
-                'date' => $notReviewWebEmail['date']->format('m/d/Y'),
-                'subject' => $notReviewWebEmail['subject'],
-                'name' => $notReviewWebEmail['name'],
-                'email' => $notReviewWebEmail['webEmail'],
-                'phone' => $notReviewWebEmail['phone'],
-                'message' => $notReviewWebEmail['message'],
-                'facility' => $notReviewWebEmail['facility'],
-                'review' => $notReviewWebEmail['review'],
-                'firstName' => $notReviewWebEmail['firstName'],
-                'lastName' => $notReviewWebEmail['lastName'],
-            ];
-        }
-
-        $allEmails = array_merge($emails, $webEmailEmails, $notReviewWebEmailsEmails);
-        $allEmails = array_unique($allEmails);
-        $allEmails = array_values($allEmails);
-
-        if (!empty($allEmails) && (!empty($webs) || !empty($notReviews))) {
+        if (!empty($allLeadWebEmailEmails) && (!empty($webs) || !empty($notReviews))) {
             $subject = $subjectText . ' - ' . $date->format('m/d/Y');
 
             $body = $this->container->get('templating')->render('@api_notification/web-email.email.html.twig', array(
@@ -758,9 +759,9 @@ class NotifyCommand extends Command
                 'subject' => $subject
             ));
 
-            $status = $this->mailer->sendNotification($allEmails, $subject, $body, $spaceName);
+            $status = $this->mailer->sendNotification($allLeadWebEmailEmails, $subject, $body, $spaceName);
 
-            $this->saveEmailLog($status, $subject, $spaceName, $allEmails);
+            $this->saveEmailLog($status, $subject, $spaceName, $allLeadWebEmailEmails);
         }
     }
 
