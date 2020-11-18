@@ -7,6 +7,7 @@ use App\Api\V1\Common\Service\Exception\StartGreaterEndDateException;
 use App\Api\V1\Common\Service\Exception\TimeSpanIsGreaterThan12MonthsException;
 use App\Api\V1\Component\Rent\RentPeriodFactory;
 use App\Entity\Diet;
+use App\Entity\EventDefinition;
 use App\Entity\ResidentHealthInsurance;
 use App\Entity\PhysicianPhone;
 use App\Entity\Resident;
@@ -27,6 +28,7 @@ use App\Model\GroupType;
 use App\Model\Report\DietaryRestriction;
 use App\Model\Report\FaceSheet;
 use App\Model\Report\Profile;
+use App\Model\Report\ResidentCovidEvent;
 use App\Model\Report\ResidentDetailedRoster;
 use App\Model\Report\ResidentEvent as ReportResidentEvent;
 use App\Model\Report\ResidentMoveByMonth;
@@ -34,6 +36,7 @@ use App\Model\Report\ResidentSimpleRoster;
 use App\Model\Report\ResponsiblePersonEmails;
 use App\Model\Report\SixtyDays;
 use App\Repository\DietRepository;
+use App\Repository\EventDefinitionRepository;
 use App\Repository\ResidentHealthInsuranceRepository;
 use App\Repository\PhysicianPhoneRepository;
 use App\Repository\ResidentAdmissionRepository;
@@ -1236,6 +1239,71 @@ class ResidentReportService extends BaseService
         $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setStrategyId($type);
         $report->setDate($endDateFormatted);
+
+        return $report;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupIds
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @param $assessmentId
+     * @param $assessmentFormId
+     * @return ResidentCovidEvent
+     */
+    public function getCovidEventReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): ResidentCovidEvent
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        $type = $group;
+        $typeId = $groupId;
+
+        if (!\in_array($type, GroupType::getTypeValues(), false)) {
+            throw new InvalidParameterException('group');
+        }
+
+        $dateStart = $dateEnd = new \DateTime('now');
+        $dateStartFormatted = $dateStart->format('m/d/Y 00:00:00');
+        $dateStart = new \DateTime($dateStartFormatted);
+        $dateEndFormatted = $dateEnd->format('m/d/Y 23:59:59');
+        $dateEnd = new \DateTime($dateEndFormatted);
+
+        if (!empty($dateFrom)) {
+            $dateStart = new \DateTime($dateFrom);
+            $dateStartFormatted = $dateStart->format('m/d/Y 00:00:00');
+            $dateStart = new \DateTime($dateStartFormatted);
+        }
+
+        if (!empty($dateTo)) {
+            $dateEnd = new \DateTime($dateTo);
+            $dateEndFormatted = $dateEnd->format('m/d/Y 23:59:59');
+            $dateEnd = new \DateTime($dateEndFormatted);
+        }
+
+        /** @var EventDefinitionRepository $definitionRepo */
+        $definitionRepo = $this->em->getRepository(EventDefinition::class);
+        $title = 'covid';
+        $definitions = $definitionRepo->getByTitle($currentSpace, $title);
+        $definitionIds = array_map(static function (EventDefinition $item) {
+            return $item->getId();
+        }, $definitions);
+
+        /** @var ResidentEventRepository $eventRepo */
+        $eventRepo = $this->em->getRepository(ResidentEvent::class);
+
+        $events = $eventRepo->getCovidEventsByResidentIdsAndDate($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentEvent::class), $dateStart, $dateEnd, $type, $definitionIds, $typeId);
+
+        $report = new ResidentCovidEvent();
+        $report->setEvents($events);
+        $report->setStrategy(GroupType::getTypes()[$type]);
+        $report->setStartDate($dateStartFormatted);
+        $report->setEndDate($dateEndFormatted);
 
         return $report;
     }

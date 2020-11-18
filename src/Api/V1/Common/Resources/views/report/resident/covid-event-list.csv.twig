@@ -1,0 +1,9 @@
+{% spaceless %}
+COVID-19 Events:,{{ data.startDate|date("m/d/Y") }},through,{{ data.endDate|date("m/d/Y") }},
+,,,,
+{{ data.strategy }},Date,Type,Resident,Notes
+{% for event in data.events %}
+{{ event.typeName }},{{ event.date|date("m/d/Y") }},"{{ event.title|raw }}","{{ event.firstName|raw }} {{ event.lastName|raw }}",{% if event.notes %}"{{ event.notes|raw }}"{% endif %}
+
+{% endfor %}
+{% endspaceless %}

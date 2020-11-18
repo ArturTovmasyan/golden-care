@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
 use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\EventDefinition;
 use App\Entity\HospiceProvider;
@@ -11,6 +12,8 @@ use App\Entity\ResidentAdmission;
 use App\Entity\ResidentEvent;
 use App\Entity\Salutation;
 use App\Entity\Space;
+use App\Model\AdmissionType;
+use App\Model\GroupType;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -381,6 +384,138 @@ class ResidentEventRepository extends EntityRepository implements RelatedInfoInt
 
         return $qb
             ->orderBy('re.date', 'DESC')
+            ->groupBy('re.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $startDate
+     * @param $endDate
+     * @param $type
+     * @param null $typeId
+     * @param array $definitionIds
+     * @return int|mixed|string
+     */
+    public function getCovidEventsByResidentIdsAndDate(Space $space = null, array $entityGrants = null, $startDate, $endDate, $type, array $definitionIds, $typeId = null)
+    {
+        $qb = $this->createQueryBuilder('re');
+
+        $qb
+            ->select(
+                'r.id AS id',
+                'ed.title AS title',
+                're.date AS date',
+                're.notes AS notes',
+                'r.firstName AS firstName',
+                'r.lastName AS lastName'
+            )
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                're.resident = r'
+            )
+            ->innerJoin(
+                EventDefinition::class,
+                'ed',
+                Join::WITH,
+                're.definition = ed'
+            )
+            ->innerJoin(
+                ResidentAdmission::class,
+                'ra',
+                Join::WITH,
+                'ra.resident = r'
+            )
+            ->andWhere('ed.id IN (:definitionIds)')
+            ->andWhere('re.date>=:startDate')
+            ->andWhere('re.date<=:endDate')
+            ->andWhere('ra.admissionType < :admissionType AND ra.end IS NULL')
+            ->andWhere('ra.groupType=:groupType')
+            ->setParameter('groupType', $type)
+            ->setParameter('admissionType', AdmissionType::DISCHARGE)
+            ->setParameter('definitionIds', $definitionIds)
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate);
+
+        switch ($type) {
+            case GroupType::TYPE_FACILITY:
+                $qb
+                    ->addSelect(
+                        'type.id AS typeId',
+                        'type.name AS typeName'
+                    )
+                    ->join('ra.facilityBed', 'fb')
+                    ->join('fb.room', 'fbr')
+                    ->join('fbr.facility', 'type')
+                    ->addOrderBy('type.name');
+
+                if ($typeId !== null) {
+                    $qb
+                        ->andWhere('type.id=:typeId')
+                        ->setParameter('typeId', $typeId);
+                }
+                break;
+            case GroupType::TYPE_APARTMENT:
+                $qb
+                    ->addSelect(
+                        'type.id AS typeId',
+                        'type.name AS typeName'
+                    )
+                    ->join('ra.apartmentBed', 'ab')
+                    ->join('ab.room', 'abr')
+                    ->join('abr.apartment', 'type')
+                    ->addOrderBy('type.name');
+
+                if ($typeId !== null) {
+                    $qb
+                        ->andWhere('type.id=:typeId')
+                        ->setParameter('typeId', $typeId);
+                }
+                break;
+            case GroupType::TYPE_REGION:
+                $qb
+                    ->addSelect(
+                        'type.id AS typeId',
+                        'type.name AS typeName'
+                    )
+                    ->join('ra.region', 'type')
+                    ->addOrderBy('type.name');
+
+                if ($typeId !== null) {
+                    $qb
+                        ->andWhere('type.id=:typeId')
+                        ->setParameter('typeId', $typeId);
+                }
+                break;
+            default:
+                throw new IncorrectStrategyTypeException();
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('re.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->addOrderBy('re.date', 'DESC')
+            ->addOrderBy('ed.id', 'ASC')
             ->groupBy('re.id')
             ->getQuery()
             ->getResult();

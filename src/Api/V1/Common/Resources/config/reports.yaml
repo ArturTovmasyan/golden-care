@@ -25,6 +25,17 @@ resident:
       parameters:
         group:
           select_all: true
+    covid-event-list:
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getCovidEventReport
+      title: 'COVID Events: List of Residents COVID Events'
+      show_in_resident_list: true
+      show_in_group_list: true
+      formats: ['csv', 'xls']
+      parameters:
+        group:
+          select_all: true
+        date_from: "m/d/Y"
+        date_to: "m/d/Y"
     detailed-roster:
       service: App\Api\V1\Admin\Service\Report\ResidentReportService::getDetailedRosterReport
       title: 'Detailed Roster: Resident Roster, sorted by room number, with Responsible Person and Physician contact information'

@@ -278,4 +278,32 @@ class EventDefinitionRepository extends EntityRepository implements RelatedInfoI
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param $title
+     * @return mixed
+     */
+    public function getByTitle(Space $space = null, $title)
+    {
+        $qb = $this
+            ->createQueryBuilder('ed')
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = ed.space'
+            )
+            ->andWhere("ed.title LIKE '%{$title}%'");
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }
