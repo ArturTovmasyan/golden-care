@@ -116,7 +116,7 @@ class LeadReportService extends BaseService
                         return $item['name'];
                     }, $lead[0]['facilities']);
 
-                    $stringFacilities = implode("\r\n", $facilities);
+                    $stringFacilities = implode(", ", $facilities);
 
                     $finalLeads[$lead[0]['id']]['secondaryFacilities'] = $stringFacilities;
                 } else {
