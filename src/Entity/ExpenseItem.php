@@ -61,7 +61,8 @@ class ExpenseItem
      *     "api_admin_expense_item_list",
      *     "api_admin_expense_item_get",
      *     "api_admin_resident_expense_item_list",
-     *     "api_admin_resident_expense_item_get"
+     *     "api_admin_resident_expense_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $id;
@@ -84,7 +85,8 @@ class ExpenseItem
      *     "api_admin_expense_item_list",
      *     "api_admin_expense_item_get",
      *     "api_admin_resident_expense_item_list",
-     *     "api_admin_resident_expense_item_get"
+     *     "api_admin_resident_expense_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $title;

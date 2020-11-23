@@ -32,14 +32,14 @@ use App\Annotation\Grid;
  *              "link"       = "/resident/ledger/:id"
  *          },
  *          {
- *              "id"         = "amount",
+ *              "id"         = "private_pay_balance_due",
  *              "type"       = "number",
- *              "field"      = "rl.amount"
+ *              "field"      = "rl.privatePayBalanceDue"
  *          },
  *          {
- *              "id"         = "balance_due",
+ *              "id"         = "not_private_pay_balance_due",
  *              "type"       = "number",
- *              "field"      = "rl.balanceDue"
+ *              "field"      = "rl.notPrivatePayBalanceDue"
  *          },
  *          {
  *              "id"         = "info",
@@ -139,6 +139,90 @@ class ResidentLedger implements PreviousAndNextItemsService
     private $balanceDue = 0;
 
     /**
+     * @var float
+     * @ORM\Column(name="private_pay_balance_due", type="float", length=10)
+     * @Assert\NotBlank(groups={
+     *     "api_admin_resident_ledger_add",
+     *     "api_admin_resident_ledger_edit"
+     * })
+     * @Assert\Length(
+     *      max = 10,
+     *      maxMessage = "Private Pay Balance Due cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_resident_ledger_add",
+     *          "api_admin_resident_ledger_edit"
+     * })
+     * @Groups({
+     *     "api_admin_resident_ledger_list",
+     *     "api_admin_resident_ledger_get"
+     * })
+     */
+    private $privatePayBalanceDue = 0;
+
+    /**
+     * @var float
+     * @ORM\Column(name="not_private_pay_balance_due", type="float", length=10)
+     * @Assert\NotBlank(groups={
+     *     "api_admin_resident_ledger_add",
+     *     "api_admin_resident_ledger_edit"
+     * })
+     * @Assert\Length(
+     *      max = 10,
+     *      maxMessage = "Not Private Pay Balance Due cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_resident_ledger_add",
+     *          "api_admin_resident_ledger_edit"
+     * })
+     * @Groups({
+     *     "api_admin_resident_ledger_list",
+     *     "api_admin_resident_ledger_get"
+     * })
+     */
+    private $notPrivatePayBalanceDue = 0;
+
+    /**
+     * @var float
+     * @ORM\Column(name="prior_private_pay_balance_due", type="float", length=10)
+     * @Assert\NotBlank(groups={
+     *     "api_admin_resident_ledger_add",
+     *     "api_admin_resident_ledger_edit"
+     * })
+     * @Assert\Length(
+     *      max = 10,
+     *      maxMessage = "Prior Private Pay Balance Due cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_resident_ledger_add",
+     *          "api_admin_resident_ledger_edit"
+     * })
+     * @Groups({
+     *     "api_admin_resident_ledger_list",
+     *     "api_admin_resident_ledger_get"
+     * })
+     */
+    private $priorPrivatePayBalanceDue = 0;
+
+    /**
+     * @var float
+     * @ORM\Column(name="prior_not_private_pay_balance_due", type="float", length=10)
+     * @Assert\NotBlank(groups={
+     *     "api_admin_resident_ledger_add",
+     *     "api_admin_resident_ledger_edit"
+     * })
+     * @Assert\Length(
+     *      max = 10,
+     *      maxMessage = "Prior Not Private Pay Balance Due cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_resident_ledger_add",
+     *          "api_admin_resident_ledger_edit"
+     * })
+     * @Groups({
+     *     "api_admin_resident_ledger_list",
+     *     "api_admin_resident_ledger_get"
+     * })
+     */
+    private $priorNotPrivatePayBalanceDue = 0;
+
+    /**
      * @var array $source
      * @ORM\Column(name="source", type="json_array", nullable=true)
      * @Assert\Count(
@@ -156,32 +240,101 @@ class ResidentLedger implements PreviousAndNextItemsService
     private $source = [];
 
     /**
+     * @var array $privatPaySource
+     * @ORM\Column(name="privat_pay_source", type="json_array", nullable=true)
+     * @Assert\Count(
+     *      max = 10,
+     *      maxMessage = "You cannot enter more than {{ limit }} sources",
+     *      groups={
+     *          "api_admin_resident_ledger_add",
+     *          "api_admin_resident_ledger_edit"
+     * })
+     * @Groups({
+     *     "api_admin_resident_ledger_list",
+     *     "api_admin_resident_ledger_get"
+     * })
+     */
+    private $privatPaySource = [];
+
+    /**
+     * @var array $notPrivatPaySource
+     * @ORM\Column(name="not_privat_pay_source", type="json_array", nullable=true)
+     * @Assert\Count(
+     *      max = 10,
+     *      maxMessage = "You cannot enter more than {{ limit }} sources",
+     *      groups={
+     *          "api_admin_resident_ledger_add",
+     *          "api_admin_resident_ledger_edit"
+     * })
+     * @Groups({
+     *     "api_admin_resident_ledger_list",
+     *     "api_admin_resident_ledger_get"
+     * })
+     */
+    private $notPrivatPaySource = [];
+
+    /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Entity\ResidentExpenseItem", mappedBy="ledger", cascade={"remove", "persist"})
+     * @ORM\OrderBy({"date" = "ASC"})
+     * @Assert\Valid(groups={
+     *     "api_admin_resident_ledger_edit"
+     * })
+     * @Groups({
+     *     "api_admin_resident_ledger_get"
+     * })
      */
     private $residentExpenseItems;
 
     /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Entity\ResidentCreditItem", mappedBy="ledger", cascade={"remove", "persist"})
+     * @ORM\OrderBy({"date" = "ASC"})
+     * @Assert\Valid(groups={
+     *     "api_admin_resident_ledger_edit"
+     * })
+     * @Groups({
+     *     "api_admin_resident_ledger_get"
+     * })
      */
     private $residentCreditItems;
 
     /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Entity\ResidentDiscountItem", mappedBy="ledger", cascade={"remove", "persist"})
+     * @ORM\OrderBy({"date" = "ASC"})
+     * @Assert\Valid(groups={
+     *     "api_admin_resident_ledger_edit"
+     * })
+     * @Groups({
+     *     "api_admin_resident_ledger_get"
+     * })
      */
     private $residentDiscountItems;
 
     /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Entity\ResidentPaymentReceivedItem", mappedBy="ledger", cascade={"remove", "persist"})
+     * @ORM\OrderBy({"date" = "ASC"})
+     * @Assert\Valid(groups={
+     *     "api_admin_resident_ledger_edit"
+     * })
+     * @Groups({
+     *     "api_admin_resident_ledger_get"
+     * })
      */
     private $residentPaymentReceivedItems;
 
     /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Entity\ResidentAwayDays", mappedBy="ledger", cascade={"remove", "persist"})
+     * @ORM\OrderBy({"start" = "ASC"})
+     * @Assert\Valid(groups={
+     *     "api_admin_resident_ledger_edit"
+     * })
+     * @Groups({
+     *     "api_admin_resident_ledger_get"
+     * })
      */
     private $residentAwayDays;
 
@@ -299,6 +452,70 @@ class ResidentLedger implements PreviousAndNextItemsService
     }
 
     /**
+     * @return float|null
+     */
+    public function getPrivatePayBalanceDue(): ?float
+    {
+        return $this->privatePayBalanceDue;
+    }
+
+    /**
+     * @param float|null $privatePayBalanceDue
+     */
+    public function setPrivatePayBalanceDue(?float $privatePayBalanceDue): void
+    {
+        $this->privatePayBalanceDue = $privatePayBalanceDue;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getNotPrivatePayBalanceDue(): ?float
+    {
+        return $this->notPrivatePayBalanceDue;
+    }
+
+    /**
+     * @param float|null $notPrivatePayBalanceDue
+     */
+    public function setNotPrivatePayBalanceDue(?float $notPrivatePayBalanceDue): void
+    {
+        $this->notPrivatePayBalanceDue = $notPrivatePayBalanceDue;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getPriorPrivatePayBalanceDue(): ?float
+    {
+        return $this->priorPrivatePayBalanceDue;
+    }
+
+    /**
+     * @param float|null $priorPrivatePayBalanceDue
+     */
+    public function setPriorPrivatePayBalanceDue(?float $priorPrivatePayBalanceDue): void
+    {
+        $this->priorPrivatePayBalanceDue = $priorPrivatePayBalanceDue;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getPriorNotPrivatePayBalanceDue(): ?float
+    {
+        return $this->priorNotPrivatePayBalanceDue;
+    }
+
+    /**
+     * @param float|null $priorNotPrivatePayBalanceDue
+     */
+    public function setPriorNotPrivatePayBalanceDue(?float $priorNotPrivatePayBalanceDue): void
+    {
+        $this->priorNotPrivatePayBalanceDue = $priorNotPrivatePayBalanceDue;
+    }
+
+    /**
      * @return array
      */
     public function getSource(): array
@@ -312,6 +529,38 @@ class ResidentLedger implements PreviousAndNextItemsService
     public function setSource(array $source): void
     {
         $this->source = $source;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPrivatPaySource(): array
+    {
+        return $this->privatPaySource;
+    }
+
+    /**
+     * @param array $privatPaySource
+     */
+    public function setPrivatPaySource(array $privatPaySource): void
+    {
+        $this->privatPaySource = $privatPaySource;
+    }
+
+    /**
+     * @return array
+     */
+    public function getNotPrivatPaySource(): array
+    {
+        return $this->notPrivatPaySource;
+    }
+
+    /**
+     * @param array $notPrivatPaySource
+     */
+    public function setNotPrivatPaySource(array $notPrivatPaySource): void
+    {
+        $this->notPrivatPaySource = $notPrivatPaySource;
     }
 
     /**
@@ -331,9 +580,26 @@ class ResidentLedger implements PreviousAndNextItemsService
     }
 
     /**
-     * @return ArrayCollection
+     * @param ResidentExpenseItem $residentExpenseItem
      */
-    public function getResidentCreditItems(): ArrayCollection
+    public function addResidentExpenseItem($residentExpenseItem): void
+    {
+        $residentExpenseItem->setLedger($this);
+        $this->residentExpenseItems->add($residentExpenseItem);
+    }
+
+    /**
+     * @param ResidentExpenseItem $residentExpenseItem
+     */
+    public function removeResidentExpenseItem($residentExpenseItem): void
+    {
+        $this->residentExpenseItems->removeElement($residentExpenseItem);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResidentCreditItems()
     {
         return $this->residentCreditItems;
     }
@@ -347,9 +613,26 @@ class ResidentLedger implements PreviousAndNextItemsService
     }
 
     /**
-     * @return ArrayCollection
+     * @param ResidentCreditItem $residentCreditItem
      */
-    public function getResidentDiscountItems(): ArrayCollection
+    public function addResidentCreditItem($residentCreditItem): void
+    {
+        $residentCreditItem->setLedger($this);
+        $this->residentCreditItems->add($residentCreditItem);
+    }
+
+    /**
+     * @param ResidentCreditItem $residentCreditItem
+     */
+    public function removeResidentCreditItem($residentCreditItem): void
+    {
+        $this->residentCreditItems->removeElement($residentCreditItem);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResidentDiscountItems()
     {
         return $this->residentDiscountItems;
     }
@@ -363,9 +646,26 @@ class ResidentLedger implements PreviousAndNextItemsService
     }
 
     /**
-     * @return ArrayCollection
+     * @param ResidentDiscountItem $residentDiscountItem
      */
-    public function getResidentPaymentReceivedItems(): ArrayCollection
+    public function addResidentDiscountItem($residentDiscountItem): void
+    {
+        $residentDiscountItem->setLedger($this);
+        $this->residentDiscountItems->add($residentDiscountItem);
+    }
+
+    /**
+     * @param ResidentDiscountItem $residentDiscountItem
+     */
+    public function removeResidentDiscountItem($residentDiscountItem): void
+    {
+        $this->residentDiscountItems->removeElement($residentDiscountItem);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResidentPaymentReceivedItems()
     {
         return $this->residentPaymentReceivedItems;
     }
@@ -379,9 +679,26 @@ class ResidentLedger implements PreviousAndNextItemsService
     }
 
     /**
-     * @return ArrayCollection
+     * @param ResidentPaymentReceivedItem $residentPaymentReceivedItem
      */
-    public function getResidentAwayDays(): ArrayCollection
+    public function addResidentPaymentReceivedItem($residentPaymentReceivedItem): void
+    {
+        $residentPaymentReceivedItem->setLedger($this);
+        $this->residentPaymentReceivedItems->add($residentPaymentReceivedItem);
+    }
+
+    /**
+     * @param ResidentPaymentReceivedItem $residentPaymentReceivedItem
+     */
+    public function removeResidentPaymentReceivedItem($residentPaymentReceivedItem): void
+    {
+        $this->residentPaymentReceivedItems->removeElement($residentPaymentReceivedItem);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResidentAwayDays()
     {
         return $this->residentAwayDays;
     }
@@ -392,6 +709,23 @@ class ResidentLedger implements PreviousAndNextItemsService
     public function setResidentAwayDays(ArrayCollection $residentAwayDays): void
     {
         $this->residentAwayDays = $residentAwayDays;
+    }
+
+    /**
+     * @param ResidentAwayDays $residentAwayDay
+     */
+    public function addResidentAwayDays($residentAwayDay): void
+    {
+        $residentAwayDay->setLedger($this);
+        $this->residentAwayDays->add($residentAwayDay);
+    }
+
+    /**
+     * @param ResidentAwayDays $residentAwayDay
+     */
+    public function removeResidentAwayDays($residentAwayDay): void
+    {
+        $this->residentAwayDays->removeElement($residentAwayDay);
     }
 
     /**

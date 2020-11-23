@@ -7,9 +7,11 @@ use App\Api\V1\Common\Service\Exception\PaymentSourceNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\PaymentSource;
+use App\Entity\ResidentLedger;
 use App\Entity\ResidentRent;
 use App\Entity\Space;
 use App\Repository\PaymentSourceRepository;
+use App\Repository\ResidentLedgerRepository;
 use App\Repository\ResidentRentRepository;
 use Doctrine\ORM\QueryBuilder;
 
@@ -220,6 +222,55 @@ class PaymentSourceService extends BaseService implements IGridService
                 }
             }
 
+            /** @var ResidentLedgerRepository $ledgerRepo */
+            $ledgerRepo = $this->em->getRepository(ResidentLedger::class);
+
+            $ledgers = $ledgerRepo->getEntityWithSources($this->grantService->getCurrentSpace(), null);
+
+            if (!empty($ledgers)) {
+                /** @var ResidentLedger $ledger */
+                foreach ($ledgers as $ledger) {
+                    if (!empty($ledger->getSource())) {
+                        $sources = $ledger->getSource();
+                        foreach ($sources as $key => $source) {
+                            if ($source['id'] === $id) {
+                                unset($sources[$key]);
+                                $changedSources = array_values($sources);
+                                $ledger->setSource($changedSources);
+                            }
+                        }
+
+                        $this->em->persist($ledger);
+                    }
+
+                    if (!empty($ledger->getPrivatPaySource())) {
+                        $privatPaySources = $ledger->getPrivatPaySource();
+                        foreach ($privatPaySources as $key => $source) {
+                            if ($source['id'] === $id) {
+                                unset($privatPaySources[$key]);
+                                $changedSources = array_values($privatPaySources);
+                                $ledger->setPrivatPaySource($changedSources);
+                            }
+                        }
+
+                        $this->em->persist($ledger);
+                    }
+
+                    if (!empty($ledger->getNotPrivatPaySource())) {
+                        $notPrivatPaySources = $ledger->getNotPrivatPaySource();
+                        foreach ($notPrivatPaySources as $key => $source) {
+                            if ($source['id'] === $id) {
+                                unset($notPrivatPaySources[$key]);
+                                $changedSources = array_values($notPrivatPaySources);
+                                $ledger->setNotPrivatPaySource($changedSources);
+                            }
+                        }
+
+                        $this->em->persist($ledger);
+                    }
+                }
+            }
+
             $this->em->remove($entity);
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -276,6 +327,57 @@ class PaymentSourceService extends BaseService implements IGridService
                             }
 
                             $this->em->persist($rent);
+                        }
+                    }
+                }
+            }
+
+            /** @var ResidentLedgerRepository $ledgerRepo */
+            $ledgerRepo = $this->em->getRepository(ResidentLedger::class);
+
+            $ledgers = $ledgerRepo->getEntityWithSources($this->grantService->getCurrentSpace(), null);
+
+            if (!empty($ledgers)) {
+                foreach ($ids as $id) {
+                    /** @var ResidentLedger $ledger */
+                    foreach ($ledgers as $ledger) {
+                        if (!empty($ledger->getSource())) {
+                            $sources = $ledger->getSource();
+                            foreach ($sources as $key => $source) {
+                                if ($source['id'] === $id) {
+                                    unset($sources[$key]);
+                                    $changedSources = array_values($sources);
+                                    $ledger->setSource($changedSources);
+                                }
+                            }
+
+                            $this->em->persist($ledger);
+                        }
+
+                        if (!empty($ledger->getPrivatPaySource())) {
+                            $privatPaySources = $ledger->getPrivatPaySource();
+                            foreach ($privatPaySources as $key => $source) {
+                                if ($source['id'] === $id) {
+                                    unset($privatPaySources[$key]);
+                                    $changedSources = array_values($privatPaySources);
+                                    $ledger->setPrivatPaySource($changedSources);
+                                }
+                            }
+
+                            $this->em->persist($ledger);
+                        }
+
+                        if (!empty($ledger->getNotPrivatPaySource())) {
+                            $notPrivatPaySources = $ledger->getNotPrivatPaySource();
+                            foreach ($notPrivatPaySources as $key => $source) {
+                                if ($source['id'] === $id) {
+                                    unset($notPrivatPaySources[$key]);
+                                    $changedSources = array_values($notPrivatPaySources);
+                                    $ledger->setNotPrivatPaySource($changedSources);
+                                }
+                            }
+
+                            $this->em->persist($ledger);
                         }
                     }
                 }

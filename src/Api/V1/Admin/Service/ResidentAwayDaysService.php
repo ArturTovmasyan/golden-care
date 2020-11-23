@@ -3,6 +3,7 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\InvalidEffectiveDateException;
 use App\Api\V1\Common\Service\Exception\ResidentLedgerNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentAwayDaysNotFoundException;
 use App\Api\V1\Common\Service\Exception\StartGreaterEndDateException;
@@ -102,6 +103,11 @@ class ResidentAwayDaysService extends BaseService implements IGridService
             $start = null;
             if (!empty($params['start'])) {
                 $start = new \DateTime($params['start']);
+                $start->setTime(0, 0, 0);
+
+                if ($ledger->getCreatedAt()->format('Y') !== $start->format('Y') || $ledger->getCreatedAt()->format('m') !== $start->format('m')) {
+                    throw new InvalidEffectiveDateException();
+                }
             }
 
             $residentAwayDays->setStart($start);
@@ -109,9 +115,14 @@ class ResidentAwayDaysService extends BaseService implements IGridService
             $end = null;
             if (!empty($params['end'])) {
                 $end = new \DateTime($params['end']);
+                $end->setTime(23, 59, 59);
 
                 if ($start > $end) {
                     throw new StartGreaterEndDateException();
+                }
+
+                if ($ledger->getCreatedAt()->format('Y') !== $end->format('Y') || $ledger->getCreatedAt()->format('m') !== $end->format('m')) {
+                    throw new InvalidEffectiveDateException();
                 }
             }
 
@@ -174,6 +185,11 @@ class ResidentAwayDaysService extends BaseService implements IGridService
             $start = null;
             if (!empty($params['start'])) {
                 $start = new \DateTime($params['start']);
+                $start->setTime(0, 0, 0);
+
+                if ($ledger->getCreatedAt()->format('Y') !== $start->format('Y') || $ledger->getCreatedAt()->format('m') !== $start->format('m')) {
+                    throw new InvalidEffectiveDateException();
+                }
             }
 
             $entity->setStart($start);
@@ -181,9 +197,14 @@ class ResidentAwayDaysService extends BaseService implements IGridService
             $end = null;
             if (!empty($params['end'])) {
                 $end = new \DateTime($params['end']);
+                $end->setTime(23, 59, 59);
 
                 if ($start > $end) {
                     throw new StartGreaterEndDateException();
+                }
+
+                if ($ledger->getCreatedAt()->format('Y') !== $end->format('Y') || $ledger->getCreatedAt()->format('m') !== $end->format('m')) {
+                    throw new InvalidEffectiveDateException();
                 }
             }
 

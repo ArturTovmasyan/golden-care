@@ -99,6 +99,27 @@ class ResidentLedgerController extends BaseController
         );
     }
 
+
+    /**
+     * @Route("/{id}/rent", requirements={"id"="\d+"}, name="api_admin_resident_ledger_rent_get", methods={"GET"})
+     *
+     * @param Request $request
+     * @param $id
+     * @param ResidentLedgerService $residentLedgerService
+     * @return JsonResponse
+     * @throws \Exception
+     */
+    public function getLedgerRents(Request $request, $id, ResidentLedgerService $residentLedgerService): JsonResponse
+    {
+        $rents = $residentLedgerService->getRents($id);
+
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $rents
+        );
+    }
+
     /**
      * @Route("", name="api_admin_resident_ledger_add", methods={"POST"})
      *
@@ -138,7 +159,12 @@ class ResidentLedgerController extends BaseController
         $residentLedgerService->edit(
             $id,
             [
-                'resident_id' => $request->get('resident_id')
+                'resident_id' => $request->get('resident_id'),
+                'resident_expense_items' => $request->get('resident_expense_items'),
+                'resident_credit_items' => $request->get('resident_credit_items'),
+                'resident_discount_items' => $request->get('resident_discount_items'),
+                'resident_payment_received_items' => $request->get('resident_payment_received_items'),
+                'resident_away_days' => $request->get('resident_away_days')
             ]
         );
 

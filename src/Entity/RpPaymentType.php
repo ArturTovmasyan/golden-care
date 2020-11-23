@@ -61,7 +61,8 @@ class RpPaymentType
      *     "api_admin_rp_payment_type_list",
      *     "api_admin_rp_payment_type_get",
      *     "api_admin_resident_payment_received_item_list",
-     *     "api_admin_resident_payment_received_item_get"
+     *     "api_admin_resident_payment_received_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $id;
@@ -84,7 +85,8 @@ class RpPaymentType
      *     "api_admin_rp_payment_type_list",
      *     "api_admin_rp_payment_type_get",
      *     "api_admin_resident_payment_received_item_list",
-     *     "api_admin_resident_payment_received_item_get"
+     *     "api_admin_resident_payment_received_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $title;

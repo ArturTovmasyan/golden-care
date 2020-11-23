@@ -275,6 +275,60 @@ class ResidentAwayDaysRepository extends EntityRepository implements RelatedInfo
             ->getResult();
     }
 
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $id
+     * @param $startDate
+     * @param $endDate
+     * @return int|mixed|string
+     */
+    public function getByInterval(Space $space = null, array $entityGrants = null, $id, $startDate, $endDate)
+    {
+        $qb = $this
+            ->createQueryBuilder('rad')
+            ->innerJoin(
+                ResidentLedger::class,
+                'rl',
+                Join::WITH,
+                'rl = rad.ledger'
+            )
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'r = rl.resident'
+            )
+            ->where('rl.id = :id')
+            ->andWhere('rad.date >= :startDate AND rad.date <= :endDate')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rad.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->orderBy('rad.start', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     ///////////// For Calendar /////////////////////////////////////////////////////////////////////////////////////////
 
     /**

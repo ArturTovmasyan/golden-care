@@ -163,6 +163,14 @@ class Assessment
      *          "api_admin_resident_assessment_add"
      *     }
      * )
+     * @Assert\Length(
+     *      max = 120,
+     *      maxMessage = "Performed By cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_resident_assessment_add",
+     *          "api_admin_resident_assessment_edit"
+     *      }
+     * )
      * @Groups({
      *     "api_admin_resident_assessment_list",
      *     "api_admin_resident_assessment_report",

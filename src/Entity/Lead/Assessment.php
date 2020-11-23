@@ -133,6 +133,14 @@ class Assessment
      *          "api_lead_assessment_add"
      *     }
      * )
+     * @Assert\Length(
+     *      max = 120,
+     *      maxMessage = "Performed By cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_lead_assessment_edit",
+     *          "api_lead_assessment_add"
+     *      }
+     * )
      * @Groups({
      *     "api_lead_assessment_list",
      *     "api_lead_assessment_get"

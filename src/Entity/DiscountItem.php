@@ -76,7 +76,8 @@ class DiscountItem
      *     "api_admin_discount_item_list",
      *     "api_admin_discount_item_get",
      *     "api_admin_resident_discount_item_list",
-     *     "api_admin_resident_discount_item_get"
+     *     "api_admin_resident_discount_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $id;
@@ -99,7 +100,8 @@ class DiscountItem
      *     "api_admin_discount_item_list",
      *     "api_admin_discount_item_get",
      *     "api_admin_resident_discount_item_list",
-     *     "api_admin_resident_discount_item_get"
+     *     "api_admin_resident_discount_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $title;
@@ -125,7 +127,8 @@ class DiscountItem
      * )
      * @Groups({
      *     "api_admin_discount_item_get",
-     *     "api_admin_discount_item_list"
+     *     "api_admin_discount_item_list",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $amount;
@@ -135,7 +138,8 @@ class DiscountItem
      * @ORM\Column(name="can_be_changed", type="boolean")
      * @Groups({
      *     "api_admin_discount_item_get",
-     *     "api_admin_discount_item_list"
+     *     "api_admin_discount_item_list",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $canBeChanged;
@@ -153,7 +157,8 @@ class DiscountItem
      * @ORM\Column(name="valid_through_date", type="datetime")
      * @Groups({
      *     "api_admin_discount_item_get",
-     *     "api_admin_discount_item_list"
+     *     "api_admin_discount_item_list",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $validThroughDate;

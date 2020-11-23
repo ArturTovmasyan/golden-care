@@ -165,9 +165,11 @@ class RentPeriodFactory
      * @param ImtDateTimeInterval $rentInterval
      * @param $period
      * @param $amount
+     * @param array|null $awayDaysIntervals
      * @return array
+     * @throws \Exception
      */
-    public function calculateForRoomRentInterval(ImtDateTimeInterval $rentInterval, $period, $amount): array
+    public function calculateForRoomRentInterval(ImtDateTimeInterval $rentInterval, $period, $amount, array $awayDaysIntervals = null): array
     {
         $period = $this->getPeriod($period);
         $subIntervalStartFormatted = $this->subInterval->getStart()->format('Y-m-d 00:00:00');
@@ -175,7 +177,6 @@ class RentPeriodFactory
 
         $rentIntervalStartFormatted = $rentInterval->getStart()->format('Y-m-d 00:00:00');
         $rentIntervalEndFormatted = $rentInterval->getEnd()->format('Y-m-d 23:59:59');
-
 
         $dateTimeStart = $subIntervalStartFormatted > $rentIntervalStartFormatted ? $subIntervalStartFormatted : $rentIntervalStartFormatted;
         if ($rentInterval->getEnd() === null) {
@@ -193,10 +194,35 @@ class RentPeriodFactory
             ++$days;
         }
 
+        $absentDaysArray = [];
+        $absentDays = 0;
+        if (!empty($awayDaysIntervals)) {
+            /** @var ImtDateTimeInterval $awayDaysInterval */
+            foreach ($awayDaysIntervals as $awayDaysInterval) {
+                $absentDaysArray[] = $this->datesOverlap($overlappingInterval->getStart(), $overlappingInterval->getEnd(), $awayDaysInterval->getStart(), $awayDaysInterval->getEnd());
+            }
+
+            $absentDays = array_sum($absentDaysArray);
+            $days -= $absentDays;
+
+            $overlappingInterval = ImtDateTimeInterval::getWithDateTimes(
+                new \DateTime($dateTimeStart),
+                (new \DateTime($dateTimeEnd))->modify('-' . $absentDays . 'day')
+            );
+        }
+
         return array(
             'amount' => $period->calculateForRoomRentInterval($overlappingInterval, $amount),
             'days' => $days,
         );
+    }
+
+    public function datesOverlap($startOne, $endOne, $startTwo, $endTwo) {
+        if($startOne <= $endTwo && $endOne >= $startTwo) { //If the dates overlap
+            return min($endOne,$endTwo)->diff(max($startTwo,$startOne))->days + 1; //return how many days overlap
+        }
+
+        return 0; //Return 0 if there is no overlap
     }
 
     /**

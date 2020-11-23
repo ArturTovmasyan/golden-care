@@ -64,7 +64,8 @@ class ResidentPaymentReceivedItem
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_resident_payment_received_item_list",
-     *     "api_admin_resident_payment_received_item_get"
+     *     "api_admin_resident_payment_received_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $id;
@@ -90,7 +91,8 @@ class ResidentPaymentReceivedItem
      * @var RpPaymentType
      * @Assert\NotNull(message = "Please select a Payment Type", groups={
      *     "api_admin_resident_payment_received_item_add",
-     *     "api_admin_resident_payment_received_item_edit"
+     *     "api_admin_resident_payment_received_item_edit",
+     *     "api_admin_resident_ledger_edit"
      * })
      * @ORM\ManyToOne(targetEntity="App\Entity\RpPaymentType", inversedBy="residentPaymentReceivedItems")
      * @ORM\JoinColumns({
@@ -98,7 +100,8 @@ class ResidentPaymentReceivedItem
      * })
      * @Groups({
      *     "api_admin_resident_payment_received_item_list",
-     *     "api_admin_resident_payment_received_item_get"
+     *     "api_admin_resident_payment_received_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $paymentType;
@@ -107,16 +110,19 @@ class ResidentPaymentReceivedItem
      * @var \DateTime
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_payment_received_item_add",
-     *     "api_admin_resident_payment_received_item_edit"
+     *     "api_admin_resident_payment_received_item_edit",
+     *     "api_admin_resident_ledger_edit"
      * })
      * @Assert\DateTime(groups={
      *     "api_admin_resident_payment_received_item_add",
-     *     "api_admin_resident_payment_received_item_edit"
+     *     "api_admin_resident_payment_received_item_edit",
+     *     "api_admin_resident_ledger_edit"
      * })
      * @ORM\Column(name="date", type="datetime")
      * @Groups({
      *     "api_admin_resident_payment_received_item_list",
-     *     "api_admin_resident_payment_received_item_get"
+     *     "api_admin_resident_payment_received_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $date;
@@ -126,25 +132,29 @@ class ResidentPaymentReceivedItem
      * @ORM\Column(name="amount", type="float", length=10)
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_payment_received_item_add",
-     *     "api_admin_resident_payment_received_item_edit"
+     *     "api_admin_resident_payment_received_item_edit",
+     *     "api_admin_resident_ledger_edit"
      * })
      * @Assert\Regex(
      *      pattern="/(^[1-9][0-9]*$)|(^[0-9]+(\.[0-9]{1,2})$)/",
      *      message="The value entered is not a valid type. Examples of valid entries: '2000, 0.55, 100.34'.",
      *      groups={
      *          "api_admin_resident_payment_received_item_add",
-     *          "api_admin_resident_payment_received_item_edit"
+     *          "api_admin_resident_payment_received_item_edit",
+     *          "api_admin_resident_ledger_edit"
      * })
      * @Assert\Length(
      *      max = 10,
      *      maxMessage = "Amount cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_resident_payment_received_item_add",
-     *          "api_admin_resident_payment_received_item_edit"
+     *          "api_admin_resident_payment_received_item_edit",
+     *          "api_admin_resident_ledger_edit"
      * })
      * @Groups({
      *     "api_admin_resident_payment_received_item_list",
-     *     "api_admin_resident_payment_received_item_get"
+     *     "api_admin_resident_payment_received_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $amount;
@@ -153,19 +163,22 @@ class ResidentPaymentReceivedItem
      * @var string
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_payment_received_item_add",
-     *     "api_admin_resident_payment_received_item_edit"
+     *     "api_admin_resident_payment_received_item_edit",
+     *     "api_admin_resident_ledger_edit"
      * })
      * @Assert\Length(
      *      max = 32,
      *      maxMessage = "Check/Transaction # cannot be longer than {{ limit }} characters",
      *      groups={
      *           "api_admin_resident_payment_received_item_add",
-     *           "api_admin_resident_payment_received_item_edit"
+     *           "api_admin_resident_payment_received_item_edit",
+     *           "api_admin_resident_ledger_edit"
      * })
      * @ORM\Column(name="transaction_number", type="string", length=32)
      * @Groups({
      *     "api_admin_resident_payment_received_item_list",
-     *     "api_admin_resident_payment_received_item_get"
+     *     "api_admin_resident_payment_received_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $transactionNumber;
@@ -178,11 +191,13 @@ class ResidentPaymentReceivedItem
      *      maxMessage = "Notes cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_resident_payment_received_item_add",
-     *          "api_admin_resident_payment_received_item_edit"
+     *          "api_admin_resident_payment_received_item_edit",
+     *          "api_admin_resident_ledger_edit"
      * })
      * @Groups({
      *     "api_admin_resident_payment_received_item_list",
-     *     "api_admin_resident_payment_received_item_get"
+     *     "api_admin_resident_payment_received_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $notes;

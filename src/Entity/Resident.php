@@ -165,7 +165,7 @@ class Resident
      *      "api_admin_facility_event_list",
      *      "api_admin_facility_event_get",
      *      "api_admin_resident_ledger_list",
-     *      "api_admin_resident_ledger_get",
+     *      "api_admin_resident_ledger_get"
      * })
      */
     private $id;
@@ -237,7 +237,8 @@ class Resident
      *      "api_admin_resident_rent_get",
      *      "api_admin_resident_rent_increase_get",
      *      "api_admin_facility_bed_list",
-     *      "api_admin_apartment_bed_list"
+     *      "api_admin_apartment_bed_list",
+     *      "api_admin_resident_ledger_get"
      * })
      */
     private $firstName;
@@ -275,7 +276,8 @@ class Resident
      *      "api_admin_resident_rent_get",
      *      "api_admin_resident_rent_increase_get",
      *      "api_admin_facility_bed_list",
-     *      "api_admin_apartment_bed_list"
+     *      "api_admin_apartment_bed_list",
+     *      "api_admin_resident_ledger_get"
      * })
      */
     private $lastName;

@@ -4,6 +4,7 @@ namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\CreditItemNotFoundException;
+use App\Api\V1\Common\Service\Exception\InvalidEffectiveDateException;
 use App\Api\V1\Common\Service\Exception\ResidentLedgerNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentCreditItemNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
@@ -118,6 +119,11 @@ class ResidentCreditItemService extends BaseService implements IGridService
             $date = null;
             if (!empty($params['date'])) {
                 $date = new \DateTime($params['date']);
+                $date->setTime(0, 0, 0);
+
+                if ($ledger->getCreatedAt()->format('Y') !== $date->format('Y') || $ledger->getCreatedAt()->format('m') !== $date->format('m')) {
+                    throw new InvalidEffectiveDateException();
+                }
             }
 
             $residentCreditItem->setDate($date);
@@ -200,6 +206,11 @@ class ResidentCreditItemService extends BaseService implements IGridService
             $date = null;
             if (!empty($params['date'])) {
                 $date = new \DateTime($params['date']);
+                $date->setTime(0, 0, 0);
+
+                if ($ledger->getCreatedAt()->format('Y') !== $date->format('Y') || $ledger->getCreatedAt()->format('m') !== $date->format('m')) {
+                    throw new InvalidEffectiveDateException();
+                }
             }
 
             $entity->setDate($date);

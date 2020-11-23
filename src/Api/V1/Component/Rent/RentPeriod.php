@@ -61,8 +61,6 @@ abstract class RentPeriod
     public static function getPeriodById($idPeriod)
     {
         switch ($idPeriod) {
-            case Period::HOURLY:
-                return new Hourly();
             case Period::DAILY:
                 return new Daily();
             case Period::WEEKLY:

@@ -3,6 +3,7 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\InvalidEffectiveDateException;
 use App\Api\V1\Common\Service\Exception\ResidentLedgerNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentPaymentReceivedItemNotFoundException;
 use App\Api\V1\Common\Service\Exception\RpPaymentTypeNotFoundException;
@@ -118,6 +119,11 @@ class ResidentPaymentReceivedItemService extends BaseService implements IGridSer
             $date = null;
             if (!empty($params['date'])) {
                 $date = new \DateTime($params['date']);
+                $date->setTime(0, 0, 0);
+
+                if ($ledger->getCreatedAt()->format('Y') !== $date->format('Y') || $ledger->getCreatedAt()->format('m') !== $date->format('m')) {
+                    throw new InvalidEffectiveDateException();
+                }
             }
 
             $residentPaymentReceivedItem->setDate($date);
@@ -130,7 +136,7 @@ class ResidentPaymentReceivedItemService extends BaseService implements IGridSer
 
             //Re-Calculate Ledger Balance Due
             $oldBalanceDue = $ledger->getBalanceDue();
-            $newBalanceDue = $oldBalanceDue + $residentPaymentReceivedItem->getAmount();
+            $newBalanceDue = $oldBalanceDue - $residentPaymentReceivedItem->getAmount();
             $ledger->setBalanceDue($newBalanceDue);
             $this->em->persist($ledger);
 
@@ -201,6 +207,11 @@ class ResidentPaymentReceivedItemService extends BaseService implements IGridSer
             $date = null;
             if (!empty($params['date'])) {
                 $date = new \DateTime($params['date']);
+                $date->setTime(0, 0, 0);
+
+                if ($ledger->getCreatedAt()->format('Y') !== $date->format('Y') || $ledger->getCreatedAt()->format('m') !== $date->format('m')) {
+                    throw new InvalidEffectiveDateException();
+                }
             }
 
             $entity->setDate($date);
@@ -219,7 +230,7 @@ class ResidentPaymentReceivedItemService extends BaseService implements IGridSer
 
             if (!empty($changeSet) && array_key_exists('amount', $changeSet)) {
                 $oldBalanceDue = $ledger->getBalanceDue();
-                $newBalanceDue = $oldBalanceDue + $changeSet['amount']['1'] - $changeSet['amount']['0'];
+                $newBalanceDue = $oldBalanceDue - $changeSet['amount']['1'] + $changeSet['amount']['0'];
                 $ledger->setBalanceDue($newBalanceDue);
                 $this->em->persist($ledger);
             }

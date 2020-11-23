@@ -7,16 +7,14 @@ class RentPeriod
     /**
      * Types
      */
-    const HOURLY = 1;
-    const DAILY = 2;
-    const WEEKLY = 3;
-    const MONTHLY = 4;
+    const DAILY = 1;
+    const WEEKLY = 2;
+    const MONTHLY = 3;
 
     /**
      * @var array
      */
     private static $typeNames = [
-        self::HOURLY => 'Hourly',
         self::DAILY => 'Daily',
         self::WEEKLY => 'Weekly',
         self::MONTHLY => 'Monthly',
@@ -26,17 +24,15 @@ class RentPeriod
      * @var array
      */
     private static $typeDefaultNames = [
-        'Hourly' => '1',
-        'Daily' => '2',
-        'Weekly' => '3',
-        'Monthly' => '4',
+        'Daily' => '1',
+        'Weekly' => '2',
+        'Monthly' => '3',
     ];
 
     /**
      * @var array
      */
     private static $typeValues = [
-        self::HOURLY,
         self::DAILY,
         self::WEEKLY,
         self::MONTHLY,

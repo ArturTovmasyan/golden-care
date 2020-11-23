@@ -59,7 +59,8 @@ class ResidentExpenseItem
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_resident_expense_item_list",
-     *     "api_admin_resident_expense_item_get"
+     *     "api_admin_resident_expense_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $id;
@@ -68,7 +69,8 @@ class ResidentExpenseItem
      * @var ResidentLedger
      * @Assert\NotNull(message = "Please select a Ledger", groups={
      *     "api_admin_resident_expense_item_add",
-     *     "api_admin_resident_expense_item_edit"
+     *     "api_admin_resident_expense_item_edit",
+     *     "api_admin_resident_ledger_edit"
      * })
      * @ORM\ManyToOne(targetEntity="App\Entity\ResidentLedger", inversedBy="residentExpenseItems")
      * @ORM\JoinColumns({
@@ -85,7 +87,8 @@ class ResidentExpenseItem
      * @var ExpenseItem
      * @Assert\NotNull(message = "Please select an Expense Item", groups={
      *     "api_admin_resident_expense_item_add",
-     *     "api_admin_resident_expense_item_edit"
+     *     "api_admin_resident_expense_item_edit",
+     *     "api_admin_resident_ledger_edit"
      * })
      * @ORM\ManyToOne(targetEntity="App\Entity\ExpenseItem", inversedBy="residentExpenseItems")
      * @ORM\JoinColumns({
@@ -93,7 +96,8 @@ class ResidentExpenseItem
      * })
      * @Groups({
      *     "api_admin_resident_expense_item_list",
-     *     "api_admin_resident_expense_item_get"
+     *     "api_admin_resident_expense_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $expenseItem;
@@ -102,16 +106,19 @@ class ResidentExpenseItem
      * @var \DateTime
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_expense_item_add",
-     *     "api_admin_resident_expense_item_edit"
+     *     "api_admin_resident_expense_item_edit",
+     *     "api_admin_resident_ledger_edit"
      * })
      * @Assert\DateTime(groups={
      *     "api_admin_resident_expense_item_add",
-     *     "api_admin_resident_expense_item_edit"
+     *     "api_admin_resident_expense_item_edit",
+     *     "api_admin_resident_ledger_edit"
      * })
      * @ORM\Column(name="date", type="datetime")
      * @Groups({
      *     "api_admin_resident_expense_item_list",
-     *     "api_admin_resident_expense_item_get"
+     *     "api_admin_resident_expense_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $date;
@@ -121,25 +128,29 @@ class ResidentExpenseItem
      * @ORM\Column(name="amount", type="float", length=10)
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_expense_item_add",
-     *     "api_admin_resident_expense_item_edit"
+     *     "api_admin_resident_expense_item_edit",
+     *     "api_admin_resident_ledger_edit"
      * })
      * @Assert\Regex(
      *      pattern="/(^[1-9][0-9]*$)|(^[0-9]+(\.[0-9]{1,2})$)/",
      *      message="The value entered is not a valid type. Examples of valid entries: '2000, 0.55, 100.34'.",
      *      groups={
      *          "api_admin_resident_expense_item_add",
-     *          "api_admin_resident_expense_item_edit"
+     *          "api_admin_resident_expense_item_edit",
+     *          "api_admin_resident_ledger_edit"
      * })
      * @Assert\Length(
      *      max = 10,
      *      maxMessage = "Amount cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_resident_expense_item_add",
-     *          "api_admin_resident_expense_item_edit"
+     *          "api_admin_resident_expense_item_edit",
+     *          "api_admin_resident_ledger_edit"
      * })
      * @Groups({
      *     "api_admin_resident_expense_item_list",
-     *     "api_admin_resident_expense_item_get"
+     *     "api_admin_resident_expense_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $amount;
@@ -152,11 +163,13 @@ class ResidentExpenseItem
      *      maxMessage = "Notes cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_resident_expense_item_add",
-     *          "api_admin_resident_expense_item_edit"
+     *          "api_admin_resident_expense_item_edit",
+     *          "api_admin_resident_ledger_edit"
      * })
      * @Groups({
      *     "api_admin_resident_expense_item_list",
-     *     "api_admin_resident_expense_item_get"
+     *     "api_admin_resident_expense_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $notes;

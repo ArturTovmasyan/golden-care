@@ -10,10 +10,14 @@ use App\Api\V1\Common\Service\Exception\ResponsiblePersonNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Relationship;
 use App\Entity\Resident;
+use App\Entity\ResidentLedger;
+use App\Entity\ResidentRent;
 use App\Entity\ResidentResponsiblePerson;
 use App\Entity\ResponsiblePerson;
 use App\Entity\ResponsiblePersonRole;
 use App\Repository\RelationshipRepository;
+use App\Repository\ResidentLedgerRepository;
+use App\Repository\ResidentRentRepository;
 use App\Repository\ResidentRepository;
 use App\Repository\ResidentResponsiblePersonRepository;
 use App\Repository\ResponsiblePersonRepository;
@@ -75,7 +79,7 @@ class ResidentResponsiblePersonService extends BaseService implements IGridServi
                         }
                     }
                 }
-$a = $financiallyResponsiblePersons;
+
                 return $financiallyResponsiblePersons;
             }
             return $responsiblePersons;
@@ -295,6 +299,67 @@ $a = $financiallyResponsiblePersons;
                 throw new ResidentResponsiblePersonNotFoundException();
             }
 
+            $residentId = $entity->getResident() ? $entity->getResident()->getId() : 0;
+
+            /** @var ResidentRentRepository $rentRepo */
+            $rentRepo = $this->em->getRepository(ResidentRent::class);
+
+            $rents = $rentRepo->getEntityWithSources($this->grantService->getCurrentSpace(), null, $residentId);
+
+            if (!empty($rents)) {
+                /** @var ResidentRent $rent */
+                foreach ($rents as $rent) {
+                    if (!empty($rent->getSource())) {
+                        $sources = $rent->getSource();
+                        foreach ($sources as $key => $source) {
+                            if (array_key_exists('responsible_person_id', $source) && $source['responsible_person_id'] === $id) {
+                                $sources[$key]['responsible_person_id'] = '';
+                                $changedSources = array_values($sources);
+                                $rent->setSource($changedSources);
+                            }
+                        }
+
+                        $this->em->persist($rent);
+                    }
+                }
+            }
+
+            /** @var ResidentLedgerRepository $ledgerRepo */
+            $ledgerRepo = $this->em->getRepository(ResidentLedger::class);
+
+            $ledgers = $ledgerRepo->getEntityWithSources($this->grantService->getCurrentSpace(), null, $residentId);
+
+            if (!empty($ledgers)) {
+                /** @var ResidentLedger $ledger */
+                foreach ($ledgers as $ledger) {
+                    if (!empty($ledger->getSource())) {
+                        $sources = $ledger->getSource();
+                        foreach ($sources as $key => $source) {
+                            if (array_key_exists('responsible_person_id', $source) && $source['responsible_person_id'] === $id) {
+                                $sources[$key]['responsible_person_id'] = '';
+                                $changedSources = array_values($sources);
+                                $ledger->setSource($changedSources);
+                            }
+                        }
+
+                        $this->em->persist($ledger);
+                    }
+
+                    if (!empty($ledger->getPrivatPaySource())) {
+                        $privatPaySources = $ledger->getPrivatPaySource();
+                        foreach ($privatPaySources as $key => $source) {
+                            if ($source['responsible_person_id'] === $id) {
+                                $privatPaySources[$key]['responsible_person_id'] = '';
+                                $changedSources = array_values($privatPaySources);
+                                $ledger->setPrivatPaySource($changedSources);
+                            }
+                        }
+
+                        $this->em->persist($ledger);
+                    }
+                }
+            }
+
             $this->em->remove($entity);
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -325,6 +390,73 @@ $a = $financiallyResponsiblePersons;
 
             if (empty($residentResponsiblePersons)) {
                 throw new ResidentResponsiblePersonNotFoundException();
+            }
+
+            $ids = array_map(function ($item) {
+                return $item->getId();
+            }, $residentResponsiblePersons);
+
+            /** @var ResidentRentRepository $rentRepo */
+            $rentRepo = $this->em->getRepository(ResidentRent::class);
+
+            $rents = $rentRepo->getEntityWithSources($this->grantService->getCurrentSpace(), null);
+
+            if (!empty($rents)) {
+                foreach ($ids as $id) {
+                    /** @var ResidentRent $rent */
+                    foreach ($rents as $rent) {
+                        if (!empty($rent->getSource())) {
+                            $sources = $rent->getSource();
+                            foreach ($sources as $key => $source) {
+                                if (array_key_exists('responsible_person_id', $source) && $source['responsible_person_id'] === $id) {
+                                    $sources[$key]['responsible_person_id'] = '';
+                                    $changedSources = array_values($sources);
+                                    $rent->setSource($changedSources);
+                                }
+                            }
+
+                            $this->em->persist($rent);
+                        }
+                    }
+                }
+            }
+
+            /** @var ResidentLedgerRepository $ledgerRepo */
+            $ledgerRepo = $this->em->getRepository(ResidentLedger::class);
+
+            $ledgers = $ledgerRepo->getEntityWithSources($this->grantService->getCurrentSpace(), null);
+
+            if (!empty($ledgers)) {
+                foreach ($ids as $id) {
+                    /** @var ResidentLedger $ledger */
+                    foreach ($ledgers as $ledger) {
+                        if (!empty($ledger->getSource())) {
+                            $sources = $ledger->getSource();
+                            foreach ($sources as $key => $source) {
+                                if (array_key_exists('responsible_person_id', $source) && $source['responsible_person_id'] === $id) {
+                                    $sources[$key]['responsible_person_id'] = '';
+                                    $changedSources = array_values($sources);
+                                    $ledger->setSource($changedSources);
+                                }
+                            }
+
+                            $this->em->persist($ledger);
+                        }
+
+                        if (!empty($ledger->getPrivatPaySource())) {
+                            $privatPaySources = $ledger->getPrivatPaySource();
+                            foreach ($privatPaySources as $key => $source) {
+                                if ($source['responsible_person_id'] === $id) {
+                                    $privatPaySources[$key]['responsible_person_id'] = '';
+                                    $changedSources = array_values($privatPaySources);
+                                    $ledger->setPrivatPaySource($changedSources);
+                                }
+                            }
+
+                            $this->em->persist($ledger);
+                        }
+                    }
+                }
             }
 
             /**

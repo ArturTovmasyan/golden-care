@@ -54,7 +54,8 @@ class ResidentAwayDays
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_resident_away_days_list",
-     *     "api_admin_resident_away_days_get"
+     *     "api_admin_resident_away_days_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $id;
@@ -80,16 +81,19 @@ class ResidentAwayDays
      * @var \DateTime
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_away_days_add",
-     *     "api_admin_resident_away_days_edit"
+     *     "api_admin_resident_away_days_edit",
+     *     "api_admin_resident_ledger_edit"
      * })
      * @Assert\DateTime(groups={
      *     "api_admin_resident_away_days_add",
-     *     "api_admin_resident_away_days_edit"
+     *     "api_admin_resident_away_days_edit",
+     *     "api_admin_resident_ledger_edit"
      * })
      * @ORM\Column(name="start", type="datetime")
      * @Groups({
      *     "api_admin_resident_away_days_list",
-     *     "api_admin_resident_away_days_get"
+     *     "api_admin_resident_away_days_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $start;
@@ -98,16 +102,19 @@ class ResidentAwayDays
      * @var \DateTime
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_away_days_add",
-     *     "api_admin_resident_away_days_edit"
+     *     "api_admin_resident_away_days_edit",
+     *     "api_admin_resident_ledger_edit"
      * })
      * @Assert\DateTime(groups={
      *     "api_admin_resident_away_days_add",
-     *     "api_admin_resident_away_days_edit"
+     *     "api_admin_resident_away_days_edit",
+     *     "api_admin_resident_ledger_edit"
      * })
      * @ORM\Column(name="end", type="datetime")
      * @Groups({
      *     "api_admin_resident_away_days_list",
-     *     "api_admin_resident_away_days_get"
+     *     "api_admin_resident_away_days_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $end;
@@ -116,19 +123,22 @@ class ResidentAwayDays
      * @var string
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_away_days_add",
-     *     "api_admin_resident_away_days_edit"
+     *     "api_admin_resident_away_days_edit",
+     *     "api_admin_resident_ledger_edit"
      * })
      * @Assert\Length(
      *      max = 128,
      *      maxMessage = "Reason cannot be longer than {{ limit }} characters",
      *      groups={
      *           "api_admin_resident_away_days_add",
-     *           "api_admin_resident_away_days_edit"
+     *           "api_admin_resident_away_days_edit",
+     *           "api_admin_resident_ledger_edit"
      * })
      * @ORM\Column(name="reason", type="string", length=128)
      * @Groups({
      *     "api_admin_resident_away_days_list",
-     *     "api_admin_resident_away_days_get"
+     *     "api_admin_resident_away_days_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $reason;

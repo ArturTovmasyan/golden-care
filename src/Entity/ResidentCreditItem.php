@@ -59,7 +59,8 @@ class ResidentCreditItem
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_resident_credit_item_list",
-     *     "api_admin_resident_credit_item_get"
+     *     "api_admin_resident_credit_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $id;
@@ -85,7 +86,8 @@ class ResidentCreditItem
      * @var CreditItem
      * @Assert\NotNull(message = "Please select a Credit Item", groups={
      *     "api_admin_resident_credit_item_add",
-     *     "api_admin_resident_credit_item_edit"
+     *     "api_admin_resident_credit_item_edit",
+     *     "api_admin_resident_ledger_edit"
      * })
      * @ORM\ManyToOne(targetEntity="App\Entity\CreditItem", inversedBy="residentCreditItems")
      * @ORM\JoinColumns({
@@ -93,7 +95,8 @@ class ResidentCreditItem
      * })
      * @Groups({
      *     "api_admin_resident_credit_item_list",
-     *     "api_admin_resident_credit_item_get"
+     *     "api_admin_resident_credit_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $creditItem;
@@ -102,16 +105,19 @@ class ResidentCreditItem
      * @var \DateTime
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_credit_item_add",
-     *     "api_admin_resident_credit_item_edit"
+     *     "api_admin_resident_credit_item_edit",
+     *     "api_admin_resident_ledger_edit"
      * })
      * @Assert\DateTime(groups={
      *     "api_admin_resident_credit_item_add",
-     *     "api_admin_resident_credit_item_edit"
+     *     "api_admin_resident_credit_item_edit",
+     *     "api_admin_resident_ledger_edit"
      * })
      * @ORM\Column(name="date", type="datetime")
      * @Groups({
      *     "api_admin_resident_credit_item_list",
-     *     "api_admin_resident_credit_item_get"
+     *     "api_admin_resident_credit_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $date;
@@ -121,25 +127,29 @@ class ResidentCreditItem
      * @ORM\Column(name="amount", type="float", length=10)
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_credit_item_add",
-     *     "api_admin_resident_credit_item_edit"
+     *     "api_admin_resident_credit_item_edit",
+     *     "api_admin_resident_ledger_edit"
      * })
      * @Assert\Regex(
      *      pattern="/(^[1-9][0-9]*$)|(^[0-9]+(\.[0-9]{1,2})$)/",
      *      message="The value entered is not a valid type. Examples of valid entries: '2000, 0.55, 100.34'.",
      *      groups={
      *          "api_admin_resident_credit_item_add",
-     *          "api_admin_resident_credit_item_edit"
+     *          "api_admin_resident_credit_item_edit",
+     *          "api_admin_resident_ledger_edit"
      * })
      * @Assert\Length(
      *      max = 10,
      *      maxMessage = "Amount cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_resident_credit_item_add",
-     *          "api_admin_resident_credit_item_edit"
+     *          "api_admin_resident_credit_item_edit",
+     *          "api_admin_resident_ledger_edit"
      * })
      * @Groups({
      *     "api_admin_resident_credit_item_list",
-     *     "api_admin_resident_credit_item_get"
+     *     "api_admin_resident_credit_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $amount;
@@ -152,11 +162,13 @@ class ResidentCreditItem
      *      maxMessage = "Notes cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_resident_credit_item_add",
-     *          "api_admin_resident_credit_item_edit"
+     *          "api_admin_resident_credit_item_edit",
+     *          "api_admin_resident_ledger_edit"
      * })
      * @Groups({
      *     "api_admin_resident_credit_item_list",
-     *     "api_admin_resident_credit_item_get"
+     *     "api_admin_resident_credit_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $notes;

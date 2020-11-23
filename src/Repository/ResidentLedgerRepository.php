@@ -395,4 +395,50 @@ class ResidentLedgerRepository extends EntityRepository implements RelatedInfoIn
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param null $residentId
+     * @return int|mixed|string
+     */
+    public function getEntityWithSources(Space $space = null, array $entityGrants = null, $residentId = null)
+    {
+        $qb = $this
+            ->createQueryBuilder('rl')
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'r = rl.resident'
+            );
+
+        if ($residentId !== null) {
+            $qb
+                ->andWhere('r.id = :id')
+                ->setParameter('id', $residentId);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rl.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 }

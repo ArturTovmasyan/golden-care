@@ -1342,9 +1342,10 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
-     * @return mixed
+     * @param null $residentId
+     * @return int|mixed|string
      */
-    public function getEntityWithSources(Space $space = null, array $entityGrants = null)
+    public function getEntityWithSources(Space $space = null, array $entityGrants = null, $residentId = null)
     {
         $qb = $this
             ->createQueryBuilder('rr')
@@ -1354,6 +1355,12 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                 Join::WITH,
                 'r = rr.resident'
             );
+
+        if ($residentId !== null) {
+            $qb
+                ->andWhere('r.id = :id')
+                ->setParameter('id', $residentId);
+        }
 
         if ($space !== null) {
             $qb
@@ -1637,6 +1644,16 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
         $qb
             ->from(ResidentRent::class, 'rr')
             ->from(Resident::class, 'r')
+            ->leftJoin('rr.reason', 'rrr')
+            ->leftJoin('ra.facilityBed', 'fb')
+            ->leftJoin('fb.room', 'fr')
+            ->leftJoin('fr.facility', 'f')
+            ->leftJoin('fr.type', 'frt')
+            ->leftJoin('ra.careLevel', 'cl')
+            ->leftJoin('ra.apartmentBed', 'ab')
+            ->leftJoin('ab.room', 'ar')
+            ->leftJoin('ar.apartment', 'a')
+            ->leftJoin('ra.region', 'reg')
             ->andWhere('rr.resident = r')
             ->andWhere('rr.resident = rar')
             ->andWhere('(rr.end IS NULL OR rr.end > = ra.start) AND (ra.end IS NULL OR rr.start < = ra.end)')
@@ -1644,6 +1661,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
             ->andWhere('ra.admissionType < :admissionType')
             ->setParameter('residentId', $residentId)
             ->setParameter('admissionType', AdmissionType::DISCHARGE)
+            ->setParameter('now', new \DateTime('now'))
             ->select(
                 'r.id as id',
                 'r.firstName as firstName',
@@ -1651,6 +1669,8 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                 'ra.id as actionId',
                 'rr.id as rentId',
                 'rr.amount as amount',
+                'rr.start as start',
+                'rrr.title as reason',
                 '(CASE WHEN rr.start > = ra.start THEN rr.start ELSE ra.start END) as admitted',
                 '(CASE
                     WHEN rr.end IS NULL AND ra.end IS NULL THEN ra.end
@@ -1658,7 +1678,17 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                     WHEN rr.end IS NULL THEN ra.end
                     WHEN rr.end < ra.end THEN rr.end
                     ELSE ra.end END) as discharged',
-                'rr.source as sources'
+                'rr.source as sources',
+                '(CASE
+                    WHEN fb.id IS NOT NULL AND frt.private = 1 THEN fr.number
+                    WHEN fb.id IS NOT NULL AND frt.private = 0 THEN CONCAT(fr.number, \' (\',fb.number, \')\')
+                    WHEN ab.id IS NOT NULL AND ar.private = 1 THEN ar.number
+                    WHEN ab.id IS NOT NULL AND ar.private = 0 THEN CONCAT(ar.number, \' (\',ab.number, \')\')
+                    ELSE \'\' END) as room',
+                '(CASE
+                    WHEN fb.id IS NOT NULL THEN frt.title
+                    ELSE \'\' END) as roomType',
+                '(SELECT l.amount FROM App:FacilityRoomBaseRateCareLevel l JOIN l.careLevel lcl JOIN l.baseRate lbr JOIN lbr.roomType lrt WHERE lcl.id = cl.id AND lrt.id = frt.id AND (lbr.date = (SELECT MAX(mbr.date) FROM App:FacilityRoomBaseRate mbr JOIN mbr.roomType mrt WHERE mbr.date <= :now AND mrt.id = frt.id GROUP BY mrt.id)) GROUP BY lrt.id) as baseRate'
             );
 
         if ($reportInterval) {
