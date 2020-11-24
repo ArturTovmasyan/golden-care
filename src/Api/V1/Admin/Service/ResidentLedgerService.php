@@ -378,10 +378,10 @@ class ResidentLedgerService extends BaseService implements IGridService
      * @param $currentSpace
      * @param $ledgerId
      * @param $now
-     * @return int|mixed
+     * @return array
      * @throws \Exception
      */
-    public function calculateRelationsAmount($currentSpace, $ledgerId, $now)
+    public function calculateRelationsAmount($currentSpace, $ledgerId, $now): array
     {
         $dateStartFormatted = $now->format('m/01/Y 00:00:00');
         $dateEndFormatted = $now->format('m/t/Y 23:59:59');
@@ -433,7 +433,13 @@ class ResidentLedgerService extends BaseService implements IGridService
             }
         }
 
-        return $expenseItemAmount - $creditItemAmount - $discountItemAmount - $paymentReceivedItemAmount;
+        $privatePayRelationsAmount = $expenseItemAmount - $creditItemAmount - $discountItemAmount - $paymentReceivedItemAmount;
+        $notPrivatePayRelationsAmount = -$paymentReceivedItemAmount;
+
+        return [
+            'privatePayRelationsAmount' => $privatePayRelationsAmount,
+            'notPrivatePayRelationsAmount' => $notPrivatePayRelationsAmount,
+        ];
     }
 
     /**
@@ -827,13 +833,13 @@ class ResidentLedgerService extends BaseService implements IGridService
             $relationsAmount = $this->calculateRelationsAmount($currentSpace, $entity->getId(), $now);
 
             //Calculate Privat Pay Balance Due
-            $currentMonthPrivatPayBalanceDue = $amountData['privatPayAmount'] + $relationsAmount;
+            $currentMonthPrivatPayBalanceDue = $amountData['privatPayAmount'] + $relationsAmount['privatePayRelationsAmount'];
             //Calculate Not Privat Pay Balance Due
-            $currentMonthNotPrivatPayBalanceDue = $amountData['notPrivatPayAmount'] + $relationsAmount;
+            $currentMonthNotPrivatPayBalanceDue = $amountData['notPrivatPayAmount'] + $relationsAmount['notPrivatePayRelationsAmount'];
 
             //////////will be
             //Calculate Balance Due
-            $currentMonthBalanceDue = $amount + $relationsAmount;
+            $currentMonthBalanceDue = $amount + $relationsAmount['privatePayRelationsAmount'];
             //////////remove
 
             //Calculate Previous Month Balance Due
@@ -853,14 +859,14 @@ class ResidentLedgerService extends BaseService implements IGridService
                 $priorAmountData = $this->calculateAmountAndGetPaymentSources($currentSpace, $residentId, $previousDate, null);
                 $priorRelationsAmount = $this->calculateRelationsAmount($currentSpace, $entity->getId(), $previousDate);
                 //Calculate Privat Pay Balance Due
-                $priorPrivatPayBalanceDue = $priorAmountData['privatPayAmount'] + $priorRelationsAmount;
+                $priorPrivatPayBalanceDue = $priorAmountData['privatPayAmount'] + $priorRelationsAmount['privatePayRelationsAmount'];
                 //Calculate Not Privat Pay Balance Due
-                $priorNotPrivatPayBalanceDue = $priorAmountData['notPrivatPayAmount'] + $priorRelationsAmount;
+                $priorNotPrivatPayBalanceDue = $priorAmountData['notPrivatPayAmount'] + $priorRelationsAmount['notPrivatePayRelationsAmount'];
 
                 //////////will be
                 //Calculate Previous Month Amount
                 $priorAmount = $priorAmountData['amount'];
-                $priorBalanceDue = $priorAmount + $priorRelationsAmount;
+                $priorBalanceDue = $priorAmount + $priorRelationsAmount['privatePayRelationsAmount'];
                 //////////remove
             }
 
