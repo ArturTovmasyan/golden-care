@@ -502,13 +502,18 @@ class ResidentLedgerService extends BaseService implements IGridService
                 /** @var ResidentExpenseItem $existingExpenseItem */
                 foreach ($entity->getResidentExpenseItems() as $existingExpenseItem) {
                     if (\in_array($existingExpenseItem->getId(), $editedExpenseItemsIds, false)) {
+                        $existingExpenseItemDate = new \DateTime($editedExpenseItems[$existingExpenseItem->getId()]['date']);
+                        if ($entity->getCreatedAt()->format('Y') !== $existingExpenseItemDate->format('Y') || $entity->getCreatedAt()->format('m') !== $existingExpenseItemDate->format('m')) {
+                            throw new InvalidEffectiveDateException();
+                        }
+
                         $expenseItemId = $editedExpenseItems[$existingExpenseItem->getId()]['expense_item_id'] ?? 0;
 
                         /** @var ExpenseItem $expenseItem */
                         $expenseItem = $expenseItemRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ExpenseItem::class), $expenseItemId);
 
                         $existingExpenseItem->setExpenseItem($expenseItem);
-                        $existingExpenseItem->setDate(new \DateTime($editedExpenseItems[$existingExpenseItem->getId()]['date']));
+                        $existingExpenseItem->setDate($existingExpenseItemDate);
                         $existingExpenseItem->setAmount($editedExpenseItems[$existingExpenseItem->getId()]['amount']);
                         $existingExpenseItem->setNotes($editedExpenseItems[$existingExpenseItem->getId()]['notes'] ?? '');
 
@@ -566,13 +571,18 @@ class ResidentLedgerService extends BaseService implements IGridService
                 /** @var ResidentCreditItem $existingCreditItem */
                 foreach ($entity->getResidentCreditItems() as $existingCreditItem) {
                     if (\in_array($existingCreditItem->getId(), $editedCreditItemsIds, false)) {
+                        $existingCreditItemDate = new \DateTime($editedCreditItems[$existingCreditItem->getId()]['date']);
+                        if ($entity->getCreatedAt()->format('Y') !== $existingCreditItemDate->format('Y') || $entity->getCreatedAt()->format('m') !== $existingCreditItemDate->format('m')) {
+                            throw new InvalidEffectiveDateException();
+                        }
+
                         $creditItemId = $editedCreditItems[$existingCreditItem->getId()]['credit_item_id'] ?? 0;
 
                         /** @var CreditItem $creditItem */
                         $creditItem = $creditItemRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CreditItem::class), $creditItemId);
 
                         $existingCreditItem->setCreditItem($creditItem);
-                        $existingCreditItem->setDate(new \DateTime($editedCreditItems[$existingCreditItem->getId()]['date']));
+                        $existingCreditItem->setDate($existingCreditItemDate);
                         $existingCreditItem->setAmount($editedCreditItems[$existingCreditItem->getId()]['amount']);
                         $existingCreditItem->setNotes($editedCreditItems[$existingCreditItem->getId()]['notes'] ?? '');
 
@@ -630,13 +640,18 @@ class ResidentLedgerService extends BaseService implements IGridService
                 /** @var ResidentDiscountItem $existingDiscountItem */
                 foreach ($entity->getResidentDiscountItems() as $existingDiscountItem) {
                     if (\in_array($existingDiscountItem->getId(), $editedDiscountItemsIds, false)) {
+                        $existingDiscountItemDate = new \DateTime($editedDiscountItems[$existingDiscountItem->getId()]['date']);
+                        if ($entity->getCreatedAt()->format('Y') !== $existingDiscountItemDate->format('Y') || $entity->getCreatedAt()->format('m') !== $existingDiscountItemDate->format('m')) {
+                            throw new InvalidEffectiveDateException();
+                        }
+
                         $discountItemId = $editedDiscountItems[$existingDiscountItem->getId()]['discount_item_id'] ?? 0;
 
                         /** @var DiscountItem $discountItem */
                         $discountItem = $discountItemRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(DiscountItem::class), $discountItemId);
 
                         $existingDiscountItem->setDiscountItem($discountItem);
-                        $existingDiscountItem->setDate(new \DateTime($editedDiscountItems[$existingDiscountItem->getId()]['date']));
+                        $existingDiscountItem->setDate($existingDiscountItemDate);
                         $existingDiscountItem->setAmount($editedDiscountItems[$existingDiscountItem->getId()]['amount']);
                         $existingDiscountItem->setNotes($editedDiscountItems[$existingDiscountItem->getId()]['notes'] ?? '');
 
@@ -696,6 +711,11 @@ class ResidentLedgerService extends BaseService implements IGridService
                 /** @var ResidentPaymentReceivedItem $existingPaymentReceivedItem */
                 foreach ($entity->getResidentPaymentReceivedItems() as $existingPaymentReceivedItem) {
                     if (\in_array($existingPaymentReceivedItem->getId(), $editedPaymentReceivedItemsIds, false)) {
+                        $existingPaymentReceivedItemDate = new \DateTime($editedPaymentReceivedItems[$existingPaymentReceivedItem->getId()]['date']);
+                        if ($entity->getCreatedAt()->format('Y') !== $existingPaymentReceivedItemDate->format('Y') || $entity->getCreatedAt()->format('m') !== $existingPaymentReceivedItemDate->format('m')) {
+                            throw new InvalidEffectiveDateException();
+                        }
+
                         $paymentTypeId = $editedPaymentReceivedItems[$existingPaymentReceivedItem->getId()]['payment_type_id'] ?? 0;
                         $responsiblePersonId = $editedPaymentReceivedItems[$existingPaymentReceivedItem->getId()]['responsible_person_id'] ?? 0;
 
@@ -706,7 +726,7 @@ class ResidentLedgerService extends BaseService implements IGridService
 
                         $existingPaymentReceivedItem->setPaymentType($paymentType);
                         $existingPaymentReceivedItem->setResponsiblePerson($responsiblePerson);
-                        $existingPaymentReceivedItem->setDate(new \DateTime($editedPaymentReceivedItems[$existingPaymentReceivedItem->getId()]['date']));
+                        $existingPaymentReceivedItem->setDate($existingPaymentReceivedItemDate);
                         $existingPaymentReceivedItem->setAmount($editedPaymentReceivedItems[$existingPaymentReceivedItem->getId()]['amount']);
                         $existingPaymentReceivedItem->setTransactionNumber($editedPaymentReceivedItems[$existingPaymentReceivedItem->getId()]['transaction_number']);
                         $existingPaymentReceivedItem->setNotes($editedPaymentReceivedItems[$existingPaymentReceivedItem->getId()]['notes'] ?? '');
@@ -772,6 +792,16 @@ class ResidentLedgerService extends BaseService implements IGridService
                         $existingResidentAwayDayStart->setTime(0, 0, 0);
                         $existingResidentAwayDayEnd = new \DateTime($editedAwayDays[$existingResidentAwayDay->getId()]['end']);
                         $existingResidentAwayDayEnd->setTime(23, 59, 59);
+
+                        if ($existingResidentAwayDayStart > $existingResidentAwayDayEnd) {
+                            throw new StartGreaterEndDateException();
+                        }
+                        if ($entity->getCreatedAt()->format('Y') !== $existingResidentAwayDayStart->format('Y') || $entity->getCreatedAt()->format('m') !== $existingResidentAwayDayStart->format('m')) {
+                            throw new InvalidEffectiveDateException();
+                        }
+                        if ($entity->getCreatedAt()->format('Y') !== $existingResidentAwayDayEnd->format('Y') || $entity->getCreatedAt()->format('m') !== $existingResidentAwayDayEnd->format('m')) {
+                            throw new InvalidEffectiveDateException();
+                        }
 
                         $existingResidentAwayDay->setStart($existingResidentAwayDayStart);
                         $existingResidentAwayDay->setEnd($existingResidentAwayDayEnd);
