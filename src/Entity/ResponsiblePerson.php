@@ -97,7 +97,10 @@ class ResponsiblePerson
      *     "api_admin_resident_responsible_person_list",
      *     "api_admin_resident_responsible_person_get",
      *     "api_admin_resident_event_list",
-     *     "api_admin_resident_event_get"
+     *     "api_admin_resident_event_get",
+     *     "api_admin_resident_payment_received_item_list",
+     *     "api_admin_resident_payment_received_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $firstName;
@@ -123,7 +126,10 @@ class ResponsiblePerson
      *     "api_admin_resident_responsible_person_list",
      *     "api_admin_resident_responsible_person_get",
      *     "api_admin_resident_event_list",
-     *     "api_admin_resident_event_get"
+     *     "api_admin_resident_event_get",
+     *     "api_admin_resident_payment_received_item_list",
+     *     "api_admin_resident_payment_received_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $lastName;

@@ -22,6 +22,7 @@ use App\Entity\ResidentPaymentReceivedItem;
 use App\Entity\ResidentRent;
 use App\Entity\Resident;
 use App\Entity\ResidentLedger;
+use App\Entity\ResidentResponsiblePerson;
 use App\Entity\RpPaymentType;
 use App\Model\RentPeriod;
 use App\Repository\CreditItemRepository;
@@ -35,6 +36,7 @@ use App\Repository\ResidentLedgerRepository;
 use App\Repository\ResidentPaymentReceivedItemRepository;
 use App\Repository\ResidentRentRepository;
 use App\Repository\ResidentRepository;
+use App\Repository\ResidentResponsiblePersonRepository;
 use App\Repository\RpPaymentTypeRepository;
 use App\Util\Common\ImtDateTimeInterval;
 use Doctrine\ORM\QueryBuilder;
@@ -674,6 +676,8 @@ class ResidentLedgerService extends BaseService implements IGridService
             //////////Payment Received Item/////////////////////////////////////////////////////
             /** @var RpPaymentTypeRepository $paymentTypeRepo */
             $paymentTypeRepo = $this->em->getRepository(RpPaymentType::class);
+            /** @var ResidentResponsiblePersonRepository $responsiblePersonRepo */
+            $responsiblePersonRepo = $this->em->getRepository(ResidentResponsiblePerson::class);
             $addedPaymentReceivedItems = [];
             $editedPaymentReceivedItems = [];
             $editedPaymentReceivedItemsIds = [];
@@ -693,11 +697,15 @@ class ResidentLedgerService extends BaseService implements IGridService
                 foreach ($entity->getResidentPaymentReceivedItems() as $existingPaymentReceivedItem) {
                     if (\in_array($existingPaymentReceivedItem->getId(), $editedPaymentReceivedItemsIds, false)) {
                         $paymentTypeId = $editedPaymentReceivedItems[$existingPaymentReceivedItem->getId()]['payment_type_id'] ?? 0;
+                        $responsiblePersonId = $editedPaymentReceivedItems[$existingPaymentReceivedItem->getId()]['responsible_person_id'] ?? 0;
 
                         /** @var RpPaymentType $paymentType */
                         $paymentType = $paymentTypeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(RpPaymentType::class), $paymentTypeId);
+                        /** @var ResidentResponsiblePerson $responsiblePerson */
+                        $responsiblePerson = $responsiblePersonRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $responsiblePersonId);
 
                         $existingPaymentReceivedItem->setPaymentType($paymentType);
+                        $existingPaymentReceivedItem->setResponsiblePerson($responsiblePerson);
                         $existingPaymentReceivedItem->setDate(new \DateTime($editedPaymentReceivedItems[$existingPaymentReceivedItem->getId()]['date']));
                         $existingPaymentReceivedItem->setAmount($editedPaymentReceivedItems[$existingPaymentReceivedItem->getId()]['amount']);
                         $existingPaymentReceivedItem->setTransactionNumber($editedPaymentReceivedItems[$existingPaymentReceivedItem->getId()]['transaction_number']);
@@ -721,11 +729,15 @@ class ResidentLedgerService extends BaseService implements IGridService
                     $newPaymentReceivedItem = new ResidentPaymentReceivedItem();
 
                     $paymentTypeId = $addedPaymentReceivedItem['payment_type_id'] ?? 0;
+                    $responsiblePersonId = $editedPaymentReceivedItems[$existingPaymentReceivedItem->getId()]['responsible_person_id'] ?? 0;
 
                     /** @var RpPaymentType $paymentType */
                     $paymentType = $paymentTypeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(RpPaymentType::class), $paymentTypeId);
+                    /** @var ResidentResponsiblePerson $responsiblePerson */
+                    $responsiblePerson = $responsiblePersonRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $responsiblePersonId);
 
                     $newPaymentReceivedItem->setPaymentType($paymentType);
+                    $newPaymentReceivedItem->setResponsiblePerson($responsiblePerson);
                     $newPaymentReceivedItem->setDate($paymentReceivedItemDate);
                     $newPaymentReceivedItem->setAmount($addedPaymentReceivedItem['amount']);
                     $newPaymentReceivedItem->setTransactionNumber($addedPaymentReceivedItem['transaction_number']);

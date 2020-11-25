@@ -47,8 +47,8 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                     JSON_OBJECT(
                         CASE
                             WHEN frt.private = 1 THEN 'Room'
-                            WHEN frt.private = 0 THEN 'Room (Bed)'
-                            ELSE 'Room (Bed)' END
+                            WHEN frt.private = 0 THEN CONCAT('Room', ' ', '(', 'Bed', ')')
+                            ELSE '' END
                         , 
                         CASE
                             WHEN frt.private = 1 THEN fr.number
@@ -61,8 +61,8 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                     JSON_OBJECT(
                         CASE
                             WHEN ar.private = 1 THEN 'Room'
-                            WHEN ar.private = 0 THEN 'Room (Bed)'
-                            ELSE 'Room (Bed)' END
+                            WHEN ar.private = 0 THEN CONCAT('Room', ' ', '(', 'Bed', ')')
+                            ELSE '' END
                         , 
                         CASE
                             WHEN ar.private = 1 THEN ar.number

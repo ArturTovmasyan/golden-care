@@ -106,6 +106,7 @@ class ResidentPaymentReceivedItemController extends BaseController
                 'amount' => $request->get('amount'),
                 'transaction_number' => $request->get('transaction_number'),
                 'notes' => $request->get('notes') ?? '',
+                'responsible_person_id' => $request->get('responsible_person_id'),
             ]
         );
 
@@ -137,6 +138,7 @@ class ResidentPaymentReceivedItemController extends BaseController
                 'amount' => $request->get('amount'),
                 'transaction_number' => $request->get('transaction_number'),
                 'notes' => $request->get('notes') ?? '',
+                'responsible_person_id' => $request->get('responsible_person_id'),
             ]
         );
 

@@ -6,13 +6,16 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\InvalidEffectiveDateException;
 use App\Api\V1\Common\Service\Exception\ResidentLedgerNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentPaymentReceivedItemNotFoundException;
+use App\Api\V1\Common\Service\Exception\ResidentResponsiblePersonNotFoundException;
 use App\Api\V1\Common\Service\Exception\RpPaymentTypeNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\ResidentPaymentReceivedItem;
 use App\Entity\ResidentLedger;
+use App\Entity\ResidentResponsiblePerson;
 use App\Entity\RpPaymentType;
 use App\Repository\ResidentPaymentReceivedItemRepository;
 use App\Repository\ResidentLedgerRepository;
+use App\Repository\ResidentResponsiblePersonRepository;
 use App\Repository\RpPaymentTypeRepository;
 use Doctrine\ORM\QueryBuilder;
 
@@ -111,9 +114,22 @@ class ResidentPaymentReceivedItemService extends BaseService implements IGridSer
                 throw new RpPaymentTypeNotFoundException();
             }
 
+            $responsiblePersonId = $params['responsible_person_id'] ?? 0;
+
+            /** @var ResidentResponsiblePersonRepository $responsiblePersonRepo */
+            $responsiblePersonRepo = $this->em->getRepository( ResidentResponsiblePerson::class);
+
+            /** @var ResidentResponsiblePerson $responsiblePerson */
+            $responsiblePerson = $responsiblePersonRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $responsiblePersonId);
+
+            if ($responsiblePerson === null) {
+                throw new ResidentResponsiblePersonNotFoundException();
+            }
+
             $residentPaymentReceivedItem = new ResidentPaymentReceivedItem();
             $residentPaymentReceivedItem->setLedger($ledger);
             $residentPaymentReceivedItem->setPaymentType($paymentType);
+            $residentPaymentReceivedItem->setResponsiblePerson($responsiblePerson);
             $residentPaymentReceivedItem->setAmount($params['amount']);
 
             $date = null;
@@ -200,8 +216,21 @@ class ResidentPaymentReceivedItemService extends BaseService implements IGridSer
                 throw new RpPaymentTypeNotFoundException();
             }
 
+            $responsiblePersonId = $params['responsible_person_id'] ?? 0;
+
+            /** @var ResidentResponsiblePersonRepository $responsiblePersonRepo */
+            $responsiblePersonRepo = $this->em->getRepository( ResidentResponsiblePerson::class);
+
+            /** @var ResidentResponsiblePerson $responsiblePerson */
+            $responsiblePerson = $responsiblePersonRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $responsiblePersonId);
+
+            if ($responsiblePerson === null) {
+                throw new ResidentResponsiblePersonNotFoundException();
+            }
+
             $entity->setLedger($ledger);
             $entity->setPaymentType($paymentType);
+            $entity->setResponsiblePerson($responsiblePerson);
             $entity->setAmount($params['amount']);
 
             $date = null;

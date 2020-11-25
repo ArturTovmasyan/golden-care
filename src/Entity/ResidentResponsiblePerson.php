@@ -37,7 +37,10 @@ class ResidentResponsiblePerson
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_resident_responsible_person_list",
-     *     "api_admin_resident_responsible_person_get"
+     *     "api_admin_resident_responsible_person_get",
+     *     "api_admin_resident_payment_received_item_list",
+     *     "api_admin_resident_payment_received_item_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $id;
@@ -81,16 +84,19 @@ class ResidentResponsiblePerson
      *          "api_admin_resident_responsible_person_edit"
      *      }
      * )
-     * @Groups({
-     *     "api_admin_resident_responsible_person_list",
-     *     "api_admin_resident_responsible_person_get"
-     * })
      * @Assert\Valid(
      *      groups={
      *          "api_admin_resident_responsible_person_add",
      *          "api_admin_resident_responsible_person_edit"
      *      }
      * )
+     * @Groups({
+     *     "api_admin_resident_responsible_person_list",
+     *     "api_admin_resident_responsible_person_get",
+     *     "api_admin_resident_payment_received_item_list",
+     *     "api_admin_resident_payment_received_item_get",
+     *     "api_admin_resident_ledger_get"
+     * })
      */
     private $responsiblePerson;
 
@@ -120,6 +126,12 @@ class ResidentResponsiblePerson
      * })
      */
     protected $roles;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentPaymentReceivedItem", mappedBy="responsiblePerson", cascade={"remove", "persist"})
+     */
+    private $residentPaymentReceivedItems;
 
     /**
      * @return int
@@ -240,4 +252,19 @@ class ResidentResponsiblePerson
         $this->sortOrder = $sortOrder;
     }
 
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentPaymentReceivedItems(): ArrayCollection
+    {
+        return $this->residentPaymentReceivedItems;
+    }
+
+    /**
+     * @param ArrayCollection $residentPaymentReceivedItems
+     */
+    public function setResidentPaymentReceivedItems(ArrayCollection $residentPaymentReceivedItems): void
+    {
+        $this->residentPaymentReceivedItems = $residentPaymentReceivedItems;
+    }
 }

@@ -203,6 +203,25 @@ class ResidentPaymentReceivedItem
     private $notes;
 
     /**
+     * @var ResidentResponsiblePerson
+     * @Assert\NotNull(message = "Please select a Responsible Person", groups={
+     *     "api_admin_resident_payment_received_item_add",
+     *     "api_admin_resident_payment_received_item_edit",
+     *     "api_admin_resident_ledger_edit"
+     * })
+     * @ORM\ManyToOne(targetEntity="App\Entity\ResidentResponsiblePerson", inversedBy="residentPaymentReceivedItems")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_responsible_person", referencedColumnName="id", onDelete="SET NULL")
+     * })
+     * @Groups({
+     *     "api_admin_resident_payment_received_item_list",
+     *     "api_admin_resident_payment_received_item_get",
+     *     "api_admin_resident_ledger_get"
+     * })
+     */
+    private $responsiblePerson;
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -312,5 +331,21 @@ class ResidentPaymentReceivedItem
     public function setNotes(?string $notes): void
     {
         $this->notes = $notes;
+    }
+
+    /**
+     * @return ResidentResponsiblePerson|null
+     */
+    public function getResponsiblePerson(): ?ResidentResponsiblePerson
+    {
+        return $this->responsiblePerson;
+    }
+
+    /**
+     * @param ResidentResponsiblePerson|null $responsiblePerson
+     */
+    public function setResponsiblePerson(?ResidentResponsiblePerson $responsiblePerson): void
+    {
+        $this->responsiblePerson = $responsiblePerson;
     }
 }
