@@ -274,6 +274,7 @@ class ResidentLedgerService extends BaseService implements IGridService
             foreach ($data as $rent) {
                 $rentData[] = [
                     'id' => $rent['rentId'],
+                    'resident' => $rent['firstName'] . ' ' . $rent['lastName'],
                     'start' => $rent['start'],
                     'amount' => $rent['amount'],
                     'reason' => $rent['reason'] ?? '',
@@ -334,7 +335,7 @@ class ResidentLedgerService extends BaseService implements IGridService
                             $privatPayPaymentSources[] = [
                                 'id' => $rentSource['id'],
                                 'amount' => round($calcResults['amount'], 2),
-                                'responsible_person_id' => $rentSource['responsible_person_id'],
+                                'responsible_person_id' => array_key_exists('responsible_person_id', $rentSource) ? $rentSource['responsible_person_id'] : '',
                             ];
                         } else {
                             $calcResults = $rentPeriodFactory->calculateForRoomRentInterval(

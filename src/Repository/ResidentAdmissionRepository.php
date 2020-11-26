@@ -647,9 +647,16 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
                 'r.firstName AS first_name',
                 'r.lastName AS last_name',
                 'r.middleName AS middle_name',
-                'rs.title AS salutation'
+                'rs.title AS salutation',
+                's.name AS space'
             )
             ->join('ra.resident', 'r')
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = r.space'
+            )
             ->leftJoin('r.salutation', 'rs')
             ->where('ra.admissionType < :admissionType AND ra.end IS NULL')
             ->andWhere('ra.groupType=:type')
@@ -658,12 +665,6 @@ class ResidentAdmissionRepository extends EntityRepository implements RelatedInf
 
         if ($space !== null) {
             $qb
-                ->innerJoin(
-                    Space::class,
-                    's',
-                    Join::WITH,
-                    's = r.space'
-                )
                 ->andWhere('s = :space')
                 ->setParameter('space', $space);
         }
