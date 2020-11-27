@@ -133,6 +133,7 @@ class CreateResidentLedgerCommand extends Command
                                 if (!empty($amountData['paymentSources'])) {
                                     $residentLedger = new ResidentLedger();
                                     $residentLedger->setResident($resident);
+                                    $residentLedger->setLatePayment(null);
 
                                     //Calculate Privat Pay Balance Due
                                     $currentMonthPrivatPayBalanceDue = $amountData['privatPayAmount'];

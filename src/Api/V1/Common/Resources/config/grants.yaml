@@ -173,6 +173,10 @@ persistence:
           title: 'KeyFinanceDates'
           class: App\Entity\KeyFinanceDates
           route: api_admin_key_finance_dates_list
+        late_payment:
+          title: 'LatePayment'
+          class: App\Entity\LatePayment
+          route: api_admin_late_payment_list
 
         notification_type:
           title: 'NotificationType'

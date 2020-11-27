@@ -339,6 +339,19 @@ class ResidentLedger implements PreviousAndNextItemsService
     private $residentAwayDays;
 
     /**
+     * @var LatePayment
+     * @ORM\ManyToOne(targetEntity="App\Entity\LatePayment", inversedBy="residentLedgers")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_late_payment", referencedColumnName="id", onDelete="SET NULL")
+     * })
+     * @Groups({
+     *     "api_admin_resident_ledger_list",
+     *     "api_admin_resident_ledger_get"
+     * })
+     */
+    private $latePayment;
+
+    /**
      * @var int
      */
     private $previousId;
@@ -726,6 +739,22 @@ class ResidentLedger implements PreviousAndNextItemsService
     public function removeResidentAwayDays($residentAwayDay): void
     {
         $this->residentAwayDays->removeElement($residentAwayDay);
+    }
+
+    /**
+     * @return LatePayment|null
+     */
+    public function getLatePayment(): ?LatePayment
+    {
+        return $this->latePayment;
+    }
+
+    /**
+     * @param LatePayment|null $latePayment
+     */
+    public function setLatePayment(?LatePayment $latePayment): void
+    {
+        $this->latePayment = $latePayment;
     }
 
     /**

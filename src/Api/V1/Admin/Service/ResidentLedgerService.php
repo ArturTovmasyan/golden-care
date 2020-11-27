@@ -4,6 +4,7 @@ namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\InvalidEffectiveDateException;
+use App\Api\V1\Common\Service\Exception\LatePaymentNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentLedgerAlreadyExistException;
 use App\Api\V1\Common\Service\Exception\ResidentLedgerNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
@@ -13,6 +14,7 @@ use App\Api\V1\Component\Rent\RentPeriodFactory;
 use App\Entity\CreditItem;
 use App\Entity\DiscountItem;
 use App\Entity\ExpenseItem;
+use App\Entity\LatePayment;
 use App\Entity\PaymentSource;
 use App\Entity\ResidentAwayDays;
 use App\Entity\ResidentCreditItem;
@@ -28,6 +30,7 @@ use App\Model\RentPeriod;
 use App\Repository\CreditItemRepository;
 use App\Repository\DiscountItemRepository;
 use App\Repository\ExpenseItemRepository;
+use App\Repository\LatePaymentRepository;
 use App\Repository\PaymentSourceRepository;
 use App\Repository\ResidentCreditItemRepository;
 use App\Repository\ResidentDiscountItemRepository;
@@ -152,6 +155,22 @@ class ResidentLedgerService extends BaseService implements IGridService
 
             $residentLedger = new ResidentLedger();
             $residentLedger->setResident($resident);
+
+            if (!empty($params['late_payment_id'])) {
+                /** @var LatePaymentRepository $latePaymentRepo */
+                $latePaymentRepo = $this->em->getRepository(LatePayment::class);
+
+                /** @var LatePayment $latePayment */
+                $latePayment = $latePaymentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(LatePayment::class), $params['late_payment_id']);
+
+                if ($latePayment === null) {
+                    throw new LatePaymentNotFoundException();
+                }
+
+                $residentLedger->setLatePayment($latePayment);
+            } else {
+                $residentLedger->setLatePayment(null);
+            }
 
             $now = new \DateTime('now');
             /** @var ResidentLedgerRepository $repo */
@@ -481,6 +500,22 @@ class ResidentLedgerService extends BaseService implements IGridService
             }
 
             $entity->setResident($resident);
+
+            if (!empty($params['late_payment_id'])) {
+                /** @var LatePaymentRepository $latePaymentRepo */
+                $latePaymentRepo = $this->em->getRepository(LatePayment::class);
+
+                /** @var LatePayment $latePayment */
+                $latePayment = $latePaymentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(LatePayment::class), $params['late_payment_id']);
+
+                if ($latePayment === null) {
+                    throw new LatePaymentNotFoundException();
+                }
+
+                $entity->setLatePayment($latePayment);
+            } else {
+                $entity->setLatePayment(null);
+            }
 
             //////////Expense Item/////////////////////////////////////////////////////
             /** @var ExpenseItemRepository $expenseItemRepo */

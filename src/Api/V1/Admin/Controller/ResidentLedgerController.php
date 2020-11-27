@@ -133,7 +133,8 @@ class ResidentLedgerController extends BaseController
     {
         $id = $residentLedgerService->add(
             [
-                'resident_id' => $request->get('resident_id')
+                'resident_id' => $request->get('resident_id'),
+                'late_payment_id' => $request->get('late_payment_id')
             ]
         );
 
@@ -164,7 +165,8 @@ class ResidentLedgerController extends BaseController
                 'resident_credit_items' => $request->get('resident_credit_items'),
                 'resident_discount_items' => $request->get('resident_discount_items'),
                 'resident_payment_received_items' => $request->get('resident_payment_received_items'),
-                'resident_away_days' => $request->get('resident_away_days')
+                'resident_away_days' => $request->get('resident_away_days'),
+                'late_payment_id' => $request->get('late_payment_id')
             ]
         );
 
