@@ -1722,4 +1722,100 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
             ->getQuery()
             ->getResult(AbstractQuery::HYDRATE_ARRAY);
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param ImtDateTimeInterval $reportInterval
+     * @param $residentIds
+     * @return int|mixed|string
+     */
+    public function getAdmissionRoomRentDataForResidentLedgers(Space $space = null, array $entityGrants = null, ImtDateTimeInterval $reportInterval, $residentIds)
+    {
+        /** @var ResidentAdmissionRepository $admissionRepo */
+        $admissionRepo = $this
+            ->getEntityManager()
+            ->getRepository(ResidentAdmission::class);
+
+        /** @var QueryBuilder $qb */
+        $qb = $admissionRepo
+            ->getResidentAdmissionIntervalQb($reportInterval);
+
+        $qb
+            ->from(ResidentRent::class, 'rr')
+            ->from(Resident::class, 'r')
+            ->leftJoin('ra.facilityBed', 'fb')
+            ->leftJoin('fb.room', 'fr')
+            ->leftJoin('fr.facility', 'f')
+            ->leftJoin('fr.type', 'frt')
+            ->leftJoin('ra.apartmentBed', 'ab')
+            ->leftJoin('ab.room', 'ar')
+            ->leftJoin('ar.apartment', 'a')
+            ->leftJoin('ra.region', 'reg')
+            ->andWhere('rr.resident = r')
+            ->andWhere('rr.resident = rar')
+            ->andWhere('(rr.end IS NULL OR rr.end > = ra.start) AND (ra.end IS NULL OR rr.start < = ra.end)')
+            ->andWhere('r.id IN (:residentIds)')
+            ->andWhere('ra.admissionType < :admissionType')
+            ->setParameter('residentIds', $residentIds)
+            ->setParameter('admissionType', AdmissionType::DISCHARGE)
+            ->select(
+                'r.id as id',
+                'CONCAT(r.firstName, \' \',r.lastName) as fullName',
+                'ra.id as actionId',
+                'rr.amount as amount',
+                'ra.start as start',
+                'ra.end as end',
+                '(CASE WHEN rr.start > = ra.start THEN rr.start ELSE ra.start END) as admitted',
+                '(CASE
+                    WHEN rr.end IS NULL AND ra.end IS NULL THEN ra.end
+                    WHEN ra.end IS NULL THEN rr.end
+                    WHEN rr.end IS NULL THEN ra.end
+                    WHEN rr.end < ra.end THEN rr.end
+                    ELSE ra.end END) as discharged',
+                'rr.source as sources',
+                '(CASE
+                    WHEN fb.id IS NOT NULL AND frt.private = 1 THEN fr.number
+                    WHEN fb.id IS NOT NULL AND frt.private = 0 THEN CONCAT(fr.number, \' (\',fb.number, \')\')
+                    WHEN ab.id IS NOT NULL AND ar.private = 1 THEN ar.number
+                    WHEN ab.id IS NOT NULL AND ar.private = 0 THEN CONCAT(ar.number, \' (\',ab.number, \')\')
+                    ELSE \'\' END) as room',
+                '(CASE
+                    WHEN fb.id IS NOT NULL THEN f.name
+                    WHEN ab.id IS NOT NULL THEN a.name
+                    WHEN reg.id IS NOT NULL THEN reg.name
+                    ELSE \'\' END) as typeName'
+            );
+
+        if ($reportInterval) {
+            $qb
+                ->andWhere('rr.end IS NULL OR rr.end > = :start');
+            if ($reportInterval->getEnd()) {
+                $qb
+                    ->andWhere('rr.start < = :end');
+            }
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = rar.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('r.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_ARRAY);
+    }
 }

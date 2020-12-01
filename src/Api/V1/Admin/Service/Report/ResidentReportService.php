@@ -8,6 +8,10 @@ use App\Api\V1\Common\Service\Exception\TimeSpanIsGreaterThan12MonthsException;
 use App\Api\V1\Component\Rent\RentPeriodFactory;
 use App\Entity\Diet;
 use App\Entity\EventDefinition;
+use App\Entity\Facility;
+use App\Entity\PaymentSource;
+use App\Entity\ResidentAwayDays;
+use App\Entity\ResidentExpenseItem;
 use App\Entity\ResidentHealthInsurance;
 use App\Entity\PhysicianPhone;
 use App\Entity\Resident;
@@ -16,6 +20,7 @@ use App\Entity\ResidentAllergen;
 use App\Entity\ResidentDiagnosis;
 use App\Entity\ResidentDiet;
 use App\Entity\ResidentEvent;
+use App\Entity\ResidentLedger;
 use App\Entity\ResidentMedication;
 use App\Entity\ResidentMedicationAllergy;
 use App\Entity\ResidentPhysician;
@@ -27,6 +32,7 @@ use App\Model\AdmissionType;
 use App\Model\GroupType;
 use App\Model\Report\DietaryRestriction;
 use App\Model\Report\FaceSheet;
+use App\Model\Report\LedgerMonthlyFinanceRentData;
 use App\Model\Report\Profile;
 use App\Model\Report\ResidentCovidEvent;
 use App\Model\Report\ResidentDetailedRoster;
@@ -37,6 +43,9 @@ use App\Model\Report\ResponsiblePersonEmails;
 use App\Model\Report\SixtyDays;
 use App\Repository\DietRepository;
 use App\Repository\EventDefinitionRepository;
+use App\Repository\FacilityRepository;
+use App\Repository\PaymentSourceRepository;
+use App\Repository\ResidentExpenseItemRepository;
 use App\Repository\ResidentHealthInsuranceRepository;
 use App\Repository\PhysicianPhoneRepository;
 use App\Repository\ResidentAdmissionRepository;
@@ -44,6 +53,7 @@ use App\Repository\ResidentAllergenRepository;
 use App\Repository\ResidentDiagnosisRepository;
 use App\Repository\ResidentDietRepository;
 use App\Repository\ResidentEventRepository;
+use App\Repository\ResidentLedgerRepository;
 use App\Repository\ResidentMedicationAllergyRepository;
 use App\Repository\ResidentMedicationRepository;
 use App\Repository\ResidentPhysicianRepository;
@@ -1370,6 +1380,212 @@ class ResidentReportService extends BaseService
         $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setStartDate($dateStartFormatted);
         $report->setEndDate($dateEndFormatted);
+
+        return $report;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupIds
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @param $assessmentId
+     * @param $assessmentFormId
+     * @return LedgerMonthlyFinanceRentData
+     */
+    public function getLedgerMonthlyFinanceRentDataReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): LedgerMonthlyFinanceRentData
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        $type = (int)$group;
+        $typeId = $groupId;
+
+        if ($type !== GroupType::TYPE_FACILITY) {
+            throw new InvalidParameterException('group');
+        }
+
+        $reportDate = new \DateTime('now');
+        $reportDateFormatted = $reportDate->format('M Y');
+        $dateStartFormatted = $reportDate->format('m/01/Y 00:00:00');
+        $dateEndFormatted = $reportDate->format('m/t/Y 23:59:59');
+
+        if (!empty($date)) {
+            $reportDate = new \DateTime($date);
+            $reportDateFormatted = $reportDate->format('M Y');
+            $dateStartFormatted = $reportDate->format('m/01/Y 00:00:00');
+            $dateEndFormatted = $reportDate->format('m/t/Y 23:59:59');
+        }
+
+        $dateStart = new \DateTime($dateStartFormatted);
+        $dateEnd = new \DateTime($dateEndFormatted);
+
+        if ($dateStart > $dateEnd) {
+            throw new StartGreaterEndDateException();
+        }
+
+        $subInterval =  ImtDateTimeInterval::getWithDateTimes($dateStart, $dateEnd);
+
+        if ($typeId !== null) {
+            $typeIds = [$typeId];
+        } else {
+            /** @var FacilityRepository $groupRepo */
+            $groupRepo = $this->em->getRepository(Facility::class);
+
+            $groupList = $groupRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class));
+            $typeIds = array_map(static function ($item) {
+                return $item->getId();
+            }, $groupList);
+        }
+
+        $ledgers = [];
+        if (!empty($typeIds)) {
+            /** @var ResidentAdmissionRepository $residentAdmissionRepo */
+            $residentAdmissionRepo = $this->em->getRepository(ResidentAdmission::class);
+
+            $groupResidents = $residentAdmissionRepo->getActiveResidents($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $groupIds);
+
+            $activeResidentIds = array_map(static function ($item) {
+                return $item['id'];
+            }, $groupResidents);
+
+            /** @var ResidentLedgerRepository $repo */
+            $repo = $this->em->getRepository(ResidentLedger::class);
+
+            $ledgers = $repo->getByIntervalAndResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentLedger::class), $activeResidentIds, $dateStart, $dateEnd);
+        }
+
+        $rentData = [];
+        if (!empty($ledgers)) {
+            $ledgerResidentIds = [];
+            $awayDays = [];
+            $expenseItemsAmount = [];
+            /** @var ResidentLedger $ledger */
+            foreach ($ledgers as $ledger) {
+                $ledgerResidentId = $ledger->getResident() ? $ledger->getResident()->getId() : 0;
+                $ledgerResidentIds[] = $ledgerResidentId;
+
+                $awayDays[$ledgerResidentId] = [];
+                if ($ledger->getResidentAwayDays() !== null) {
+                    /** @var ResidentAwayDays $residentAwayDay */
+                    foreach ($ledger->getResidentAwayDays() as $residentAwayDay) {
+                        $awayDays[$ledgerResidentId][] = ImtDateTimeInterval::getWithDateTimes($residentAwayDay->getStart(), $residentAwayDay->getEnd());
+                    }
+                }
+
+                $expenseItemsAmount[$ledgerResidentId] = 0;
+                if ($ledger->getResidentExpenseItems() !== null) {
+                    /** @var ResidentExpenseItem $expenseItem */
+                    foreach ($ledger->getResidentExpenseItems() as $expenseItem) {
+                        $expenseItemsAmount[$ledgerResidentId] += $expenseItem->getAmount();
+                    }
+                }
+            }
+
+            /** @var ResidentRentRepository $rentRepo */
+            $rentRepo = $this->em->getRepository(ResidentRent::class);
+            $rents = $rentRepo->getAdmissionRoomRentDataForResidentLedgers($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $subInterval, $ledgerResidentIds);
+
+            if (!empty($rents)) {
+                /** @var PaymentSourceRepository $paymentSourceRepo */
+                $paymentSourceRepo = $this->em->getRepository(PaymentSource::class);
+                $rentPeriodFactory = RentPeriodFactory::getFactory($subInterval);
+
+                foreach ($rents as $rent) {
+                    $discharged = $rent['discharged'] !== null ? new \DateTime($rent['discharged']) : $dateEnd;
+                    $discharged->setTime(23,59,59);
+                    $admitted = new \DateTime($rent['admitted']);
+                    $admitted->setTime(0,0,0);
+                    $admitted = $admitted < $dateStart ? $dateStart : $admitted;
+
+                    $privatPaySourceAmount = 0;
+                    $notPrivatPaySourceAmount = 0;
+                    $summaryAwayDays = 0;
+                    $billableDays = 0;
+                    if (!empty($rent['sources'])) {
+                        $sourceIds = array_column($rent['sources'], 'id');
+                        $sources = $paymentSourceRepo->findByIds($currentSpace, null, $sourceIds);
+
+                        $periods = [];
+                        $sourceTitles = [];
+                        $privatePayIds = [];
+                        $paymentSources = [];
+                        /** @var PaymentSource $source */
+                        foreach ($sources as $source) {
+                            $sourceTitles[$source->getId()] = $source->getTitle();
+                            $periods[$source->getId()] = $source->getPeriod();
+
+                            if ($source->isPrivatePay()) {
+                                $privatePayIds[$source->getId()] = $source->getId();
+                            }
+                        }
+
+                        foreach ($rent['sources'] as $rentSource) {
+                            $paymentSources[] = $sourceTitles[$rentSource['id']] . ' - $' . number_format($rentSource['amount'], 2, '.', ',');
+
+                            if (in_array($rentSource['id'], $privatePayIds, false)) {
+                                $calcResults = $rentPeriodFactory->calculateForRoomRentInterval(
+                                    ImtDateTimeInterval::getWithDateTimes($admitted, $discharged),
+                                    $periods[$rentSource['id']],
+                                    $rentSource['amount']
+                                );
+
+                                $privatPaySourceAmount += $calcResults['amount'];
+                            } else {
+                                $calcResults = $rentPeriodFactory->calculateForRoomRentInterval(
+                                    ImtDateTimeInterval::getWithDateTimes($admitted, $discharged),
+                                    $periods[$rentSource['id']],
+                                    $rentSource['amount'],
+                                    $awayDays[$rent['id']]
+                                );
+
+                                $notPrivatPaySourceAmount += $calcResults['amount'];
+
+                                $summaryAwayDays = $calcResults['absentDays'];
+                                $billableDays = $calcResults['days'];
+                            }
+                        }
+
+                        $grossRent = round($privatPaySourceAmount + $notPrivatPaySourceAmount, 2);
+                        $residentPortion = round($privatPaySourceAmount + $expenseItemsAmount[$rent['id']], 2);
+                        $stringPaymentSources = implode(", ", $paymentSources);
+
+                        $rentData[] = [
+                            'typeName' => $rent['typeName'],
+                            'fullName' => $rent['fullName'],
+                            'room' => $rent['room'],
+                            'awayDays' => $summaryAwayDays,
+                            'start' => $rent['start'],
+                            'end' => $rent['end'],
+                            'billableDays' => $billableDays,
+                            'grossRent' => $grossRent,
+                            'residentPortion' => $residentPortion,
+                            'sources' => $stringPaymentSources,
+                        ];
+                    }
+                }
+
+                $typeNames = array_map(static function ($item) {
+                    return $item['typeName'];
+                }, $rentData);
+
+                $residentFullNames = array_map(static function ($item) {
+                    return $item['fullName'];
+                }, $rentData);
+
+                array_multisort($typeNames, SORT_ASC, $residentFullNames, SORT_ASC, $rentData);
+            }
+        }
+
+        $report = new LedgerMonthlyFinanceRentData();
+        $report->setData($rentData);
+        $report->setStrategy(GroupType::getTypes()[$type]);
+        $report->setStrategyId($type);
+        $report->setDate($reportDateFormatted);
 
         return $report;
     }

@@ -234,6 +234,55 @@ class ResidentLedgerRepository extends EntityRepository implements RelatedInfoIn
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param array $residentIds
+     * @param $start
+     * @param $end
+     * @return int|mixed|string
+     */
+    public function getByIntervalAndResidentIds(Space $space = null, array $entityGrants = null, array $residentIds, $start, $end)
+    {
+        $qb = $this->createQueryBuilder('rl');
+
+        $qb
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'rl.resident = r'
+            )
+            ->where('r.id IN (:residentIds)')
+            ->andWhere('rl.createdAt >= :start AND rl.createdAt <= :end')
+            ->setParameter('residentIds', $residentIds)
+            ->setParameter('start', $start)
+            ->setParameter('end', $end);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rl.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->groupBy('rl.id')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
      * @param null $mappedBy
      * @param null $id
      * @param array|null $ids

@@ -529,6 +529,8 @@ report:
           title: "FACE Sheet: FACE Sheet for selected resident / all residents"
         face-sheet-no-admission:
           title: "FACE Sheet: FACE Sheet for selected resident / all residents (pre-admit)"
+        ledger-monthly-finance-rent:
+          title: "Ledger: Monthly Finance Rent Data Report"
         move-monthly:
           title: "Move-in/Move-Out"
         profile:

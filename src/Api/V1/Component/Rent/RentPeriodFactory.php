@@ -214,6 +214,7 @@ class RentPeriodFactory
         return array(
             'amount' => $period->calculateForRoomRentInterval($overlappingInterval, $amount),
             'days' => $days,
+            'absentDays' => $absentDays,
         );
     }
 

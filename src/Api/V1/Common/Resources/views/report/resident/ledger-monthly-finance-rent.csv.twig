@@ -1,0 +1,8 @@
+{% spaceless %}
+Ledger,Monthly,Finance,Rent Data,Report:,{{ data.date }},,,,,
+{{ data.strategy }},Resident,Room #,# Away Days,Move-In Date,Move-Out Date,# of Billable Days (3rd Party Pay),Gross Rent,Resident Portion (Private Pay),Payment Sources
+{% for datum in data.data %}
+"{{ datum.typeName|raw }}","{{ datum.fullName|raw }}","{{ datum.room|raw }}",{{ datum.awayDays }},{{ datum.start|date("m/d/Y") }},{% if datum.end is not null %}{{ datum.end|date("m/d/Y") }}{% else %}N/A{% endif %},{{ datum.billableDays }},"$ {{ datum.grossRent|number_format(2, '.', ',') }}","$ {{ datum.residentPortion|number_format(2, '.', ',') }}",{% if datum.sources %}"{{ datum.sources|raw }}"{% else %}N/A{% endif %}
+
+{% endfor %}
+{% endspaceless %}
