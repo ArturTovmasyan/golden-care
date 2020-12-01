@@ -1781,6 +1781,9 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                     WHEN ab.id IS NOT NULL AND ar.private = 0 THEN CONCAT(ar.number, \' (\',ab.number, \')\')
                     ELSE \'\' END) as room',
                 '(CASE
+                    WHEN fb.id IS NOT NULL THEN frt.title
+                    ELSE \'\' END) as roomType',
+                '(CASE
                     WHEN fb.id IS NOT NULL THEN f.name
                     WHEN ab.id IS NOT NULL THEN a.name
                     WHEN reg.id IS NOT NULL THEN reg.name

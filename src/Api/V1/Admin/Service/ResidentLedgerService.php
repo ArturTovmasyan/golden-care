@@ -785,7 +785,7 @@ class ResidentLedgerService extends BaseService implements IGridService
                     $newPaymentReceivedItem = new ResidentPaymentReceivedItem();
 
                     $paymentTypeId = $addedPaymentReceivedItem['payment_type_id'] ?? 0;
-                    $responsiblePersonId = $editedPaymentReceivedItems[$existingPaymentReceivedItem->getId()]['responsible_person_id'] ?? 0;
+                    $responsiblePersonId = $addedPaymentReceivedItem['responsible_person_id'] ?? 0;
 
                     /** @var RpPaymentType $paymentType */
                     $paymentType = $paymentTypeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(RpPaymentType::class), $paymentTypeId);
