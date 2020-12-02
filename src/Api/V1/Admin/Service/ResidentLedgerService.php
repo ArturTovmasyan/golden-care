@@ -332,12 +332,17 @@ class ResidentLedgerService extends BaseService implements IGridService
 
                     $periods = [];
                     $privatePayIds = [];
+                    $sourceAwayDaysOnIds = [];
                     /** @var PaymentSource $source */
                     foreach ($sources as $source) {
                         $periods[$source->getId()] = $source->getPeriod();
 
                         if ($source->isPrivatePay()) {
                             $privatePayIds[$source->getId()] = $source->getId();
+                        }
+
+                        if ($source->isOnlyForOccupiedDays()) {
+                            $sourceAwayDaysOnIds[$source->getId()] = $source->getId();
                         }
                     }
 
@@ -361,7 +366,7 @@ class ResidentLedgerService extends BaseService implements IGridService
                                 ImtDateTimeInterval::getWithDateTimes($admitted, $discharged),
                                 $periods[$rentSource['id']],
                                 $rentSource['amount'],
-                                $awayDays
+                                in_array($rentSource['id'], $sourceAwayDaysOnIds, false) ? $awayDays : null
                             );
 
                             $notPrivatPaySourceAmount += $calcResults['amount'];
@@ -956,6 +961,11 @@ class ResidentLedgerService extends BaseService implements IGridService
             //////////will be
             $entity->setBalanceDue(round($currentMonthBalanceDue + $priorBalanceDue, 2));
             //////////remove
+
+            //If all payments have been received set late payment to null
+            if (round($currentMonthPrivatPayBalanceDue, 2) <= 0 && round($currentMonthNotPrivatPayBalanceDue, 2) <= 0) {
+                $entity->setLatePayment(null);
+            }
 
             $this->em->persist($entity);
             $this->em->flush();

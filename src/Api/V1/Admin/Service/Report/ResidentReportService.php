@@ -1513,6 +1513,7 @@ class ResidentReportService extends BaseService
                         $periods = [];
                         $sourceTitles = [];
                         $privatePayIds = [];
+                        $sourceAwayDaysOnIds = [];
                         $paymentSources = [];
                         /** @var PaymentSource $source */
                         foreach ($sources as $source) {
@@ -1521,6 +1522,10 @@ class ResidentReportService extends BaseService
 
                             if ($source->isPrivatePay()) {
                                 $privatePayIds[$source->getId()] = $source->getId();
+                            }
+
+                            if ($source->isOnlyForOccupiedDays()) {
+                                $sourceAwayDaysOnIds[$source->getId()] = $source->getId();
                             }
                         }
 
@@ -1540,7 +1545,7 @@ class ResidentReportService extends BaseService
                                     ImtDateTimeInterval::getWithDateTimes($admitted, $discharged),
                                     $periods[$rentSource['id']],
                                     $rentSource['amount'],
-                                    $awayDays[$rent['id']]
+                                    in_array($rentSource['id'], $sourceAwayDaysOnIds, false) ? $awayDays[$rent['id']] : null
                                 );
 
                                 $notPrivatPaySourceAmount += $calcResults['amount'];
