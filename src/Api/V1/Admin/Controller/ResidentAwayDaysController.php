@@ -4,6 +4,7 @@ namespace App\Api\V1\Admin\Controller;
 
 use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\ResidentAwayDaysService;
+use App\Api\V1\Admin\Service\ResidentLedgerService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\ResidentAwayDays;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,7 +37,7 @@ class ResidentAwayDaysController extends BaseController
             ResidentAwayDays::class,
             'api_admin_resident_away_days_grid',
             $residentAwayDaysService,
-            ['ledger_id' => $request->get('ledger_id')]
+            ['resident_id' => $request->get('resident_id')]
         );
     }
 
@@ -65,7 +66,7 @@ class ResidentAwayDaysController extends BaseController
             ResidentAwayDays::class,
             'api_admin_resident_away_days_list',
             $residentAwayDaysService,
-            ['ledger_id' => $request->get('ledger_id')]
+            ['resident_id' => $request->get('resident_id')]
         );
     }
 
@@ -94,13 +95,15 @@ class ResidentAwayDaysController extends BaseController
      *
      * @param Request $request
      * @param ResidentAwayDaysService $residentAwayDaysService
+     * @param ResidentLedgerService $residentLedgerService
      * @return JsonResponse
      */
-    public function addAction(Request $request, ResidentAwayDaysService $residentAwayDaysService): JsonResponse
+    public function addAction(Request $request, ResidentAwayDaysService $residentAwayDaysService, ResidentLedgerService $residentLedgerService): JsonResponse
     {
         $id = $residentAwayDaysService->add(
+            $residentLedgerService,
             [
-                'ledger_id' => $request->get('ledger_id'),
+                'resident_id' => $request->get('resident_id'),
                 'start' => $request->get('start'),
                 'end' => $request->get('end'),
                 'reason' => $request->get('reason'),
@@ -122,14 +125,16 @@ class ResidentAwayDaysController extends BaseController
      * @param Request $request
      * @param $id
      * @param ResidentAwayDaysService $residentAwayDaysService
+     * @param ResidentLedgerService $residentLedgerService
      * @return JsonResponse
      */
-    public function editAction(Request $request, $id, ResidentAwayDaysService $residentAwayDaysService): JsonResponse
+    public function editAction(Request $request, $id, ResidentAwayDaysService $residentAwayDaysService, ResidentLedgerService $residentLedgerService): JsonResponse
     {
         $residentAwayDaysService->edit(
             $id,
+            $residentLedgerService,
             [
-                'ledger_id' => $request->get('ledger_id'),
+                'resident_id' => $request->get('resident_id'),
                 'start' => $request->get('start'),
                 'end' => $request->get('end'),
                 'reason' => $request->get('reason'),

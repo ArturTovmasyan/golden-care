@@ -36,7 +36,7 @@ class ResidentExpenseItemController extends BaseController
             ResidentExpenseItem::class,
             'api_admin_resident_expense_item_grid',
             $residentExpenseItemService,
-            ['ledger_id' => $request->get('ledger_id')]
+            ['resident_id' => $request->get('resident_id')]
         );
     }
 
@@ -65,7 +65,7 @@ class ResidentExpenseItemController extends BaseController
             ResidentExpenseItem::class,
             'api_admin_resident_expense_item_list',
             $residentExpenseItemService,
-            ['ledger_id' => $request->get('ledger_id')]
+            ['resident_id' => $request->get('resident_id')]
         );
     }
 
@@ -100,7 +100,7 @@ class ResidentExpenseItemController extends BaseController
     {
         $id = $residentExpenseItemService->add(
             [
-                'ledger_id' => $request->get('ledger_id'),
+                'resident_id' => $request->get('resident_id'),
                 'expense_item_id' => $request->get('expense_item_id'),
                 'date' => $request->get('date'),
                 'amount' => $request->get('amount'),
@@ -130,7 +130,7 @@ class ResidentExpenseItemController extends BaseController
         $residentExpenseItemService->edit(
             $id,
             [
-                'ledger_id' => $request->get('ledger_id'),
+                'resident_id' => $request->get('resident_id'),
                 'expense_item_id' => $request->get('expense_item_id'),
                 'date' => $request->get('date'),
                 'amount' => $request->get('amount'),

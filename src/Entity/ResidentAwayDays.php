@@ -54,46 +54,42 @@ class ResidentAwayDays
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_resident_away_days_list",
-     *     "api_admin_resident_away_days_get",
-     *     "api_admin_resident_ledger_get"
+     *     "api_admin_resident_away_days_get"
      * })
      */
     private $id;
 
     /**
-     * @var ResidentLedger
-     * @Assert\NotNull(message = "Please select a Ledger", groups={
+     * @var Resident
+     * @Assert\NotNull(message = "Please select a Resident", groups={
      *     "api_admin_resident_away_days_add",
      *     "api_admin_resident_away_days_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\ResidentLedger", inversedBy="residentAwayDays")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Resident", inversedBy="residentAwayDays")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_ledger", referencedColumnName="id", onDelete="CASCADE")
+     *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({
      *     "api_admin_resident_away_days_list",
      *     "api_admin_resident_away_days_get"
      * })
      */
-    private $ledger;
+    private $resident;
 
     /**
      * @var \DateTime
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_away_days_add",
-     *     "api_admin_resident_away_days_edit",
-     *     "api_admin_resident_ledger_edit"
+     *     "api_admin_resident_away_days_edit"
      * })
      * @Assert\DateTime(groups={
      *     "api_admin_resident_away_days_add",
-     *     "api_admin_resident_away_days_edit",
-     *     "api_admin_resident_ledger_edit"
+     *     "api_admin_resident_away_days_edit"
      * })
      * @ORM\Column(name="start", type="datetime")
      * @Groups({
      *     "api_admin_resident_away_days_list",
-     *     "api_admin_resident_away_days_get",
-     *     "api_admin_resident_ledger_get"
+     *     "api_admin_resident_away_days_get"
      * })
      */
     private $start;
@@ -102,19 +98,16 @@ class ResidentAwayDays
      * @var \DateTime
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_away_days_add",
-     *     "api_admin_resident_away_days_edit",
-     *     "api_admin_resident_ledger_edit"
+     *     "api_admin_resident_away_days_edit"
      * })
      * @Assert\DateTime(groups={
      *     "api_admin_resident_away_days_add",
-     *     "api_admin_resident_away_days_edit",
-     *     "api_admin_resident_ledger_edit"
+     *     "api_admin_resident_away_days_edit"
      * })
      * @ORM\Column(name="end", type="datetime")
      * @Groups({
      *     "api_admin_resident_away_days_list",
-     *     "api_admin_resident_away_days_get",
-     *     "api_admin_resident_ledger_get"
+     *     "api_admin_resident_away_days_get"
      * })
      */
     private $end;
@@ -123,22 +116,19 @@ class ResidentAwayDays
      * @var string
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_away_days_add",
-     *     "api_admin_resident_away_days_edit",
-     *     "api_admin_resident_ledger_edit"
+     *     "api_admin_resident_away_days_edit"
      * })
      * @Assert\Length(
      *      max = 128,
      *      maxMessage = "Reason cannot be longer than {{ limit }} characters",
      *      groups={
      *           "api_admin_resident_away_days_add",
-     *           "api_admin_resident_away_days_edit",
-     *           "api_admin_resident_ledger_edit"
+     *           "api_admin_resident_away_days_edit"
      * })
      * @ORM\Column(name="reason", type="string", length=128)
      * @Groups({
      *     "api_admin_resident_away_days_list",
-     *     "api_admin_resident_away_days_get",
-     *     "api_admin_resident_ledger_get"
+     *     "api_admin_resident_away_days_get"
      * })
      */
     private $reason;
@@ -160,19 +150,19 @@ class ResidentAwayDays
     }
 
     /**
-     * @return ResidentLedger|null
+     * @return Resident|null
      */
-    public function getLedger(): ?ResidentLedger
+    public function getResident(): ?Resident
     {
-        return $this->ledger;
+        return $this->resident;
     }
 
     /**
-     * @param ResidentLedger|null $ledger
+     * @param Resident|null $resident
      */
-    public function setLedger(?ResidentLedger $ledger): void
+    public function setResident(?Resident $resident): void
     {
-        $this->ledger = $ledger;
+        $this->resident = $resident;
     }
 
     /**

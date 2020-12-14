@@ -6,7 +6,6 @@ use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\ExpenseItem;
 use App\Entity\Resident;
 use App\Entity\ResidentExpenseItem;
-use App\Entity\ResidentLedger;
 use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
@@ -28,16 +27,10 @@ class ResidentExpenseItemRepository extends EntityRepository implements RelatedI
         $queryBuilder
             ->from(ResidentExpenseItem::class, 'rei')
             ->innerJoin(
-                ResidentLedger::class,
-                'rl',
-                Join::WITH,
-                'rl = rei.ledger'
-            )
-            ->innerJoin(
                 Resident::class,
                 'r',
                 Join::WITH,
-                'r = rl.resident'
+                'r = rei.resident'
             )
             ->innerJoin(
                 ExpenseItem::class,
@@ -80,18 +73,12 @@ class ResidentExpenseItemRepository extends EntityRepository implements RelatedI
         $qb = $this
             ->createQueryBuilder('rei')
             ->innerJoin(
-                ResidentLedger::class,
-                'rl',
-                Join::WITH,
-                'rl = rei.ledger'
-            )
-            ->innerJoin(
                 Resident::class,
                 'r',
                 Join::WITH,
-                'r = rl.resident'
+                'r = rei.resident'
             )
-            ->where('rl.id = :id')
+            ->where('r.id = :id')
             ->setParameter('id', $id);
 
         if ($space !== null) {
@@ -129,16 +116,10 @@ class ResidentExpenseItemRepository extends EntityRepository implements RelatedI
         $qb = $this
             ->createQueryBuilder('rei')
             ->innerJoin(
-                ResidentLedger::class,
-                'rl',
-                Join::WITH,
-                'rl = rei.ledger'
-            )
-            ->innerJoin(
                 Resident::class,
                 'r',
                 Join::WITH,
-                'r = rl.resident'
+                'r = rei.resident'
             )
             ->innerJoin(
                 Space::class,
@@ -182,16 +163,10 @@ class ResidentExpenseItemRepository extends EntityRepository implements RelatedI
         if ($space !== null) {
             $qb
                 ->innerJoin(
-                    ResidentLedger::class,
-                    'rl',
-                    Join::WITH,
-                    'rl = rei.ledger'
-                )
-                ->innerJoin(
                     Resident::class,
                     'r',
                     Join::WITH,
-                    'r = rl.resident'
+                    'r = rei.resident'
                 )
                 ->innerJoin(
                     Space::class,
@@ -249,16 +224,10 @@ class ResidentExpenseItemRepository extends EntityRepository implements RelatedI
         if ($space !== null) {
             $qb
                 ->innerJoin(
-                    ResidentLedger::class,
-                    'rl',
-                    Join::WITH,
-                    'rl = rei.ledger'
-                )
-                ->innerJoin(
                     Resident::class,
                     'r',
                     Join::WITH,
-                    'r = rl.resident'
+                    'r = rei.resident'
                 )
                 ->innerJoin(
                     Space::class,
@@ -295,18 +264,12 @@ class ResidentExpenseItemRepository extends EntityRepository implements RelatedI
             ->createQueryBuilder('rei')
             ->select('rei.amount')
             ->innerJoin(
-                ResidentLedger::class,
-                'rl',
-                Join::WITH,
-                'rl = rei.ledger'
-            )
-            ->innerJoin(
                 Resident::class,
                 'r',
                 Join::WITH,
-                'r = rl.resident'
+                'r = rei.resident'
             )
-            ->where('rl.id = :id')
+            ->where('r.id = :id')
             ->andWhere('rei.date >= :startDate AND rei.date <= :endDate')
             ->setParameter('startDate', $startDate)
             ->setParameter('endDate', $endDate)

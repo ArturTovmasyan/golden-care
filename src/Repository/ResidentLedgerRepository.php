@@ -404,7 +404,7 @@ class ResidentLedgerRepository extends EntityRepository implements RelatedInfoIn
      * @return int|mixed|string|null
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function getPreviousLedger(Space $space = null, array $entityGrants = null, $id, $startDate, $endDate)
+    public function getResidentLedgerByDate(Space $space = null, array $entityGrants = null, $id, $startDate, $endDate)
     {
         $qb = $this
             ->createQueryBuilder('rl')

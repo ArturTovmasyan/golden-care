@@ -8,12 +8,10 @@ use App\Api\V1\Common\Service\Exception\LatePaymentNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentLedgerAlreadyExistException;
 use App\Api\V1\Common\Service\Exception\ResidentLedgerNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
-use App\Api\V1\Common\Service\Exception\StartGreaterEndDateException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Api\V1\Component\Rent\RentPeriodFactory;
 use App\Entity\CreditItem;
 use App\Entity\DiscountItem;
-use App\Entity\ExpenseItem;
 use App\Entity\LatePayment;
 use App\Entity\PaymentSource;
 use App\Entity\ResidentAwayDays;
@@ -29,9 +27,9 @@ use App\Entity\RpPaymentType;
 use App\Model\RentPeriod;
 use App\Repository\CreditItemRepository;
 use App\Repository\DiscountItemRepository;
-use App\Repository\ExpenseItemRepository;
 use App\Repository\LatePaymentRepository;
 use App\Repository\PaymentSourceRepository;
+use App\Repository\ResidentAwayDaysRepository;
 use App\Repository\ResidentCreditItemRepository;
 use App\Repository\ResidentDiscountItemRepository;
 use App\Repository\ResidentExpenseItemRepository;
@@ -181,48 +179,83 @@ class ResidentLedgerService extends BaseService implements IGridService
                 throw new ResidentLedgerAlreadyExistException();
             }
 
-            $amountData = $this->calculateAmountAndGetPaymentSources($currentSpace, $residentId, $now, null);
-            //Calculate Privat Pay Balance Due
-            $currentMonthPrivatPayBalanceDue = $amountData['privatPayAmount'];
-            //Calculate Not Privat Pay Balance Due
-            $currentMonthNotPrivatPayBalanceDue = $amountData['notPrivatPayAmount'];
+            $this->validate($residentLedger, null, ['api_admin_resident_ledger_add']);
 
-            //////////will be
-            //Calculate Amount
-            $amount = $amountData['amount'];
+            $this->em->persist($residentLedger);
+            $this->em->flush();
 
-            $residentLedger->setAmount(round($amount, 2));
+            $now = $residentLedger->getCreatedAt() ?? new \DateTime('now');
 
-            //Calculate Balance Due
-            $currentMonthBalanceDue = $amount;
-            //////////remove
+            $awayDays = [];
+            $dateStartFormatted = $now->format('m/01/Y 00:00:00');
+            $dateEndFormatted = $now->format('m/t/Y 23:59:59');
 
-            //Calculate Previous Month Balance Due
-            $previousDate = new \DateTime(date('Y-m-d', strtotime($now->format('Y-m-d')." first day of previous month")));
-            $dateStartFormatted = $previousDate->format('m/01/Y 00:00:00');
-            $dateEndFormatted = $previousDate->format('m/t/Y 23:59:59');
             $dateStart = new \DateTime($dateStartFormatted);
             $dateEnd = new \DateTime($dateEndFormatted);
 
-            /** @var ResidentLedger $previousLedger */
-            $previousLedger = $repo->getPreviousLedger($currentSpace, null, $residentId, $dateStart, $dateEnd);
+            /** @var ResidentAwayDaysRepository $residentAwayDaysRepo */
+            $residentAwayDaysRepo = $this->em->getRepository(ResidentAwayDays::class);
+            $residentAwayDays = $residentAwayDaysRepo->getByInterval($currentSpace, null, $residentId, $dateStart, $dateEnd);
+            if (!empty($residentAwayDays)) {
+                /** @var ResidentAwayDays $residentAwayDay */
+                foreach ($residentAwayDays as $residentAwayDay) {
+                    $awayDays[] = ImtDateTimeInterval::getWithDateTimes($residentAwayDay->getStart(), $residentAwayDay->getEnd());
+                }
+            }
 
-            $priorBalanceDue = 0;
+            /** @var ResidentExpenseItemRepository $residentExpenseItemRepo */
+            $residentExpenseItemRepo = $this->em->getRepository(ResidentExpenseItem::class);
+            $residentExpenseItems = $residentExpenseItemRepo->getByInterval($currentSpace, null, $residentId, $dateStart, $dateEnd);
+
+            $expenseItemAmount = 0;
+            if (!empty($residentExpenseItems)) {
+                foreach ($residentExpenseItems as $expenseItem) {
+                    $expenseItemAmount += $expenseItem['amount'];
+                }
+            }
+
+            $amountData = $this->calculateAmountAndGetPaymentSources($currentSpace, $residentId, $now, $awayDays);
+            //Calculate Privat Pay Balance Due
+            $currentMonthPrivatPayBalanceDue = $amountData['privatPayAmount'] + $expenseItemAmount;
+            //Calculate Not Privat Pay Balance Due
+            $currentMonthNotPrivatPayBalanceDue = $amountData['notPrivatPayAmount'];
+
+            //Calculate Previous Month Balance Due
+            $previousDate = new \DateTime(date('Y-m-d', strtotime($now->format('Y-m-d')." first day of previous month")));
+            $previousDateStartFormatted = $previousDate->format('m/01/Y 00:00:00');
+            $previousDateEndFormatted = $previousDate->format('m/t/Y 23:59:59');
+            $previousDateStart = new \DateTime($previousDateStartFormatted);
+            $previousDateEnd = new \DateTime($previousDateEndFormatted);
+
+            /** @var ResidentLedger $previousLedger */
+            $previousLedger = $repo->getResidentLedgerByDate($currentSpace, null, $residentId, $previousDateStart, $previousDateEnd);
+
             $priorPrivatPayBalanceDue = 0;
             $priorNotPrivatPayBalanceDue = 0;
             if ($previousLedger === null) {
-                $priorAmountData = $this->calculateAmountAndGetPaymentSources($currentSpace, $residentId, $previousDate, null);
+                $previousResidentExpenseItems = $residentExpenseItemRepo->getByInterval($currentSpace, null, $residentId, $previousDateStart, $previousDateEnd);
+
+                $previousExpenseItemAmount = 0;
+                if (!empty($previousResidentExpenseItems)) {
+                    foreach ($previousResidentExpenseItems as $previousExpenseItem) {
+                        $previousExpenseItemAmount += $previousExpenseItem['amount'];
+                    }
+                }
+
+                $previousAwayDays = [];
+                $previousResidentAwayDays = $residentAwayDaysRepo->getByInterval($currentSpace, null, $residentId, $previousDateStart, $previousDateEnd);
+                if (!empty($previousResidentAwayDays)) {
+                    /** @var ResidentAwayDays $previousResidentAwayDay */
+                    foreach ($previousResidentAwayDays as $previousResidentAwayDay) {
+                        $previousAwayDays[] = ImtDateTimeInterval::getWithDateTimes($previousResidentAwayDay->getStart(), $previousResidentAwayDay->getEnd());
+                    }
+                }
+
+                $priorAmountData = $this->calculateAmountAndGetPaymentSources($currentSpace, $residentId, $previousDate, $previousAwayDays);
                 //Calculate Privat Pay Balance Due
-                $priorPrivatPayBalanceDue = $priorAmountData['privatPayAmount'];
+                $priorPrivatPayBalanceDue = $priorAmountData['privatPayAmount'] + $previousExpenseItemAmount;
                 //Calculate Not Privat Pay Balance Due
                 $priorNotPrivatPayBalanceDue = $priorAmountData['notPrivatPayAmount'];
-
-                //////////will be
-                //Calculate Previous Month Amount
-                $priorAmount = $priorAmountData['amount'];
-
-                $priorBalanceDue = $priorAmount;
-                //////////remove
             }
 
             $residentLedger->setPrivatePayBalanceDue(round($currentMonthPrivatPayBalanceDue + $priorPrivatPayBalanceDue, 2));
@@ -230,15 +263,9 @@ class ResidentLedgerService extends BaseService implements IGridService
             $residentLedger->setNotPrivatePayBalanceDue(round($currentMonthNotPrivatPayBalanceDue + $priorNotPrivatPayBalanceDue, 2));
             $residentLedger->setPriorNotPrivatePayBalanceDue(round($priorNotPrivatPayBalanceDue, 2));
 
-            //////////will be
-            $residentLedger->setBalanceDue(round($currentMonthBalanceDue + $priorBalanceDue, 2));
-            //////////remove
-
             $residentLedger->setSource($amountData['paymentSources']);
             $residentLedger->setPrivatPaySource($amountData['privatPayPaymentSources']);
             $residentLedger->setNotPrivatPaySource($amountData['notPrivatPayPaymentSources']);
-
-            $this->validate($residentLedger, null, ['api_admin_resident_ledger_add']);
 
             $this->em->persist($residentLedger);
             $this->em->flush();
@@ -404,11 +431,12 @@ class ResidentLedgerService extends BaseService implements IGridService
     /**
      * @param $currentSpace
      * @param $ledgerId
+     * @param $residentId
      * @param $now
      * @return array
      * @throws \Exception
      */
-    public function calculateRelationsAmount($currentSpace, $ledgerId, $now): array
+    public function calculateRelationsAmount($currentSpace, $ledgerId, $residentId, $now): array
     {
         $dateStartFormatted = $now->format('m/01/Y 00:00:00');
         $dateEndFormatted = $now->format('m/t/Y 23:59:59');
@@ -418,7 +446,7 @@ class ResidentLedgerService extends BaseService implements IGridService
 
         /** @var ResidentExpenseItemRepository $residentExpenseItemRepo */
         $residentExpenseItemRepo = $this->em->getRepository(ResidentExpenseItem::class);
-        $residentExpenseItems = $residentExpenseItemRepo->getByInterval($currentSpace, null, $ledgerId, $dateStart, $dateEnd);
+        $residentExpenseItems = $residentExpenseItemRepo->getByInterval($currentSpace, null, $residentId, $dateStart, $dateEnd);
 
         $expenseItemAmount = 0;
         if (!empty($residentExpenseItems)) {
@@ -520,75 +548,6 @@ class ResidentLedgerService extends BaseService implements IGridService
                 $entity->setLatePayment($latePayment);
             } else {
                 $entity->setLatePayment(null);
-            }
-
-            //////////Expense Item/////////////////////////////////////////////////////
-            /** @var ExpenseItemRepository $expenseItemRepo */
-            $expenseItemRepo = $this->em->getRepository(ExpenseItem::class);
-            $addedExpenseItems = [];
-            $editedExpenseItems = [];
-            $editedExpenseItemsIds = [];
-            if (!empty($params['resident_expense_items'])) {
-                foreach ($params['resident_expense_items'] as $expenseItem) {
-                    if (empty($expenseItem['id'])) {
-                        $addedExpenseItems[] = $expenseItem;
-                    } else {
-                        $editedExpenseItems[$expenseItem['id']] = $expenseItem;
-                        $editedExpenseItemsIds[] = $expenseItem['id'];
-                    }
-                }
-            }
-
-            if ($entity->getResidentExpenseItems() !== null) {
-                /** @var ResidentExpenseItem $existingExpenseItem */
-                foreach ($entity->getResidentExpenseItems() as $existingExpenseItem) {
-                    if (\in_array($existingExpenseItem->getId(), $editedExpenseItemsIds, false)) {
-                        $existingExpenseItemDate = new \DateTime($editedExpenseItems[$existingExpenseItem->getId()]['date']);
-                        if ($entity->getCreatedAt()->format('Y') !== $existingExpenseItemDate->format('Y') || $entity->getCreatedAt()->format('m') !== $existingExpenseItemDate->format('m')) {
-                            throw new InvalidEffectiveDateException();
-                        }
-
-                        $expenseItemId = $editedExpenseItems[$existingExpenseItem->getId()]['expense_item_id'] ?? 0;
-
-                        /** @var ExpenseItem $expenseItem */
-                        $expenseItem = $expenseItemRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ExpenseItem::class), $expenseItemId);
-
-                        $existingExpenseItem->setExpenseItem($expenseItem);
-                        $existingExpenseItem->setDate($existingExpenseItemDate);
-                        $existingExpenseItem->setAmount($editedExpenseItems[$existingExpenseItem->getId()]['amount']);
-                        $existingExpenseItem->setNotes($editedExpenseItems[$existingExpenseItem->getId()]['notes'] ?? '');
-
-                        $this->em->persist($existingExpenseItem);
-                    } else {
-                        $entity->removeResidentExpenseItem($existingExpenseItem);
-                        $this->em->remove($existingExpenseItem);
-                    }
-                }
-            }
-
-            if (!empty($addedExpenseItems)) {
-                foreach ($addedExpenseItems as $addedExpenseItem) {
-                    $expenseItemDate = new \DateTime($addedExpenseItem['date']);
-                    if ($entity->getCreatedAt()->format('Y') !== $expenseItemDate->format('Y') || $entity->getCreatedAt()->format('m') !== $expenseItemDate->format('m')) {
-                        throw new InvalidEffectiveDateException();
-                    }
-
-                    $newExpenseItem = new ResidentExpenseItem();
-
-                    $expenseItemId = $addedExpenseItem['expense_item_id'] ?? 0;
-
-                    /** @var ExpenseItem $expenseItem */
-                    $expenseItem = $expenseItemRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ExpenseItem::class), $expenseItemId);
-
-                    $newExpenseItem->setExpenseItem($expenseItem);
-                    $newExpenseItem->setDate($expenseItemDate);
-                    $newExpenseItem->setAmount($addedExpenseItem['amount']);
-                    $newExpenseItem->setNotes($addedExpenseItem['notes'] ?? '');
-                    $newExpenseItem->setLedger($entity);
-                    $entity->addResidentExpenseItem($newExpenseItem);
-
-                    $this->em->persist($newExpenseItem);
-                }
             }
 
             //////////Credit Item/////////////////////////////////////////////////////
@@ -810,157 +769,78 @@ class ResidentLedgerService extends BaseService implements IGridService
                 }
             }
 
-            //////////Away Days/////////////////////////////////////////////////////
-            $addedAwayDays = [];
-            $editedAwayDays = [];
-            $editedAwayDaysIds = [];
-            if (!empty($params['resident_away_days'])) {
-                foreach ($params['resident_away_days'] as $awayDay) {
-                    if (empty($awayDay['id'])) {
-                        $addedAwayDays[] = $awayDay;
-                    } else {
-                        $editedAwayDays[$awayDay['id']] = $awayDay;
-                        $editedAwayDaysIds[] = $awayDay['id'];
-                    }
-                }
-            }
-
-            if ($entity->getResidentAwayDays() !== null) {
-                /** @var ResidentAwayDays $existingResidentAwayDay */
-                foreach ($entity->getResidentAwayDays() as $existingResidentAwayDay) {
-                    if (\in_array($existingResidentAwayDay->getId(), $editedAwayDaysIds, false)) {
-                        $existingResidentAwayDayStart = new \DateTime($editedAwayDays[$existingResidentAwayDay->getId()]['start']);
-                        $existingResidentAwayDayStart->setTime(0, 0, 0);
-                        $existingResidentAwayDayEnd = new \DateTime($editedAwayDays[$existingResidentAwayDay->getId()]['end']);
-                        $existingResidentAwayDayEnd->setTime(23, 59, 59);
-
-                        if ($existingResidentAwayDayStart > $existingResidentAwayDayEnd) {
-                            throw new StartGreaterEndDateException();
-                        }
-                        if ($entity->getCreatedAt()->format('Y') !== $existingResidentAwayDayStart->format('Y') || $entity->getCreatedAt()->format('m') !== $existingResidentAwayDayStart->format('m')) {
-                            throw new InvalidEffectiveDateException();
-                        }
-                        if ($entity->getCreatedAt()->format('Y') !== $existingResidentAwayDayEnd->format('Y') || $entity->getCreatedAt()->format('m') !== $existingResidentAwayDayEnd->format('m')) {
-                            throw new InvalidEffectiveDateException();
-                        }
-
-                        $existingResidentAwayDay->setStart($existingResidentAwayDayStart);
-                        $existingResidentAwayDay->setEnd($existingResidentAwayDayEnd);
-                        $existingResidentAwayDay->setReason($editedAwayDays[$existingResidentAwayDay->getId()]['reason']);
-
-                        $this->em->persist($existingResidentAwayDay);
-                    } else {
-                        $entity->removeResidentAwayDays($existingResidentAwayDay);
-                        $this->em->remove($existingResidentAwayDay);
-                    }
-                }
-            }
-
-            if (!empty($addedAwayDays)) {
-                foreach ($addedAwayDays as $addedAwayDay) {
-                    $awayDayStart = new \DateTime($addedAwayDay['start']);
-                    $awayDayStart->setTime(0, 0, 0);
-                    $awayDayEnd = new \DateTime($addedAwayDay['end']);
-                    $awayDayEnd->setTime(23, 59, 59);
-
-                    if ($awayDayStart > $awayDayEnd) {
-                        throw new StartGreaterEndDateException();
-                    }
-                    if ($entity->getCreatedAt()->format('Y') !== $awayDayStart->format('Y') || $entity->getCreatedAt()->format('m') !== $awayDayStart->format('m')) {
-                        throw new InvalidEffectiveDateException();
-                    }
-                    if ($entity->getCreatedAt()->format('Y') !== $awayDayEnd->format('Y') || $entity->getCreatedAt()->format('m') !== $awayDayEnd->format('m')) {
-                        throw new InvalidEffectiveDateException();
-                    }
-
-                    $newAwayDays = new ResidentAwayDays();
-
-                    $newAwayDays->setStart($awayDayStart);
-                    $newAwayDays->setEnd($awayDayEnd);
-                    $newAwayDays->setReason($addedAwayDay['reason']);
-                    $newAwayDays->setLedger($entity);
-                    $entity->addResidentAwayDays($newAwayDays);
-
-                    $this->em->persist($newAwayDays);
-                }
-            }
-
             $this->validate($entity, null, ['api_admin_resident_ledger_edit']);
 
             $this->em->persist($entity);
             $this->em->flush();
 
+            //Calculate amount
+            $now = $entity->getCreatedAt() ?? new \DateTime('now');
+
             $awayDays = [];
-            if ($entity->getResidentAwayDays() !== null) {
+            $dateStartFormatted = $now->format('m/01/Y 00:00:00');
+            $dateEndFormatted = $now->format('m/t/Y 23:59:59');
+
+            $dateStart = new \DateTime($dateStartFormatted);
+            $dateEnd = new \DateTime($dateEndFormatted);
+
+            /** @var ResidentAwayDaysRepository $residentAwayDaysRepo */
+            $residentAwayDaysRepo = $this->em->getRepository(ResidentAwayDays::class);
+            $residentAwayDays = $residentAwayDaysRepo->getByInterval($currentSpace, null, $residentId, $dateStart, $dateEnd);
+            if (!empty($residentAwayDays)) {
                 /** @var ResidentAwayDays $residentAwayDay */
-                foreach ($entity->getResidentAwayDays() as $residentAwayDay) {
+                foreach ($residentAwayDays as $residentAwayDay) {
                     $awayDays[] = ImtDateTimeInterval::getWithDateTimes($residentAwayDay->getStart(), $residentAwayDay->getEnd());
                 }
             }
 
-            //Calculate amount
-            $now = $entity->getCreatedAt() ?? new \DateTime('now');
             $amountData = $this->calculateAmountAndGetPaymentSources($currentSpace, $residentId, $now, $awayDays);
 
             $entity->setSource($amountData['paymentSources']);
             $entity->setPrivatPaySource($amountData['privatPayPaymentSources']);
             $entity->setNotPrivatPaySource($amountData['notPrivatPayPaymentSources']);
 
-            //////////will be
-            //Calculate amount
-            $amount = $amountData['amount'];
-
-            $entity->setAmount(round($amount, 2));
-            //////////remove
-
-            $relationsAmount = $this->calculateRelationsAmount($currentSpace, $entity->getId(), $now);
+            $relationsAmount = $this->calculateRelationsAmount($currentSpace, $entity->getId(), $residentId, $now);
 
             //Calculate Privat Pay Balance Due
             $currentMonthPrivatPayBalanceDue = $amountData['privatPayAmount'] + $relationsAmount['privatePayRelationsAmount'];
             //Calculate Not Privat Pay Balance Due
             $currentMonthNotPrivatPayBalanceDue = $amountData['notPrivatPayAmount'] + $relationsAmount['notPrivatePayRelationsAmount'];
 
-            //////////will be
-            //Calculate Balance Due
-            $currentMonthBalanceDue = $amount + $relationsAmount['privatePayRelationsAmount'];
-            //////////remove
-
             //Calculate Previous Month Balance Due
             $previousDate = new \DateTime(date('Y-m-d', strtotime($now->format('Y-m-d')." first day of previous month")));
-            $dateStartFormatted = $previousDate->format('m/01/Y 00:00:00');
-            $dateEndFormatted = $previousDate->format('m/t/Y 23:59:59');
-            $dateStart = new \DateTime($dateStartFormatted);
-            $dateEnd = new \DateTime($dateEndFormatted);
+            $previousDateStartFormatted = $previousDate->format('m/01/Y 00:00:00');
+            $previousDateEndFormatted = $previousDate->format('m/t/Y 23:59:59');
+            $previousDateStart = new \DateTime($previousDateStartFormatted);
+            $previousDateEnd = new \DateTime($previousDateEndFormatted);
 
             /** @var ResidentLedger $previousLedger */
-            $previousLedger = $repo->getPreviousLedger($currentSpace, null, $residentId, $dateStart, $dateEnd);
+            $previousLedger = $repo->getResidentLedgerByDate($currentSpace, null, $residentId, $previousDateStart, $previousDateEnd);
 
-            $priorBalanceDue = 0;
             $priorPrivatPayBalanceDue = 0;
             $priorNotPrivatPayBalanceDue = 0;
             if ($previousLedger === null) {
-                $priorAmountData = $this->calculateAmountAndGetPaymentSources($currentSpace, $residentId, $previousDate, null);
-                $priorRelationsAmount = $this->calculateRelationsAmount($currentSpace, $entity->getId(), $previousDate);
+                $previousAwayDays = [];
+                $previousResidentAwayDays = $residentAwayDaysRepo->getByInterval($currentSpace, null, $residentId, $previousDateStart, $previousDateEnd);
+                if (!empty($previousResidentAwayDays)) {
+                    /** @var ResidentAwayDays $previousResidentAwayDay */
+                    foreach ($previousResidentAwayDays as $previousResidentAwayDay) {
+                        $previousAwayDays[] = ImtDateTimeInterval::getWithDateTimes($previousResidentAwayDay->getStart(), $previousResidentAwayDay->getEnd());
+                    }
+                }
+
+                $priorAmountData = $this->calculateAmountAndGetPaymentSources($currentSpace, $residentId, $previousDate, $previousAwayDays);
+                $priorRelationsAmount = $this->calculateRelationsAmount($currentSpace, $entity->getId(), $residentId, $previousDate);
                 //Calculate Privat Pay Balance Due
                 $priorPrivatPayBalanceDue = $priorAmountData['privatPayAmount'] + $priorRelationsAmount['privatePayRelationsAmount'];
                 //Calculate Not Privat Pay Balance Due
                 $priorNotPrivatPayBalanceDue = $priorAmountData['notPrivatPayAmount'] + $priorRelationsAmount['notPrivatePayRelationsAmount'];
-
-                //////////will be
-                //Calculate Previous Month Amount
-                $priorAmount = $priorAmountData['amount'];
-                $priorBalanceDue = $priorAmount + $priorRelationsAmount['privatePayRelationsAmount'];
-                //////////remove
             }
 
             $entity->setPrivatePayBalanceDue(round($currentMonthPrivatPayBalanceDue + $priorPrivatPayBalanceDue, 2));
             $entity->setPriorPrivatePayBalanceDue(round($priorPrivatPayBalanceDue, 2));
             $entity->setNotPrivatePayBalanceDue(round($currentMonthNotPrivatPayBalanceDue + $priorNotPrivatPayBalanceDue, 2));
             $entity->setPriorNotPrivatePayBalanceDue(round($priorNotPrivatPayBalanceDue, 2));
-
-            //////////will be
-            $entity->setBalanceDue(round($currentMonthBalanceDue + $priorBalanceDue, 2));
-            //////////remove
 
             //If all payments have been received set late payment to null
             if (round($currentMonthPrivatPayBalanceDue, 2) <= 0 && round($currentMonthNotPrivatPayBalanceDue, 2) <= 0) {

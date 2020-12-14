@@ -98,48 +98,6 @@ class ResidentLedger implements PreviousAndNextItemsService
 
     /**
      * @var float
-     * @ORM\Column(name="amount", type="float", length=10)
-     * @Assert\NotBlank(groups={
-     *     "api_admin_resident_ledger_add",
-     *     "api_admin_resident_ledger_edit"
-     * })
-     * @Assert\Length(
-     *      max = 10,
-     *      maxMessage = "Amount cannot be longer than {{ limit }} characters",
-     *      groups={
-     *          "api_admin_resident_ledger_add",
-     *          "api_admin_resident_ledger_edit"
-     * })
-     * @Groups({
-     *     "api_admin_resident_ledger_list",
-     *     "api_admin_resident_ledger_get"
-     * })
-     */
-    private $amount = 0;
-
-    /**
-     * @var float
-     * @ORM\Column(name="balance_due", type="float", length=10)
-     * @Assert\NotBlank(groups={
-     *     "api_admin_resident_ledger_add",
-     *     "api_admin_resident_ledger_edit"
-     * })
-     * @Assert\Length(
-     *      max = 10,
-     *      maxMessage = "Balance Due cannot be longer than {{ limit }} characters",
-     *      groups={
-     *          "api_admin_resident_ledger_add",
-     *          "api_admin_resident_ledger_edit"
-     * })
-     * @Groups({
-     *     "api_admin_resident_ledger_list",
-     *     "api_admin_resident_ledger_get"
-     * })
-     */
-    private $balanceDue = 0;
-
-    /**
-     * @var float
      * @ORM\Column(name="private_pay_balance_due", type="float", length=10)
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_ledger_add",
@@ -275,19 +233,6 @@ class ResidentLedger implements PreviousAndNextItemsService
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\ResidentExpenseItem", mappedBy="ledger", cascade={"remove", "persist"})
-     * @ORM\OrderBy({"date" = "ASC"})
-     * @Assert\Valid(groups={
-     *     "api_admin_resident_ledger_edit"
-     * })
-     * @Groups({
-     *     "api_admin_resident_ledger_get"
-     * })
-     */
-    private $residentExpenseItems;
-
-    /**
-     * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Entity\ResidentCreditItem", mappedBy="ledger", cascade={"remove", "persist"})
      * @ORM\OrderBy({"date" = "ASC"})
      * @Assert\Valid(groups={
@@ -324,19 +269,6 @@ class ResidentLedger implements PreviousAndNextItemsService
      * })
      */
     private $residentPaymentReceivedItems;
-
-    /**
-     * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\ResidentAwayDays", mappedBy="ledger", cascade={"remove", "persist"})
-     * @ORM\OrderBy({"start" = "ASC"})
-     * @Assert\Valid(groups={
-     *     "api_admin_resident_ledger_edit"
-     * })
-     * @Groups({
-     *     "api_admin_resident_ledger_get"
-     * })
-     */
-    private $residentAwayDays;
 
     /**
      * @var LatePayment
@@ -401,6 +333,29 @@ class ResidentLedger implements PreviousAndNextItemsService
     }
 
     /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("resident_expense_items")
+     * @Serializer\Groups({
+     *     "api_admin_resident_ledger_get"
+     * })
+     * @return mixed
+     */
+    public function getExpenseItems()
+    {
+        $createdAt = $this->getCreatedAt();
+        $residentExpenseItems = $this->resident->getResidentExpenseItems();
+
+        $filteredExpenseItems = [];
+        if (!empty($residentExpenseItems)) {
+            $filteredExpenseItems = $residentExpenseItems->filter(function(ResidentExpenseItem $residentExpenseItem) use ($createdAt) {
+                    return $residentExpenseItem->getDate()->format('Y') === $createdAt->format('Y') && $residentExpenseItem->getDate()->format('m') === $createdAt->format('m');
+                });
+        }
+
+        return $filteredExpenseItems;
+    }
+
+    /**
      * @return int
      */
     public function getId(): ?int
@@ -430,38 +385,6 @@ class ResidentLedger implements PreviousAndNextItemsService
     public function setResident(?Resident $resident): void
     {
         $this->resident = $resident;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getAmount(): ?float
-    {
-        return $this->amount;
-    }
-
-    /**
-     * @param float|null $amount
-     */
-    public function setAmount(?float $amount): void
-    {
-        $this->amount = $amount;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getBalanceDue(): ?float
-    {
-        return $this->balanceDue;
-    }
-
-    /**
-     * @param float|null $balanceDue
-     */
-    public function setBalanceDue(?float $balanceDue): void
-    {
-        $this->balanceDue = $balanceDue;
     }
 
     /**
@@ -579,39 +502,6 @@ class ResidentLedger implements PreviousAndNextItemsService
     /**
      * @return mixed
      */
-    public function getResidentExpenseItems()
-    {
-        return $this->residentExpenseItems;
-    }
-
-    /**
-     * @param mixed $residentExpenseItems
-     */
-    public function setResidentExpenseItems($residentExpenseItems): void
-    {
-        $this->residentExpenseItems = $residentExpenseItems;
-    }
-
-    /**
-     * @param ResidentExpenseItem $residentExpenseItem
-     */
-    public function addResidentExpenseItem($residentExpenseItem): void
-    {
-        $residentExpenseItem->setLedger($this);
-        $this->residentExpenseItems->add($residentExpenseItem);
-    }
-
-    /**
-     * @param ResidentExpenseItem $residentExpenseItem
-     */
-    public function removeResidentExpenseItem($residentExpenseItem): void
-    {
-        $this->residentExpenseItems->removeElement($residentExpenseItem);
-    }
-
-    /**
-     * @return mixed
-     */
     public function getResidentCreditItems()
     {
         return $this->residentCreditItems;
@@ -706,39 +596,6 @@ class ResidentLedger implements PreviousAndNextItemsService
     public function removeResidentPaymentReceivedItem($residentPaymentReceivedItem): void
     {
         $this->residentPaymentReceivedItems->removeElement($residentPaymentReceivedItem);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getResidentAwayDays()
-    {
-        return $this->residentAwayDays;
-    }
-
-    /**
-     * @param ArrayCollection $residentAwayDays
-     */
-    public function setResidentAwayDays(ArrayCollection $residentAwayDays): void
-    {
-        $this->residentAwayDays = $residentAwayDays;
-    }
-
-    /**
-     * @param ResidentAwayDays $residentAwayDay
-     */
-    public function addResidentAwayDays($residentAwayDay): void
-    {
-        $residentAwayDay->setLedger($this);
-        $this->residentAwayDays->add($residentAwayDay);
-    }
-
-    /**
-     * @param ResidentAwayDays $residentAwayDay
-     */
-    public function removeResidentAwayDays($residentAwayDay): void
-    {
-        $this->residentAwayDays->removeElement($residentAwayDay);
     }
 
     /**

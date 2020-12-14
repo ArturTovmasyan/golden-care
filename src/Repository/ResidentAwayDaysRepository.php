@@ -6,7 +6,6 @@ use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
 use App\Entity\ResidentAwayDays;
-use App\Entity\ResidentLedger;
 use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
@@ -28,16 +27,10 @@ class ResidentAwayDaysRepository extends EntityRepository implements RelatedInfo
         $queryBuilder
             ->from(ResidentAwayDays::class, 'rad')
             ->innerJoin(
-                ResidentLedger::class,
-                'rl',
-                Join::WITH,
-                'rl = rad.ledger'
-            )
-            ->innerJoin(
                 Resident::class,
                 'r',
                 Join::WITH,
-                'r = rl.resident'
+                'r = rad.resident'
             );
 
         if ($space !== null) {
@@ -74,18 +67,12 @@ class ResidentAwayDaysRepository extends EntityRepository implements RelatedInfo
         $qb = $this
             ->createQueryBuilder('rad')
             ->innerJoin(
-                ResidentLedger::class,
-                'rl',
-                Join::WITH,
-                'rl = rad.ledger'
-            )
-            ->innerJoin(
                 Resident::class,
                 'r',
                 Join::WITH,
-                'r = rl.resident'
+                'r = rad.resident'
             )
-            ->where('rl.id = :id')
+            ->where('r.id = :id')
             ->setParameter('id', $id);
 
         if ($space !== null) {
@@ -123,16 +110,10 @@ class ResidentAwayDaysRepository extends EntityRepository implements RelatedInfo
         $qb = $this
             ->createQueryBuilder('rad')
             ->innerJoin(
-                ResidentLedger::class,
-                'rl',
-                Join::WITH,
-                'rl = rad.ledger'
-            )
-            ->innerJoin(
                 Resident::class,
                 'r',
                 Join::WITH,
-                'r = rl.resident'
+                'r = rad.resident'
             )
             ->innerJoin(
                 Space::class,
@@ -176,16 +157,10 @@ class ResidentAwayDaysRepository extends EntityRepository implements RelatedInfo
         if ($space !== null) {
             $qb
                 ->innerJoin(
-                    ResidentLedger::class,
-                    'rl',
-                    Join::WITH,
-                    'rl = rad.ledger'
-                )
-                ->innerJoin(
                     Resident::class,
                     'r',
                     Join::WITH,
-                    'r = rl.resident'
+                    'r = rad.resident'
                 )
                 ->innerJoin(
                     Space::class,
@@ -243,16 +218,10 @@ class ResidentAwayDaysRepository extends EntityRepository implements RelatedInfo
         if ($space !== null) {
             $qb
                 ->innerJoin(
-                    ResidentLedger::class,
-                    'rl',
-                    Join::WITH,
-                    'rl = rad.ledger'
-                )
-                ->innerJoin(
                     Resident::class,
                     'r',
                     Join::WITH,
-                    'r = rl.resident'
+                    'r = rad.resident'
                 )
                 ->innerJoin(
                     Space::class,
@@ -288,19 +257,14 @@ class ResidentAwayDaysRepository extends EntityRepository implements RelatedInfo
         $qb = $this
             ->createQueryBuilder('rad')
             ->innerJoin(
-                ResidentLedger::class,
-                'rl',
-                Join::WITH,
-                'rl = rad.ledger'
-            )
-            ->innerJoin(
                 Resident::class,
                 'r',
                 Join::WITH,
-                'r = rl.resident'
+                'r = rad.resident'
             )
-            ->where('rl.id = :id')
-            ->andWhere('rad.date >= :startDate AND rad.date <= :endDate')
+            ->where('r.id = :id')
+            ->andWhere('rad.start >= :startDate AND rad.start <= :endDate')
+            ->andWhere('rad.end >= :startDate AND rad.end <= :endDate')
             ->setParameter('startDate', $startDate)
             ->setParameter('endDate', $endDate)
             ->setParameter('id', $id);
@@ -346,13 +310,11 @@ class ResidentAwayDaysRepository extends EntityRepository implements RelatedInfo
         $qb
             ->select(
                 'rad.id AS id',
-                'rl.createdAt AS created_at',
                 'rad.start AS start',
                 'rad.end AS end',
                 'rad.reason AS reason'
             )
-            ->join('rad.ledger', 'rl')
-            ->join('rl.resident', 'r')
+            ->join('rad.resident', 'r')
             ->where('r.id=:id')
             ->setParameter('id', $id);
 
@@ -407,7 +369,6 @@ class ResidentAwayDaysRepository extends EntityRepository implements RelatedInfo
         $qb
             ->select(
                 'rad.id AS id',
-                'rl.createdAt AS created_at',
                 'rad.start AS start',
                 'rad.end AS end',
                 'rad.reason AS reason',
@@ -417,8 +378,7 @@ class ResidentAwayDaysRepository extends EntityRepository implements RelatedInfo
                 'fr.number AS room_number',
                 'fb.number AS bed_number'
             )
-            ->join('rad.ledger', 'rl')
-            ->join('rl.resident', 'r')
+            ->join('rad.resident', 'r')
             ->innerJoin(
                 ResidentAdmission::class,
                 'ra',

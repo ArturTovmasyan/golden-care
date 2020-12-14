@@ -196,7 +196,9 @@ class ResponseCode
     const RESIDENT_LEDGER_ALREADY_EXIST_EXCEPTION                = 796;
     const RESIDENT_DISCOUNT_ITEM_NOT_FOUND_EXCEPTION             = 797;
     const LATE_PAYMENT_NOT_FOUND_EXCEPTION                       = 798;
+    const START_AND_END_DATE_NOT_SAME_MONTH_EXCEPTION            = 799;
     const INCORRECT_REPORT_PARAMETER                             = 800;
+    const DATES_OVERLAP_EXCEPTION                                = 801;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
     const RESOURCE_NOT_FOUND_EXCEPTION                           = 902;
@@ -392,7 +394,9 @@ class ResponseCode
         self::RESIDENT_LEDGER_ALREADY_EXIST_EXCEPTION                => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Ledger already exist for this year and month.'],
         self::RESIDENT_DISCOUNT_ITEM_NOT_FOUND_EXCEPTION             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Discount Item not found.'],
         self::LATE_PAYMENT_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Late Payment not found.'],
+        self::START_AND_END_DATE_NOT_SAME_MONTH_EXCEPTION            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Start and End Dates should be the same month and year.'],
         self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
+        self::DATES_OVERLAP_EXCEPTION                                => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Dates overlap with already existing Away Days.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],
         self::RESOURCE_NOT_FOUND_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Requested resource not found.'],

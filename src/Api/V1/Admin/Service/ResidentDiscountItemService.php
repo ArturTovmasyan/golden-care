@@ -133,12 +133,6 @@ class ResidentDiscountItemService extends BaseService implements IGridService
 
             $this->em->persist($residentDiscountItem);
 
-            //Re-Calculate Ledger Balance Due
-            $oldBalanceDue = $ledger->getBalanceDue();
-            $newBalanceDue = $oldBalanceDue - $residentDiscountItem->getAmount();
-            $ledger->setBalanceDue($newBalanceDue);
-            $this->em->persist($ledger);
-
             $this->em->flush();
             $this->em->getConnection()->commit();
 
@@ -219,19 +213,6 @@ class ResidentDiscountItemService extends BaseService implements IGridService
             $this->validate($entity, null, ['api_admin_resident_discount_item_edit']);
 
             $this->em->persist($entity);
-
-            //Re-Calculate Ledger Balance Due
-            $uow = $this->em->getUnitOfWork();
-            $uow->computeChangeSets();
-
-            $changeSet = $this->em->getUnitOfWork()->getEntityChangeSet($entity);
-
-            if (!empty($changeSet) && array_key_exists('amount', $changeSet)) {
-                $oldBalanceDue = $ledger->getBalanceDue();
-                $newBalanceDue = $oldBalanceDue - $changeSet['amount']['1'] + $changeSet['amount']['0'];
-                $ledger->setBalanceDue($newBalanceDue);
-                $this->em->persist($ledger);
-            }
 
             $this->em->flush();
             $this->em->getConnection()->commit();

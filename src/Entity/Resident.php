@@ -165,7 +165,11 @@ class Resident
      *      "api_admin_facility_event_list",
      *      "api_admin_facility_event_get",
      *      "api_admin_resident_ledger_list",
-     *      "api_admin_resident_ledger_get"
+     *      "api_admin_resident_ledger_get",
+     *      "api_admin_resident_expense_item_list",
+     *      "api_admin_resident_expense_item_get",
+     *      "api_admin_resident_away_days_list",
+     *      "api_admin_resident_away_days_get"
      * })
      */
     private $id;
@@ -516,6 +520,20 @@ class Resident
      * @ORM\OneToMany(targetEntity="App\Entity\ResidentLedger", mappedBy="resident", cascade={"remove", "persist"})
      */
     private $residentLedgers;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentExpenseItem", mappedBy="resident", cascade={"remove", "persist"})
+     * @ORM\OrderBy({"date" = "ASC"})
+     */
+    private $residentExpenseItems;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentAwayDays", mappedBy="resident", cascade={"remove", "persist"})
+     * @ORM\OrderBy({"start" = "ASC"})
+     */
+    private $residentAwayDays;
 
     /**
      * @return int
@@ -1018,5 +1036,37 @@ class Resident
     public function setResidentLedgers(ArrayCollection $residentLedgers): void
     {
         $this->residentLedgers = $residentLedgers;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResidentExpenseItems()
+    {
+        return $this->residentExpenseItems;
+    }
+
+    /**
+     * @param mixed $residentExpenseItems
+     */
+    public function setResidentExpenseItems($residentExpenseItems): void
+    {
+        $this->residentExpenseItems = $residentExpenseItems;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResidentAwayDays()
+    {
+        return $this->residentAwayDays;
+    }
+
+    /**
+     * @param ArrayCollection $residentAwayDays
+     */
+    public function setResidentAwayDays(ArrayCollection $residentAwayDays): void
+    {
+        $this->residentAwayDays = $residentAwayDays;
     }
 }

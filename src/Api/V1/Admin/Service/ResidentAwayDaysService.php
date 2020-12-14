@@ -3,15 +3,19 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
-use App\Api\V1\Common\Service\Exception\InvalidEffectiveDateException;
-use App\Api\V1\Common\Service\Exception\ResidentLedgerNotFoundException;
+use App\Api\V1\Common\Service\Exception\DatesOverlapException;
 use App\Api\V1\Common\Service\Exception\ResidentAwayDaysNotFoundException;
+use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
+use App\Api\V1\Common\Service\Exception\StartAndEndDateNotSameMonthException;
 use App\Api\V1\Common\Service\Exception\StartGreaterEndDateException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\Resident;
 use App\Entity\ResidentAwayDays;
 use App\Entity\ResidentLedger;
 use App\Repository\ResidentAwayDaysRepository;
 use App\Repository\ResidentLedgerRepository;
+use App\Repository\ResidentRepository;
+use App\Util\Common\ImtDateTimeInterval;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -26,15 +30,15 @@ class ResidentAwayDaysService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
-        if (empty($params) || empty($params[0]['ledger_id'])) {
-            throw new ResidentLedgerNotFoundException();
+        if (empty($params) || empty($params[0]['resident_id'])) {
+            throw new ResidentNotFoundException();
         }
 
-        $ledgerId = $params[0]['ledger_id'];
+        $residentId = $params[0]['resident_id'];
 
         $queryBuilder
-            ->where('rad.ledger = :ledgerId')
-            ->setParameter('ledgerId', $ledgerId);
+            ->where('rad.resident = :residentId')
+            ->setParameter('residentId', $residentId);
 
         /** @var ResidentAwayDaysRepository $repo */
         $repo = $this->em->getRepository(ResidentAwayDays::class);
@@ -48,16 +52,16 @@ class ResidentAwayDaysService extends BaseService implements IGridService
      */
     public function list($params)
     {
-        if (!empty($params) && !empty($params[0]['ledger_id'])) {
-            $ledgerId = $params[0]['ledger_id'];
+        if (!empty($params) && !empty($params[0]['resident_id'])) {
+            $residentId = $params[0]['resident_id'];
 
             /** @var ResidentAwayDaysRepository $repo */
             $repo = $this->em->getRepository(ResidentAwayDays::class);
 
-            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAwayDays::class), $ledgerId);
+            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAwayDays::class), $residentId);
         }
 
-        throw new ResidentLedgerNotFoundException();
+        throw new ResidentNotFoundException();
     }
 
     /**
@@ -74,10 +78,12 @@ class ResidentAwayDaysService extends BaseService implements IGridService
 
     /**
      * @param array $params
+     * @param ResidentLedgerService $residentLedgerService
      * @return int|null
-     * @throws \Throwable
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function add(array $params): ?int
+    public function add(ResidentLedgerService $residentLedgerService, array $params): ?int
     {
         $insert_id = null;
         try {
@@ -85,29 +91,25 @@ class ResidentAwayDaysService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
-            $ledgerId = $params['ledger_id'] ?? 0;
+            $residentId = $params['resident_id'] ?? 0;
 
-            /** @var ResidentLedgerRepository $residentLedgerRepo */
-            $residentLedgerRepo = $this->em->getRepository(ResidentLedger::class);
+            /** @var ResidentRepository $residentRepo */
+            $residentRepo = $this->em->getRepository(Resident::class);
 
-            /** @var ResidentLedger $ledger */
-            $ledger = $residentLedgerRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentLedger::class), $ledgerId);
+            /** @var Resident $resident */
+            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $residentId);
 
-            if ($ledger === null) {
-                throw new ResidentLedgerNotFoundException();
+            if ($resident === null) {
+                throw new ResidentNotFoundException();
             }
 
             $residentAwayDays = new ResidentAwayDays();
-            $residentAwayDays->setLedger($ledger);
+            $residentAwayDays->setResident($resident);
 
             $start = null;
             if (!empty($params['start'])) {
                 $start = new \DateTime($params['start']);
                 $start->setTime(0, 0, 0);
-
-                if ($ledger->getCreatedAt()->format('Y') !== $start->format('Y') || $ledger->getCreatedAt()->format('m') !== $start->format('m')) {
-                    throw new InvalidEffectiveDateException();
-                }
             }
 
             $residentAwayDays->setStart($start);
@@ -121,18 +123,35 @@ class ResidentAwayDaysService extends BaseService implements IGridService
                     throw new StartGreaterEndDateException();
                 }
 
-                if ($ledger->getCreatedAt()->format('Y') !== $end->format('Y') || $ledger->getCreatedAt()->format('m') !== $end->format('m')) {
-                    throw new InvalidEffectiveDateException();
+                if ($start->format('Y') !== $end->format('Y') || $start->format('m') !== $end->format('m')) {
+                    throw new StartAndEndDateNotSameMonthException();
                 }
             }
 
             $residentAwayDays->setEnd($end);
             $residentAwayDays->setReason($params['reason']);
 
+            if ($start !== null && $end !== null) {
+                $resAwayDays = $resident->getResidentAwayDays();
+
+                if (!empty($resAwayDays)) {
+                    /** @var ResidentAwayDays $residentAwayDay */
+                    foreach ($resAwayDays as $residentAwayDay) {
+                        if ($this->datesOverlap($start, $end, $residentAwayDay->getStart(), $residentAwayDay->getEnd()) > 0) {
+                            throw new DatesOverlapException();
+                        }
+                    }
+                }
+            }
+
             $this->validate($residentAwayDays, null, ['api_admin_resident_away_days_add']);
 
             $this->em->persist($residentAwayDays);
             $this->em->flush();
+
+            //Re-Calculate Ledger
+            $this->reCalculateLedgerNotPrivatePayPart($residentLedgerService, $currentSpace, $residentId, $residentAwayDays->getStart());
+
             $this->em->getConnection()->commit();
 
             $insert_id = $residentAwayDays->getId();
@@ -146,11 +165,85 @@ class ResidentAwayDaysService extends BaseService implements IGridService
     }
 
     /**
-     * @param $id
-     * @param array $params
-     * @throws \Throwable
+     * @param $residentLedgerService
+     * @param $currentSpace
+     * @param $residentId
+     * @param $date
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function edit($id, array $params): void
+    private function reCalculateLedgerNotPrivatePayPart($residentLedgerService, $currentSpace, $residentId, $date): void
+    {
+        $dateStartFormatted = $date->format('m/01/Y 00:00:00');
+        $dateEndFormatted = $date->format('m/t/Y 23:59:59');
+        $dateStart = new \DateTime($dateStartFormatted);
+        $dateEnd = new \DateTime($dateEndFormatted);
+
+        /** @var ResidentLedgerRepository $ledgerRepo */
+        $ledgerRepo = $this->em->getRepository(ResidentLedger::class);
+        /** @var ResidentLedger $ledger */
+        $ledger = $ledgerRepo->getResidentLedgerByDate($currentSpace, null, $residentId, $dateStart, $dateEnd);
+
+        if ($ledger !== null) {
+            /** @var ResidentAwayDaysRepository $repo */
+            $repo = $this->em->getRepository(ResidentAwayDays::class);
+
+            $awayDays = $repo->getByInterval($currentSpace, null, $residentId, $dateStart, $dateEnd);
+            $absentDays = [];
+            if (!empty($awayDays)) {
+                /** @var ResidentAwayDays $residentAwayDay */
+                foreach ($awayDays as $residentAwayDay) {
+                    $absentDays[] = ImtDateTimeInterval::getWithDateTimes($residentAwayDay->getStart(), $residentAwayDay->getEnd());
+                }
+            }
+
+            $amountData = $residentLedgerService->calculateAmountAndGetPaymentSources($currentSpace, $residentId, $ledger->getCreatedAt(), $absentDays);
+            $relationsAmount = $residentLedgerService->calculateRelationsAmount($currentSpace, $ledger->getId(), $residentId, $ledger->getCreatedAt());
+            //Calculate Not Privat Pay Balance Due
+            $currentMonthNotPrivatPayBalanceDue = $amountData['notPrivatPayAmount'] + $relationsAmount['notPrivatePayRelationsAmount'];
+
+            //Calculate Previous Month Balance Due
+            $previousDate = new \DateTime(date('Y-m-d', strtotime($ledger->getCreatedAt()->format('Y-m-d')." first day of previous month")));
+            $previousDateStartFormatted = $previousDate->format('m/01/Y 00:00:00');
+            $previousDateEndFormatted = $previousDate->format('m/t/Y 23:59:59');
+            $previousDateStart = new \DateTime($previousDateStartFormatted);
+            $previousDateEnd = new \DateTime($previousDateEndFormatted);
+
+            /** @var ResidentLedger $previousLedger */
+            $previousLedger = $ledgerRepo->getResidentLedgerByDate($currentSpace, null, $residentId, $previousDateStart, $previousDateEnd);
+
+            $priorNotPrivatPayBalanceDue = 0;
+            if ($previousLedger === null) {
+                $previousAwayDays = [];
+                $previousResidentAwayDays = $repo->getByInterval($currentSpace, null, $residentId, $previousDateStart, $previousDateEnd);
+                if (!empty($previousResidentAwayDays)) {
+                    /** @var ResidentAwayDays $previousResidentAwayDay */
+                    foreach ($previousResidentAwayDays as $previousResidentAwayDay) {
+                        $previousAwayDays[] = ImtDateTimeInterval::getWithDateTimes($previousResidentAwayDay->getStart(), $previousResidentAwayDay->getEnd());
+                    }
+                }
+
+                $priorAmountData = $residentLedgerService->calculateAmountAndGetPaymentSources($currentSpace, $residentId, $previousDate, $previousAwayDays);
+                $priorRelationsAmount = $residentLedgerService->calculateRelationsAmount($currentSpace, $ledger->getId(), $residentId, $previousDate);
+                //Calculate Not Privat Pay Balance Due
+                $priorNotPrivatPayBalanceDue = $priorAmountData['notPrivatPayAmount'] + $priorRelationsAmount['notPrivatePayRelationsAmount'];
+            }
+
+            $ledger->setNotPrivatePayBalanceDue(round($currentMonthNotPrivatPayBalanceDue + $priorNotPrivatPayBalanceDue, 2));
+            $ledger->setPriorNotPrivatePayBalanceDue(round($priorNotPrivatPayBalanceDue, 2));
+            $this->em->persist($ledger);
+
+            $this->em->flush();
+        }
+    }
+
+    /**
+     * @param $id
+     * @param $residentLedgerService
+     * @param array $params
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function edit($id, $residentLedgerService, array $params): void
     {
         try {
 
@@ -168,28 +261,24 @@ class ResidentAwayDaysService extends BaseService implements IGridService
                 throw new ResidentAwayDaysNotFoundException();
             }
 
-            $ledgerId = $params['ledger_id'] ?? 0;
+            $residentId = $params['resident_id'] ?? 0;
 
-            /** @var ResidentLedgerRepository $residentLedgerRepo */
-            $residentLedgerRepo = $this->em->getRepository(ResidentLedger::class);
+            /** @var ResidentRepository $residentRepo */
+            $residentRepo = $this->em->getRepository(Resident::class);
 
-            /** @var ResidentLedger $ledger */
-            $ledger = $residentLedgerRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentLedger::class), $ledgerId);
+            /** @var Resident $resident */
+            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $residentId);
 
-            if ($ledger === null) {
-                throw new ResidentLedgerNotFoundException();
+            if ($resident === null) {
+                throw new ResidentNotFoundException();
             }
 
-            $entity->setLedger($ledger);
+            $entity->setResident($resident);
 
             $start = null;
             if (!empty($params['start'])) {
                 $start = new \DateTime($params['start']);
                 $start->setTime(0, 0, 0);
-
-                if ($ledger->getCreatedAt()->format('Y') !== $start->format('Y') || $ledger->getCreatedAt()->format('m') !== $start->format('m')) {
-                    throw new InvalidEffectiveDateException();
-                }
             }
 
             $entity->setStart($start);
@@ -203,24 +292,49 @@ class ResidentAwayDaysService extends BaseService implements IGridService
                     throw new StartGreaterEndDateException();
                 }
 
-                if ($ledger->getCreatedAt()->format('Y') !== $end->format('Y') || $ledger->getCreatedAt()->format('m') !== $end->format('m')) {
-                    throw new InvalidEffectiveDateException();
+                if ($start->format('Y') !== $end->format('Y') || $start->format('m') !== $end->format('m')) {
+                    throw new StartAndEndDateNotSameMonthException();
                 }
             }
 
             $entity->setEnd($end);
             $entity->setReason($params['reason']);
 
+            if ($start !== null && $end !== null) {
+                $residentAwayDays = $resident->getResidentAwayDays();
+
+                if (!empty($residentAwayDays)) {
+                    /** @var ResidentAwayDays $residentAwayDay */
+                    foreach ($residentAwayDays as $residentAwayDay) {
+                        if ($residentAwayDay->getId() !== $entity->getId() && $this->datesOverlap($start, $end, $residentAwayDay->getStart(), $residentAwayDay->getEnd()) > 0) {
+                            throw new DatesOverlapException();
+                        }
+                    }
+                }
+            }
+
             $this->validate($entity, null, ['api_admin_resident_away_days_edit']);
 
             $this->em->persist($entity);
             $this->em->flush();
+
+            //Re-Calculate Ledger
+            $this->reCalculateLedgerNotPrivatePayPart($residentLedgerService, $currentSpace, $residentId, $entity->getStart());
+
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
 
             throw $e;
         }
+    }
+
+    private function datesOverlap($startOne, $endOne, $startTwo, $endTwo) {
+        if($startOne <= $endTwo && $endOne >= $startTwo) { //If the dates overlap
+            return min($endOne,$endTwo)->diff(max($startTwo,$startOne))->days + 1; //return how many days overlap
+        }
+
+        return 0; //Return 0 if there is no overlap
     }
 
     /**

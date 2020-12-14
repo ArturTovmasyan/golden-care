@@ -4,16 +4,17 @@ namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\ExpenseItemNotFoundException;
-use App\Api\V1\Common\Service\Exception\InvalidEffectiveDateException;
-use App\Api\V1\Common\Service\Exception\ResidentLedgerNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentExpenseItemNotFoundException;
+use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\ExpenseItem;
+use App\Entity\Resident;
 use App\Entity\ResidentExpenseItem;
 use App\Entity\ResidentLedger;
 use App\Repository\ExpenseItemRepository;
 use App\Repository\ResidentExpenseItemRepository;
 use App\Repository\ResidentLedgerRepository;
+use App\Repository\ResidentRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -28,15 +29,15 @@ class ResidentExpenseItemService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
-        if (empty($params) || empty($params[0]['ledger_id'])) {
-            throw new ResidentLedgerNotFoundException();
+        if (empty($params) || empty($params[0]['resident_id'])) {
+            throw new ResidentNotFoundException();
         }
 
-        $ledgerId = $params[0]['ledger_id'];
+        $residentId = $params[0]['resident_id'];
 
         $queryBuilder
-            ->where('rei.ledger = :ledgerId')
-            ->setParameter('ledgerId', $ledgerId);
+            ->where('rei.resident = :residentId')
+            ->setParameter('residentId', $residentId);
 
         /** @var ResidentExpenseItemRepository $repo */
         $repo = $this->em->getRepository(ResidentExpenseItem::class);
@@ -50,16 +51,16 @@ class ResidentExpenseItemService extends BaseService implements IGridService
      */
     public function list($params)
     {
-        if (!empty($params) && !empty($params[0]['ledger_id'])) {
-            $ledgerId = $params[0]['ledger_id'];
+        if (!empty($params) && !empty($params[0]['resident_id'])) {
+            $residentId = $params[0]['resident_id'];
 
             /** @var ResidentExpenseItemRepository $repo */
             $repo = $this->em->getRepository(ResidentExpenseItem::class);
 
-            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentExpenseItem::class), $ledgerId);
+            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentExpenseItem::class), $residentId);
         }
 
-        throw new ResidentLedgerNotFoundException();
+        throw new ResidentNotFoundException();
     }
 
     /**
@@ -87,16 +88,16 @@ class ResidentExpenseItemService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
-            $ledgerId = $params['ledger_id'] ?? 0;
+            $residentId = $params['resident_id'] ?? 0;
 
-            /** @var ResidentLedgerRepository $residentLedgerRepo */
-            $residentLedgerRepo = $this->em->getRepository(ResidentLedger::class);
+            /** @var ResidentRepository $residentRepo */
+            $residentRepo = $this->em->getRepository(Resident::class);
 
-            /** @var ResidentLedger $ledger */
-            $ledger = $residentLedgerRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentLedger::class), $ledgerId);
+            /** @var Resident $resident */
+            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $residentId);
 
-            if ($ledger === null) {
-                throw new ResidentLedgerNotFoundException();
+            if ($resident === null) {
+                throw new ResidentNotFoundException();
             }
 
             $expenseItemId = $params['expense_item_id'] ?? 0;
@@ -112,7 +113,7 @@ class ResidentExpenseItemService extends BaseService implements IGridService
             }
 
             $residentExpenseItem = new ResidentExpenseItem();
-            $residentExpenseItem->setLedger($ledger);
+            $residentExpenseItem->setResident($resident);
             $residentExpenseItem->setExpenseItem($expenseItem);
             $residentExpenseItem->setAmount($params['amount']);
 
@@ -120,10 +121,6 @@ class ResidentExpenseItemService extends BaseService implements IGridService
             if (!empty($params['date'])) {
                 $date = new \DateTime($params['date']);
                 $date->setTime(0, 0, 0);
-
-                if ($ledger->getCreatedAt()->format('Y') !== $date->format('Y') || $ledger->getCreatedAt()->format('m') !== $date->format('m')) {
-                    throw new InvalidEffectiveDateException();
-                }
             }
 
             $residentExpenseItem->setDate($date);
@@ -133,13 +130,30 @@ class ResidentExpenseItemService extends BaseService implements IGridService
 
             $this->em->persist($residentExpenseItem);
 
-            //Re-Calculate Ledger Balance Due
-            $oldBalanceDue = $ledger->getBalanceDue();
-            $newBalanceDue = $oldBalanceDue + $residentExpenseItem->getAmount();
-            $ledger->setBalanceDue($newBalanceDue);
-            $this->em->persist($ledger);
-
             $this->em->flush();
+
+            //Re-Calculate Ledger Balance Due
+            $expenseItemDate = $residentExpenseItem->getDate() ?? new \DateTime('now');
+
+            $dateStartFormatted = $expenseItemDate->format('m/01/Y 00:00:00');
+            $dateEndFormatted = $expenseItemDate->format('m/t/Y 23:59:59');
+            $dateStart = new \DateTime($dateStartFormatted);
+            $dateEnd = new \DateTime($dateEndFormatted);
+
+            /** @var ResidentLedgerRepository $ledgerRepo */
+            $ledgerRepo = $this->em->getRepository(ResidentLedger::class);
+            /** @var ResidentLedger $ledger */
+            $ledger = $ledgerRepo->getResidentLedgerByDate($currentSpace, null, $residentId, $dateStart, $dateEnd);
+
+            if ($ledger !== null) {
+                $oldPrivatePayBalanceDue = $ledger->getPrivatePayBalanceDue();
+                $newPrivatePayBalanceDue = $oldPrivatePayBalanceDue + $residentExpenseItem->getAmount();
+                $ledger->setPrivatePayBalanceDue($newPrivatePayBalanceDue);
+                $this->em->persist($ledger);
+
+                $this->em->flush();
+            }
+
             $this->em->getConnection()->commit();
 
             $insert_id = $residentExpenseItem->getId();
@@ -175,16 +189,16 @@ class ResidentExpenseItemService extends BaseService implements IGridService
                 throw new ResidentExpenseItemNotFoundException();
             }
 
-            $ledgerId = $params['ledger_id'] ?? 0;
+            $residentId = $params['resident_id'] ?? 0;
 
-            /** @var ResidentLedgerRepository $residentLedgerRepo */
-            $residentLedgerRepo = $this->em->getRepository(ResidentLedger::class);
+            /** @var ResidentRepository $residentRepo */
+            $residentRepo = $this->em->getRepository(Resident::class);
 
-            /** @var ResidentLedger $ledger */
-            $ledger = $residentLedgerRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentLedger::class), $ledgerId);
+            /** @var Resident $resident */
+            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $residentId);
 
-            if ($ledger === null) {
-                throw new ResidentLedgerNotFoundException();
+            if ($resident === null) {
+                throw new ResidentNotFoundException();
             }
 
             $expenseItemId = $params['expense_item_id'] ?? 0;
@@ -199,7 +213,7 @@ class ResidentExpenseItemService extends BaseService implements IGridService
                 throw new ExpenseItemNotFoundException();
             }
 
-            $entity->setLedger($ledger);
+            $entity->setResident($resident);
             $entity->setExpenseItem($expenseItem);
             $entity->setAmount($params['amount']);
 
@@ -207,10 +221,6 @@ class ResidentExpenseItemService extends BaseService implements IGridService
             if (!empty($params['date'])) {
                 $date = new \DateTime($params['date']);
                 $date->setTime(0, 0, 0);
-
-                if ($ledger->getCreatedAt()->format('Y') !== $date->format('Y') || $ledger->getCreatedAt()->format('m') !== $date->format('m')) {
-                    throw new InvalidEffectiveDateException();
-                }
             }
 
             $entity->setDate($date);
@@ -227,10 +237,24 @@ class ResidentExpenseItemService extends BaseService implements IGridService
             $changeSet = $this->em->getUnitOfWork()->getEntityChangeSet($entity);
 
             if (!empty($changeSet) && array_key_exists('amount', $changeSet)) {
-                $oldBalanceDue = $ledger->getBalanceDue();
-                $newBalanceDue = $oldBalanceDue + $changeSet['amount']['1'] - $changeSet['amount']['0'];
-                $ledger->setBalanceDue($newBalanceDue);
-                $this->em->persist($ledger);
+                $expenseItemDate = $entity->getDate() ?? new \DateTime('now');
+
+                $dateStartFormatted = $expenseItemDate->format('m/01/Y 00:00:00');
+                $dateEndFormatted = $expenseItemDate->format('m/t/Y 23:59:59');
+                $dateStart = new \DateTime($dateStartFormatted);
+                $dateEnd = new \DateTime($dateEndFormatted);
+
+                /** @var ResidentLedgerRepository $ledgerRepo */
+                $ledgerRepo = $this->em->getRepository(ResidentLedger::class);
+                /** @var ResidentLedger $ledger */
+                $ledger = $ledgerRepo->getResidentLedgerByDate($currentSpace, null, $residentId, $dateStart, $dateEnd);
+
+                if ($ledger !== null) {
+                    $oldPrivatePayBalanceDue = $ledger->getPrivatePayBalanceDue();
+                    $newPrivatePayBalanceDue = $oldPrivatePayBalanceDue + $changeSet['amount']['1'] - $changeSet['amount']['0'];
+                    $ledger->setPrivatePayBalanceDue($newPrivatePayBalanceDue);
+                    $this->em->persist($ledger);
+                }
             }
 
             $this->em->flush();
