@@ -138,7 +138,7 @@ class CreateResidentLedgerCommand extends Command
 
                             /** @var Resident $resident */
                             $resident = $residentRepo->getOne($currentSpace, null, $residentId);
-                            $existingLedger = $repo->getAddedYearAndMonthLedger($currentSpace, null, $residentId, $now);
+                            $existingLedger = $repo->getAddedYearAndMonthLedger($currentSpace, null, $residentId, $priorDate);
 
                             if ($resident !== null && $existingLedger === null) {
                                 $awayDays = [];
@@ -167,7 +167,7 @@ class CreateResidentLedgerCommand extends Command
                                     }
                                 }
 
-                                $amountData = $this->residentLedgerService->calculateAmountAndGetPaymentSources($currentSpace, $residentId, $now, $awayDays);
+                                $amountData = $this->residentLedgerService->calculateAmountAndGetPaymentSources($currentSpace, $residentId, $priorDate, $awayDays);
 
                                 if (!empty($amountData['paymentSources'])) {
                                     $residentLedger = new ResidentLedger();

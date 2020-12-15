@@ -3,9 +3,11 @@
 namespace App\Api\V1\Admin\Service\Report;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
 use App\Api\V1\Common\Service\Exception\StartGreaterEndDateException;
 use App\Api\V1\Common\Service\Exception\TimeSpanIsGreaterThan12MonthsException;
 use App\Api\V1\Component\Rent\RentPeriodFactory;
+use App\Entity\Apartment;
 use App\Entity\Diet;
 use App\Entity\EventDefinition;
 use App\Entity\Facility;
@@ -41,6 +43,7 @@ use App\Model\Report\ResidentMoveByMonth;
 use App\Model\Report\ResidentSimpleRoster;
 use App\Model\Report\ResponsiblePersonEmails;
 use App\Model\Report\SixtyDays;
+use App\Repository\ApartmentRepository;
 use App\Repository\DietRepository;
 use App\Repository\EventDefinitionRepository;
 use App\Repository\FacilityRepository;
@@ -1405,7 +1408,7 @@ class ResidentReportService extends BaseService
         $type = (int)$group;
         $typeId = $groupId;
 
-        if ($type !== GroupType::TYPE_FACILITY) {
+        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_APARTMENT], false)) {
             throw new InvalidParameterException('group');
         }
 
@@ -1433,13 +1436,30 @@ class ResidentReportService extends BaseService
         if ($typeId !== null) {
             $typeIds = [$typeId];
         } else {
-            /** @var FacilityRepository $groupRepo */
-            $groupRepo = $this->em->getRepository(Facility::class);
+            switch ($type) {
+                case GroupType::TYPE_FACILITY:
+                    /** @var FacilityRepository $groupRepo */
+                    $groupRepo = $this->em->getRepository(Facility::class);
 
-            $groupList = $groupRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class));
-            $typeIds = array_map(static function ($item) {
-                return $item->getId();
-            }, $groupList);
+                    $groupList = $groupRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class));
+                    $typeIds = array_map(static function ($item) {
+                        return $item->getId();
+                    }, $groupList);
+
+                    break;
+                case GroupType::TYPE_APARTMENT:
+                    /** @var ApartmentRepository $groupRepo */
+                    $groupRepo = $this->em->getRepository(Apartment::class);
+
+                    $groupList = $groupRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Apartment::class));
+                    $typeIds = array_map(static function ($item) {
+                        return $item->getId();
+                    }, $groupList);
+
+                    break;
+                default:
+                    throw new IncorrectStrategyTypeException();
+            }
         }
 
         $ledgers = [];
@@ -1447,7 +1467,7 @@ class ResidentReportService extends BaseService
             /** @var ResidentAdmissionRepository $residentAdmissionRepo */
             $residentAdmissionRepo = $this->em->getRepository(ResidentAdmission::class);
 
-            $groupResidents = $residentAdmissionRepo->getActiveResidents($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $groupIds);
+            $groupResidents = $residentAdmissionRepo->getActiveResidents($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $type, $typeIds);
 
             $activeResidentIds = array_map(static function ($item) {
                 return $item['id'];
@@ -1466,22 +1486,33 @@ class ResidentReportService extends BaseService
             $expenseItemsAmount = [];
             /** @var ResidentLedger $ledger */
             foreach ($ledgers as $ledger) {
-                $ledgerResidentId = $ledger->getResident() ? $ledger->getResident()->getId() : 0;
+                $resident = $ledger->getResident();
+
+                $ledgerResidentId = $resident ? $resident->getId() : 0;
                 $ledgerResidentIds[] = $ledgerResidentId;
 
                 $awayDays[$ledgerResidentId] = [];
-                if ($ledger->getResidentAwayDays() !== null) {
+                if ($resident->getResidentAwayDays() !== null) {
                     /** @var ResidentAwayDays $residentAwayDay */
-                    foreach ($ledger->getResidentAwayDays() as $residentAwayDay) {
-                        $awayDays[$ledgerResidentId][] = ImtDateTimeInterval::getWithDateTimes($residentAwayDay->getStart(), $residentAwayDay->getEnd());
+                    foreach ($resident->getResidentAwayDays() as $residentAwayDay) {
+                        $residentAwayDayStart = $residentAwayDay->getStart();
+                        $residentAwayDayEnd = $residentAwayDay->getEnd();
+
+                        if ($residentAwayDayStart >= $dateStart && $residentAwayDayStart <= $dateEnd && $residentAwayDayEnd >= $dateStart && $residentAwayDayEnd <= $dateEnd) {
+                            $awayDays[$ledgerResidentId][] = ImtDateTimeInterval::getWithDateTimes($residentAwayDayStart, $residentAwayDayEnd);
+                        }
                     }
                 }
 
                 $expenseItemsAmount[$ledgerResidentId] = 0;
-                if ($ledger->getResidentExpenseItems() !== null) {
+                if ($resident->getResidentExpenseItems() !== null) {
                     /** @var ResidentExpenseItem $expenseItem */
-                    foreach ($ledger->getResidentExpenseItems() as $expenseItem) {
-                        $expenseItemsAmount[$ledgerResidentId] += $expenseItem->getAmount();
+                    foreach ($resident->getResidentExpenseItems() as $expenseItem) {
+                        $expenseItemDate = $expenseItem->getDate();
+
+                        if ($expenseItemDate >= $dateStart && $expenseItemDate <= $dateEnd) {
+                            $expenseItemsAmount[$ledgerResidentId] += $expenseItem->getAmount();
+                        }
                     }
                 }
             }

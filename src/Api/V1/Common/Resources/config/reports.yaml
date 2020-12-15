@@ -91,7 +91,6 @@ resident:
     ledger-monthly-finance-rent:
       service: App\Api\V1\Admin\Service\Report\ResidentReportService::getLedgerMonthlyFinanceRentDataReport
       title: 'Ledger: Monthly Finance Rent Data Report'
-      show_in_il_list: false
       show_in_resident_list: true
       show_in_group_list: true
       formats: ['csv', 'xls']
