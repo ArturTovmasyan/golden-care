@@ -20,10 +20,11 @@ class FacilityRoomBaseRateRepository extends EntityRepository implements Related
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param array|null $facilityEntityGrants
      * @param QueryBuilder $queryBuilder
      * @param null $roomTypeId
      */
-    public function search(Space $space = null, array $entityGrants = null, QueryBuilder $queryBuilder, $roomTypeId = null): void
+    public function search(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, QueryBuilder $queryBuilder, $roomTypeId = null): void
     {
         $queryBuilder
             ->from(FacilityRoomBaseRate::class, 'br')
@@ -33,6 +34,12 @@ class FacilityRoomBaseRateRepository extends EntityRepository implements Related
                 'frt',
                 Join::WITH,
                 'frt = br.roomType'
+            )
+            ->innerJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = frt.facility'
             )
             ->join('br.levels', 'brl')
             ->join('brl.careLevel', 'cl');
@@ -46,12 +53,6 @@ class FacilityRoomBaseRateRepository extends EntityRepository implements Related
         if ($space !== null) {
             $queryBuilder
                 ->innerJoin(
-                    Facility::class,
-                    'f',
-                    Join::WITH,
-                    'f = frt.facility'
-                )
-                ->innerJoin(
                     Space::class,
                     's',
                     Join::WITH,
@@ -67,6 +68,12 @@ class FacilityRoomBaseRateRepository extends EntityRepository implements Related
                 ->setParameter('grantIds', $entityGrants);
         }
 
+        if ($facilityEntityGrants !== null) {
+            $queryBuilder
+                ->andWhere('f.id IN (:facilityGrantIds)')
+                ->setParameter('facilityGrantIds', $facilityEntityGrants);
+        }
+
         $queryBuilder
             ->orderBy('f.name', 'ASC')
             ->addOrderBy('frt.private', 'DESC')
@@ -77,10 +84,11 @@ class FacilityRoomBaseRateRepository extends EntityRepository implements Related
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param array|null $facilityEntityGrants
      * @param null $id
-     * @return mixed
+     * @return int|mixed|string
      */
-    public function getBy(Space $space = null, array $entityGrants = null, $id = null)
+    public function getBy(Space $space = null, array $entityGrants = null, array $facilityEntityGrants = null, $id = null)
     {
         $qb = $this
             ->createQueryBuilder('br')
@@ -89,6 +97,12 @@ class FacilityRoomBaseRateRepository extends EntityRepository implements Related
                 'frt',
                 Join::WITH,
                 'frt = br.roomType'
+            )
+            ->innerJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = frt.facility'
             );
 
         if ($id !== null) {
@@ -99,12 +113,6 @@ class FacilityRoomBaseRateRepository extends EntityRepository implements Related
 
         if ($space !== null) {
             $qb
-                ->innerJoin(
-                    Facility::class,
-                    'f',
-                    Join::WITH,
-                    'f = frt.facility'
-                )
                 ->innerJoin(
                     Space::class,
                     's',
@@ -119,6 +127,12 @@ class FacilityRoomBaseRateRepository extends EntityRepository implements Related
             $qb
                 ->andWhere('br.id IN (:grantIds)')
                 ->setParameter('grantIds', $entityGrants);
+        }
+
+        if ($facilityEntityGrants !== null) {
+            $qb
+                ->andWhere('f.id IN (:facilityGrantIds)')
+                ->setParameter('facilityGrantIds', $facilityEntityGrants);
         }
 
         return $qb

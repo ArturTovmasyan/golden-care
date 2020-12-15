@@ -40,7 +40,7 @@ class FacilityRoomBaseRateService extends BaseService implements IGridService
         /** @var FacilityRoomBaseRateRepository $repo */
         $repo = $this->em->getRepository(FacilityRoomBaseRate::class);
 
-        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoomBaseRate::class), $queryBuilder, $roomTypeId);
+        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoomBaseRate::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $queryBuilder, $roomTypeId);
     }
 
     /**
@@ -57,7 +57,7 @@ class FacilityRoomBaseRateService extends BaseService implements IGridService
         /** @var FacilityRoomBaseRateRepository $repo */
         $repo = $this->em->getRepository(FacilityRoomBaseRate::class);
 
-        return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoomBaseRate::class), $roomTypeId);
+        return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(FacilityRoomBaseRate::class), $this->grantService->getCurrentUserEntityGrants(Facility::class), $roomTypeId);
     }
 
     /**
