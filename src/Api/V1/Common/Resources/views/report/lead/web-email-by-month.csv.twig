@@ -1,0 +1,6 @@
+{% spaceless %}
+Month/Year,Facility,Count
+{% for webEmail in data.webemails %}
+{{ webEmail.date }},"{{ webEmail.type|raw }}",{{ webEmail.count }}
+{% endfor %}
+{% endspaceless %}

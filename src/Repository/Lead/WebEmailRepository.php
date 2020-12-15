@@ -292,8 +292,67 @@ class WebEmailRepository extends EntityRepository implements RelatedInfoInterfac
                 'u = we.updatedBy'
             )
             ->where('we.date >= :startDate')->setParameter('startDate', $startDate)
-            ->andWhere('we.date < :endDate')->setParameter('endDate', $endDate)
+            ->andWhere('we.date <= :endDate')->setParameter('endDate', $endDate)
             ->andWhere('ert.id IS NULL OR (ert.id IS NOT NULL AND ert.title != :title)')->setParameter('title', $title);
+
+        if ($space !== null) {
+            $qb
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('we.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $startDate
+     * @param $endDate
+     * @param array|null $typeIds
+     * @return int|mixed|string
+     */
+    public function getWebEmailListByIntervalAndFacility(Space $space = null, array $entityGrants = null, $startDate, $endDate, array $typeIds = null)
+    {
+        $title = 'Contact';
+
+        $qb = $this
+            ->createQueryBuilder('we')
+            ->select(
+                'we.id',
+                'we.date as date',
+                'f.id as typeId',
+                'f.name as facility'
+            )
+            ->innerJoin(
+                Space::class,
+                's',
+                Join::WITH,
+                's = we.space'
+            )
+            ->innerJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = we.facility'
+            )
+            ->where('we.date >= :startDate')->setParameter('startDate', $startDate)
+            ->andWhere('we.date <= :endDate')->setParameter('endDate', $endDate)
+            ->andWhere("we.subject LIKE '%{$title}%'");
+
+        if ($typeIds) {
+            $qb
+                ->andWhere('f.id IN (:typeIds)')
+                ->setParameter('typeIds', $typeIds);
+        }
 
         if ($space !== null) {
             $qb
@@ -419,7 +478,7 @@ class WebEmailRepository extends EntityRepository implements RelatedInfoInterfac
                 'u = we.updatedBy'
             )
             ->where('we.date >= :startDate')->setParameter('startDate', $startDate)
-            ->andWhere('we.date < :endDate')->setParameter('endDate', $endDate)
+            ->andWhere('we.date <= :endDate')->setParameter('endDate', $endDate)
             ->andWhere('we.emailed = 0');
 
         if ($space !== null) {

@@ -191,7 +191,6 @@ class CreateResidentLedgerCommand extends Command
                                     /** @var ResidentLedger $previousLedger */
                                     $previousLedger = $repo->getResidentLedgerByDate($currentSpace, null, $residentId, $previousDateStart, $previousDateEnd);
 
-                                    $priorBalanceDue = 0;
                                     $priorPrivatPayBalanceDue = 0;
                                     $priorNotPrivatPayBalanceDue = 0;
                                     if ($previousLedger === null) {

@@ -121,9 +121,13 @@ class ResidentLedgerService extends BaseService implements IGridService
         /** @var ResidentLedger $entity */
         $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentLedger::class), $id);
 
-        $amountData = $this->calculateAmountAndGetPaymentSources($currentSpace, $entity->getResident()->getId(), $entity->getCreatedAt(), null);
+        $rentData = [];
+        if ($entity !== null && $entity->getResident() !== null) {
+            $amountData = $this->calculateAmountAndGetPaymentSources($currentSpace, $entity->getResident()->getId(), $entity->getCreatedAt(), null);
+            $rentData = $amountData['rentData'];
+        }
 
-        return $amountData['rentData'];
+        return $rentData;
     }
 
     /**

@@ -662,6 +662,8 @@ report:
           title: "Contact Emails List Report"
         web-email:
           title: "Web Emails List Report"
+        web-email-by-month:
+          title: "Web Contact Us per month by Facility Report"
     user:
       title: "User Reports"
       children:

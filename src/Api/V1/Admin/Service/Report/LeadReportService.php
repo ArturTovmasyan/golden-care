@@ -632,4 +632,114 @@ class LeadReportService extends BaseService
 
         return $report;
     }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupIds
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @param $assessmentId
+     * @param $assessmentFormId
+     * @return WebEmailList
+     */
+    public function getWebEmailPerMonthByFacilityReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): WebEmailList
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        $currentDate = new \DateTime('now');
+
+        $typeIds = null;
+        if (!empty($groupIds)) {
+            $typeIds = !empty($groupIds[0]) ? $groupIds : [];
+        }
+
+        if (!empty($dateFrom)) {
+            $start = new \DateTime($dateFrom);
+            $startFormatted = $start->format('m/1/Y 00:00:00');
+            $startDate = new \DateTime($startFormatted);
+        } else {
+            $startFormatted = $currentDate->format('m/1/Y 00:00:00');
+            $startDate = new \DateTime($startFormatted);
+        }
+
+        if (!empty($dateTo)) {
+            $end = new \DateTime($dateTo);
+            $endFormatted = $end->format('m/t/Y 23:59:59');
+            $endDate = new \DateTime($endFormatted);
+        } else {
+            $cloneCurrentDate = clone $currentDate;
+            $endFormatted = $cloneCurrentDate->format('m/t/Y 23:59:59');
+            $endDate = new \DateTime($endFormatted);
+        }
+
+        $dateToClone = clone $endDate;
+
+        $subIntervals = [];
+        while ($dateToClone >= $startDate) {
+            $start = new \DateTime($dateToClone->format('Y-m-01 00:00:00'));
+            $end = new \DateTime($dateToClone->format('Y-m-t 23:59:59'));
+
+            $subIntervals[] = [
+                'dateFrom' => $start,
+                'dateTo' => $end
+            ];
+
+            $dateToClone->modify('last day of previous month');
+        }
+
+        $subIntervals = array_reverse($subIntervals);
+
+        /** @var FacilityRepository $facilityRepo */
+        $facilityRepo = $this->em->getRepository(Facility::class);
+
+        $finalTypes = [];
+        $types = $facilityRepo->orderedFindAll($currentSpace, $this->grantService->getCurrentUserEntityGrants(Facility::class));
+        if (!empty($typeIds)) {
+            /** @var Facility $type */
+            foreach ($types as $type) {
+                if (in_array($type->getId(), $typeIds, false)) {
+                    $finalTypes[] = $type;
+                }
+            }
+        } else {
+            $finalTypes = $types;
+        }
+
+        /** @var WebEmailRepository $repo */
+        $repo = $this->em->getRepository(WebEmail::class);
+
+        $webEmails = $repo->getWebEmailListByIntervalAndFacility($currentSpace, $this->grantService->getCurrentUserEntityGrants(WebEmail::class), $startDate, $endDate, $typeIds);
+
+        $data = [];
+        foreach ($subIntervals  as $subInterval) {
+            /** @var Facility $type */
+            foreach ($finalTypes as $type) {
+                $count = 0;
+                foreach ($webEmails as $webEmail) {
+                    $i = 0;
+                    if ($webEmail['date'] >= $subInterval['dateFrom'] && $webEmail['date'] <= $subInterval['dateTo'] && $webEmail['typeId'] === $type->getId()) {
+                        $i++;
+
+                        $count += $i;
+                    }
+                }
+
+                $data[] = [
+                    'date' => $subInterval['dateFrom']->format('m/Y'),
+                    'type' => $type->getName(),
+                    'count' => $count,
+                ];
+            }
+        }
+
+        $report = new WebEmailList();
+        $report->setWebEmails($data);
+
+        return $report;
+    }
 }
