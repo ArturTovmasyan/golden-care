@@ -54,7 +54,7 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                 'rrn',
                 Join::WITH,
                 'rrn = rr.reason'
-            );;
+            );
 
         if ($space !== null) {
             $queryBuilder
