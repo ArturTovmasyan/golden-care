@@ -292,7 +292,7 @@ class ResidentLedgerRepository extends EntityRepository implements RelatedInfoIn
     {
         $qb = $this
             ->createQueryBuilder('rl')
-            ->select('rl.amount');
+            ->select('rl.id');
 
         if ($mappedBy !== null && $id !== null) {
             $qb
