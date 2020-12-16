@@ -176,6 +176,28 @@ class ResidentLedgerController extends BaseController
     }
 
     /**
+     * @Route("/recalculate", name="api_admin_resident_ledger_recalculate", methods={"PUT"})
+     *
+     * @Grant(grant="persistence-resident-resident_ledger", level="EDIT")
+     *
+     * @param Request $request
+     * @param ResidentLedgerService $residentLedgerService
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function recalculateLedger(Request $request, ResidentLedgerService $residentLedgerService): JsonResponse
+    {
+        $a = $request->get('id');
+
+        $residentLedgerService->recalculateLedger($request->get('id'));
+
+        return $this->respondSuccess(
+            Response::HTTP_CREATED
+        );
+    }
+
+    /**
      * @Route("/{id}", requirements={"id"="\d+"}, name="api_admin_resident_ledger_delete", methods={"DELETE"})
      *
      * @Grant(grant="persistence-resident-resident_ledger", level="DELETE")
