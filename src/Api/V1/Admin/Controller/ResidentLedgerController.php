@@ -99,7 +99,6 @@ class ResidentLedgerController extends BaseController
         );
     }
 
-
     /**
      * @Route("/{id}/rent", requirements={"id"="\d+"}, name="api_admin_resident_ledger_rent_get", methods={"GET"})
      *
@@ -188,8 +187,6 @@ class ResidentLedgerController extends BaseController
      */
     public function recalculateLedger(Request $request, ResidentLedgerService $residentLedgerService): JsonResponse
     {
-        $a = $request->get('id');
-
         $residentLedgerService->recalculateLedger($request->get('id'));
 
         return $this->respondSuccess(

@@ -139,48 +139,6 @@ class ResidentLedger implements PreviousAndNextItemsService
     private $notPrivatePayBalanceDue = 0;
 
     /**
-     * @var float
-     * @ORM\Column(name="prior_private_pay_balance_due", type="float", length=10)
-     * @Assert\NotBlank(groups={
-     *     "api_admin_resident_ledger_add",
-     *     "api_admin_resident_ledger_edit"
-     * })
-     * @Assert\Length(
-     *      max = 10,
-     *      maxMessage = "Prior Private Pay Balance Due cannot be longer than {{ limit }} characters",
-     *      groups={
-     *          "api_admin_resident_ledger_add",
-     *          "api_admin_resident_ledger_edit"
-     * })
-     * @Groups({
-     *     "api_admin_resident_ledger_list",
-     *     "api_admin_resident_ledger_get"
-     * })
-     */
-    private $priorPrivatePayBalanceDue = 0;
-
-    /**
-     * @var float
-     * @ORM\Column(name="prior_not_private_pay_balance_due", type="float", length=10)
-     * @Assert\NotBlank(groups={
-     *     "api_admin_resident_ledger_add",
-     *     "api_admin_resident_ledger_edit"
-     * })
-     * @Assert\Length(
-     *      max = 10,
-     *      maxMessage = "Prior Not Private Pay Balance Due cannot be longer than {{ limit }} characters",
-     *      groups={
-     *          "api_admin_resident_ledger_add",
-     *          "api_admin_resident_ledger_edit"
-     * })
-     * @Groups({
-     *     "api_admin_resident_ledger_list",
-     *     "api_admin_resident_ledger_get"
-     * })
-     */
-    private $priorNotPrivatePayBalanceDue = 0;
-
-    /**
      * @var array $source
      * @ORM\Column(name="source", type="json_array", nullable=true)
      * @Assert\Count(
@@ -282,6 +240,42 @@ class ResidentLedger implements PreviousAndNextItemsService
      * })
      */
     private $latePayment;
+
+    /**
+     * @var float
+     */
+    private $priorPrivatePayBalanceDue;
+
+    /**
+     * @var float
+     */
+    private $priorNotPrivatePayBalanceDue;
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("prior_private_pay_balance_due")
+     * @Serializer\Groups({
+     *     "api_admin_resident_ledger_get"
+     * })
+     * @return float|null
+     */
+    public function getLedgerPriorPrivatePayBalanceDue(): ?float
+    {
+        return $this->priorPrivatePayBalanceDue;
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("prior_not_private_pay_balance_due")
+     * @Serializer\Groups({
+     *     "api_admin_resident_ledger_get"
+     * })
+     * @return float|null
+     */
+    public function getLedgerPriorNotPrivatePayBalanceDue(): ?float
+    {
+        return $this->priorNotPrivatePayBalanceDue;
+    }
 
     /**
      * @var int

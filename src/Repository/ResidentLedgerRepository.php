@@ -448,6 +448,55 @@ class ResidentLedgerRepository extends EntityRepository implements RelatedInfoIn
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
+     * @param $id
+     * @param $date
+     * @return int|mixed|string
+     */
+    public function getResidentPriorLedgersBalanceDue(Space $space = null, array $entityGrants = null, $id, $date)
+    {
+        $qb = $this
+            ->createQueryBuilder('rl')
+            ->select(
+                'rl.privatePayBalanceDue as privatePayBalanceDue',
+                'rl.notPrivatePayBalanceDue as notPrivatePayBalanceDue'
+            )
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'r = rl.resident'
+            )
+            ->where('r.id=:id')
+            ->andWhere('rl.createdAt <= :date')
+            ->setParameter('date', $date)
+            ->setParameter('id', $id);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rl.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
      * @param null $residentId
      * @return int|mixed|string
      */

@@ -92,6 +92,7 @@ class ResidentLedgerService extends BaseService implements IGridService
      * @param $id
      * @param $gridData
      * @return ResidentLedger
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function getById($id, $gridData)
     {
@@ -102,9 +103,53 @@ class ResidentLedgerService extends BaseService implements IGridService
         /** @var ResidentLedger $entity */
         $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentLedger::class), $id);
 
-        $this->setPreviousAndNextItemIdsFromGrid($entity, $gridData);
+        if ($entity !== null && $entity->getResident() !== null) {
+            $priorLedgerData = $this->calculatePriorLedgerData($currentSpace, $repo, $entity->getResident()->getId(), $entity->getCreatedAt());
+            $entity->setPriorPrivatePayBalanceDue($priorLedgerData['priorPrivatPayBalanceDue']);
+            $entity->setPriorNotPrivatePayBalanceDue($priorLedgerData['priorNotPrivatPayBalanceDue']);
+
+            $this->setPreviousAndNextItemIdsFromGrid($entity, $gridData);
+        }
 
         return $entity;
+    }
+
+    /**
+     * @param $currentSpace
+     * @param ResidentLedgerRepository $repo
+     * @param $residentId
+     * @param $calculationDate
+     * @return array
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function calculatePriorLedgerData($currentSpace, ResidentLedgerRepository $repo, $residentId, $calculationDate): array
+    {
+        $priorPrivatPayBalanceDue = 0;
+        $priorNotPrivatPayBalanceDue = 0;
+
+        //Calculate Prior Months Balance Due
+        $previousDate = new \DateTime(date('Y-m-d', strtotime($calculationDate->format('Y-m-d')." first day of previous month")));
+        $priorDateFormatted = $previousDate->format('m/t/Y 23:59:59');
+        $priorDate = new \DateTime($priorDateFormatted);
+
+        $priorLedgers = $repo->getResidentPriorLedgersBalanceDue($currentSpace, null, $residentId, $priorDate);
+
+        if (!empty($priorLedgers)) {
+            foreach ($priorLedgers as $priorLedger) {
+                if ($priorLedger['privatePayBalanceDue'] > 0) {
+                    $priorPrivatPayBalanceDue += $priorLedger['privatePayBalanceDue'];
+                }
+
+                if ($priorLedger['notPrivatePayBalanceDue'] > 0) {
+                    $priorNotPrivatPayBalanceDue += $priorLedger['notPrivatePayBalanceDue'];
+                }
+            }
+        }
+
+        return [
+            'priorPrivatPayBalanceDue' => round($priorPrivatPayBalanceDue, 2),
+            'priorNotPrivatPayBalanceDue' => round($priorNotPrivatPayBalanceDue, 2),
+        ];
     }
 
     /**
@@ -224,48 +269,8 @@ class ResidentLedgerService extends BaseService implements IGridService
             //Calculate Not Privat Pay Balance Due
             $currentMonthNotPrivatPayBalanceDue = $amountData['notPrivatPayAmount'];
 
-            //Calculate Previous Month Balance Due
-            $previousDate = new \DateTime(date('Y-m-d', strtotime($now->format('Y-m-d')." first day of previous month")));
-            $previousDateStartFormatted = $previousDate->format('m/01/Y 00:00:00');
-            $previousDateEndFormatted = $previousDate->format('m/t/Y 23:59:59');
-            $previousDateStart = new \DateTime($previousDateStartFormatted);
-            $previousDateEnd = new \DateTime($previousDateEndFormatted);
-
-            /** @var ResidentLedger $previousLedger */
-            $previousLedger = $repo->getResidentLedgerByDate($currentSpace, null, $residentId, $previousDateStart, $previousDateEnd);
-
-            $priorPrivatPayBalanceDue = 0;
-            $priorNotPrivatPayBalanceDue = 0;
-            if ($previousLedger === null) {
-                $previousResidentExpenseItems = $residentExpenseItemRepo->getByInterval($currentSpace, null, $residentId, $previousDateStart, $previousDateEnd);
-
-                $previousExpenseItemAmount = 0;
-                if (!empty($previousResidentExpenseItems)) {
-                    foreach ($previousResidentExpenseItems as $previousExpenseItem) {
-                        $previousExpenseItemAmount += $previousExpenseItem['amount'];
-                    }
-                }
-
-                $previousAwayDays = [];
-                $previousResidentAwayDays = $residentAwayDaysRepo->getByInterval($currentSpace, null, $residentId, $previousDateStart, $previousDateEnd);
-                if (!empty($previousResidentAwayDays)) {
-                    /** @var ResidentAwayDays $previousResidentAwayDay */
-                    foreach ($previousResidentAwayDays as $previousResidentAwayDay) {
-                        $previousAwayDays[] = ImtDateTimeInterval::getWithDateTimes($previousResidentAwayDay->getStart(), $previousResidentAwayDay->getEnd());
-                    }
-                }
-
-                $priorAmountData = $this->calculateAmountAndGetPaymentSources($currentSpace, $residentId, $previousDate, $previousAwayDays);
-                //Calculate Privat Pay Balance Due
-                $priorPrivatPayBalanceDue = $priorAmountData['privatPayAmount'] + $previousExpenseItemAmount;
-                //Calculate Not Privat Pay Balance Due
-                $priorNotPrivatPayBalanceDue = $priorAmountData['notPrivatPayAmount'];
-            }
-
-            $residentLedger->setPrivatePayBalanceDue(round($currentMonthPrivatPayBalanceDue + $priorPrivatPayBalanceDue, 2));
-            $residentLedger->setPriorPrivatePayBalanceDue(round($priorPrivatPayBalanceDue, 2));
-            $residentLedger->setNotPrivatePayBalanceDue(round($currentMonthNotPrivatPayBalanceDue + $priorNotPrivatPayBalanceDue, 2));
-            $residentLedger->setPriorNotPrivatePayBalanceDue(round($priorNotPrivatPayBalanceDue, 2));
+            $residentLedger->setPrivatePayBalanceDue(round($currentMonthPrivatPayBalanceDue, 2));
+            $residentLedger->setNotPrivatePayBalanceDue(round($currentMonthNotPrivatPayBalanceDue, 2));
 
             $residentLedger->setSource($amountData['paymentSources']);
             $residentLedger->setPrivatPaySource($amountData['privatPayPaymentSources']);
@@ -801,11 +806,11 @@ class ResidentLedgerService extends BaseService implements IGridService
      */
     private function calculateLedgerData($currentSpace, ResidentLedgerRepository $repo, ResidentLedger $entity, $residentId): ResidentLedger
     {
-        $now = $entity->getCreatedAt() ?? new \DateTime('now');
+        $calculationDate = $entity->getCreatedAt() ?? new \DateTime('now');
 
         $awayDays = [];
-        $dateStartFormatted = $now->format('m/01/Y 00:00:00');
-        $dateEndFormatted = $now->format('m/t/Y 23:59:59');
+        $dateStartFormatted = $calculationDate->format('m/01/Y 00:00:00');
+        $dateEndFormatted = $calculationDate->format('m/t/Y 23:59:59');
 
         $dateStart = new \DateTime($dateStartFormatted);
         $dateEnd = new \DateTime($dateEndFormatted);
@@ -820,53 +825,21 @@ class ResidentLedgerService extends BaseService implements IGridService
             }
         }
 
-        $amountData = $this->calculateAmountAndGetPaymentSources($currentSpace, $residentId, $now, $awayDays);
+        $amountData = $this->calculateAmountAndGetPaymentSources($currentSpace, $residentId, $calculationDate, $awayDays);
 
         $entity->setSource($amountData['paymentSources']);
         $entity->setPrivatPaySource($amountData['privatPayPaymentSources']);
         $entity->setNotPrivatPaySource($amountData['notPrivatPayPaymentSources']);
 
-        $relationsAmount = $this->calculateRelationsAmount($currentSpace, $entity->getId(), $residentId, $now);
+        $relationsAmount = $this->calculateRelationsAmount($currentSpace, $entity->getId(), $residentId, $calculationDate);
 
         //Calculate Privat Pay Balance Due
         $currentMonthPrivatPayBalanceDue = $amountData['privatPayAmount'] + $relationsAmount['privatePayRelationsAmount'];
         //Calculate Not Privat Pay Balance Due
         $currentMonthNotPrivatPayBalanceDue = $amountData['notPrivatPayAmount'] + $relationsAmount['notPrivatePayRelationsAmount'];
 
-        //Calculate Previous Month Balance Due
-        $previousDate = new \DateTime(date('Y-m-d', strtotime($now->format('Y-m-d')." first day of previous month")));
-        $previousDateStartFormatted = $previousDate->format('m/01/Y 00:00:00');
-        $previousDateEndFormatted = $previousDate->format('m/t/Y 23:59:59');
-        $previousDateStart = new \DateTime($previousDateStartFormatted);
-        $previousDateEnd = new \DateTime($previousDateEndFormatted);
-
-        /** @var ResidentLedger $previousLedger */
-        $previousLedger = $repo->getResidentLedgerByDate($currentSpace, null, $residentId, $previousDateStart, $previousDateEnd);
-
-        $priorPrivatPayBalanceDue = 0;
-        $priorNotPrivatPayBalanceDue = 0;
-        if ($previousLedger === null) {
-            $previousAwayDays = [];
-            $previousResidentAwayDays = $residentAwayDaysRepo->getByInterval($currentSpace, null, $residentId, $previousDateStart, $previousDateEnd);
-            if (!empty($previousResidentAwayDays)) {
-                /** @var ResidentAwayDays $previousResidentAwayDay */
-                foreach ($previousResidentAwayDays as $previousResidentAwayDay) {
-                    $previousAwayDays[] = ImtDateTimeInterval::getWithDateTimes($previousResidentAwayDay->getStart(), $previousResidentAwayDay->getEnd());
-                }
-            }
-
-            $priorAmountData = $this->calculateAmountAndGetPaymentSources($currentSpace, $residentId, $previousDate, $previousAwayDays);
-            $priorRelationsAmount = $this->calculateRelationsAmount($currentSpace, $entity->getId(), $residentId, $previousDate);
-            //Calculate Privat Pay Balance Due
-            $priorPrivatPayBalanceDue = $priorAmountData['privatPayAmount'] + $priorRelationsAmount['privatePayRelationsAmount'];
-            //Calculate Not Privat Pay Balance Due
-            $priorNotPrivatPayBalanceDue = $priorAmountData['notPrivatPayAmount'] + $priorRelationsAmount['notPrivatePayRelationsAmount'];
-        }
-
-        $entity->setPrivatePayBalanceDue(round($currentMonthPrivatPayBalanceDue + $priorPrivatPayBalanceDue, 2));
-        $entity->setPriorPrivatePayBalanceDue(round($priorPrivatPayBalanceDue, 2));
-        $entity->setNotPrivatePayBalanceDue(round($currentMonthNotPrivatPayBalanceDue + $priorNotPrivatPayBalanceDue, 2));
-        $entity->setPriorNotPrivatePayBalanceDue(round($priorNotPrivatPayBalanceDue, 2));
+        $entity->setPrivatePayBalanceDue(round($currentMonthPrivatPayBalanceDue, 2));
+        $entity->setNotPrivatePayBalanceDue(round($currentMonthNotPrivatPayBalanceDue, 2));
 
         //If all payments have been received set late payment to null
         if (round($currentMonthPrivatPayBalanceDue, 2) <= 0 && round($currentMonthNotPrivatPayBalanceDue, 2) <= 0) {

@@ -201,35 +201,7 @@ class ResidentAwayDaysService extends BaseService implements IGridService
             //Calculate Not Privat Pay Balance Due
             $currentMonthNotPrivatPayBalanceDue = $amountData['notPrivatPayAmount'] + $relationsAmount['notPrivatePayRelationsAmount'];
 
-            //Calculate Previous Month Balance Due
-            $previousDate = new \DateTime(date('Y-m-d', strtotime($ledger->getCreatedAt()->format('Y-m-d')." first day of previous month")));
-            $previousDateStartFormatted = $previousDate->format('m/01/Y 00:00:00');
-            $previousDateEndFormatted = $previousDate->format('m/t/Y 23:59:59');
-            $previousDateStart = new \DateTime($previousDateStartFormatted);
-            $previousDateEnd = new \DateTime($previousDateEndFormatted);
-
-            /** @var ResidentLedger $previousLedger */
-            $previousLedger = $ledgerRepo->getResidentLedgerByDate($currentSpace, null, $residentId, $previousDateStart, $previousDateEnd);
-
-            $priorNotPrivatPayBalanceDue = 0;
-            if ($previousLedger === null) {
-                $previousAwayDays = [];
-                $previousResidentAwayDays = $repo->getByInterval($currentSpace, null, $residentId, $previousDateStart, $previousDateEnd);
-                if (!empty($previousResidentAwayDays)) {
-                    /** @var ResidentAwayDays $previousResidentAwayDay */
-                    foreach ($previousResidentAwayDays as $previousResidentAwayDay) {
-                        $previousAwayDays[] = ImtDateTimeInterval::getWithDateTimes($previousResidentAwayDay->getStart(), $previousResidentAwayDay->getEnd());
-                    }
-                }
-
-                $priorAmountData = $residentLedgerService->calculateAmountAndGetPaymentSources($currentSpace, $residentId, $previousDate, $previousAwayDays);
-                $priorRelationsAmount = $residentLedgerService->calculateRelationsAmount($currentSpace, $ledger->getId(), $residentId, $previousDate);
-                //Calculate Not Privat Pay Balance Due
-                $priorNotPrivatPayBalanceDue = $priorAmountData['notPrivatPayAmount'] + $priorRelationsAmount['notPrivatePayRelationsAmount'];
-            }
-
-            $ledger->setNotPrivatePayBalanceDue(round($currentMonthNotPrivatPayBalanceDue + $priorNotPrivatPayBalanceDue, 2));
-            $ledger->setPriorNotPrivatePayBalanceDue(round($priorNotPrivatPayBalanceDue, 2));
+            $ledger->setNotPrivatePayBalanceDue(round($currentMonthNotPrivatPayBalanceDue, 2));
             $this->em->persist($ledger);
 
             $this->em->flush();
