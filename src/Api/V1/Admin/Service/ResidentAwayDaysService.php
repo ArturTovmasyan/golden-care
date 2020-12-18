@@ -131,6 +131,7 @@ class ResidentAwayDaysService extends BaseService implements IGridService
             $residentAwayDays->setEnd($end);
             $residentAwayDays->setReason($params['reason']);
 
+            $totalDays = 0;
             if ($start !== null && $end !== null) {
                 $resAwayDays = $resident->getResidentAwayDays();
 
@@ -142,7 +143,11 @@ class ResidentAwayDaysService extends BaseService implements IGridService
                         }
                     }
                 }
+
+                $totalDays = $end->diff($start)->days + 1;
             }
+
+            $residentAwayDays->setTotalDays($totalDays);
 
             $this->validate($residentAwayDays, null, ['api_admin_resident_away_days_add']);
 
@@ -150,7 +155,7 @@ class ResidentAwayDaysService extends BaseService implements IGridService
             $this->em->flush();
 
             //Re-Calculate Ledger
-            $this->reCalculateLedgerNotPrivatePayPart($residentLedgerService, $currentSpace, $residentId, $residentAwayDays->getStart());
+            $this->recalculateLedger($residentLedgerService, $currentSpace, $residentId, $residentAwayDays->getStart());
 
             $this->em->getConnection()->commit();
 
@@ -165,13 +170,13 @@ class ResidentAwayDaysService extends BaseService implements IGridService
     }
 
     /**
-     * @param $residentLedgerService
+     * @param ResidentLedgerService $residentLedgerService
      * @param $currentSpace
      * @param $residentId
      * @param $date
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    private function reCalculateLedgerNotPrivatePayPart($residentLedgerService, $currentSpace, $residentId, $date): void
+    private function recalculateLedger(ResidentLedgerService $residentLedgerService, $currentSpace, $residentId, $date): void
     {
         $dateStartFormatted = $date->format('m/01/Y 00:00:00');
         $dateEndFormatted = $date->format('m/t/Y 23:59:59');
@@ -184,25 +189,9 @@ class ResidentAwayDaysService extends BaseService implements IGridService
         $ledger = $ledgerRepo->getResidentLedgerByDate($currentSpace, null, $residentId, $dateStart, $dateEnd);
 
         if ($ledger !== null) {
-            /** @var ResidentAwayDaysRepository $repo */
-            $repo = $this->em->getRepository(ResidentAwayDays::class);
+            $recalculateLedger = $residentLedgerService->calculateLedgerData($currentSpace, $ledger, $residentId);
 
-            $awayDays = $repo->getByInterval($currentSpace, null, $residentId, $dateStart, $dateEnd);
-            $absentDays = [];
-            if (!empty($awayDays)) {
-                /** @var ResidentAwayDays $residentAwayDay */
-                foreach ($awayDays as $residentAwayDay) {
-                    $absentDays[] = ImtDateTimeInterval::getWithDateTimes($residentAwayDay->getStart(), $residentAwayDay->getEnd());
-                }
-            }
-
-            $amountData = $residentLedgerService->calculateAmountAndGetPaymentSources($currentSpace, $residentId, $ledger->getCreatedAt(), $absentDays);
-            $relationsAmount = $residentLedgerService->calculateRelationsAmount($currentSpace, $ledger->getId(), $residentId, $ledger->getCreatedAt());
-            //Calculate Not Privat Pay Balance Due
-            $currentMonthNotPrivatPayBalanceDue = $amountData['notPrivatPayAmount'] + $relationsAmount['notPrivatePayRelationsAmount'];
-
-            $ledger->setNotPrivatePayBalanceDue(round($currentMonthNotPrivatPayBalanceDue, 2));
-            $this->em->persist($ledger);
+            $this->em->persist($recalculateLedger);
 
             $this->em->flush();
         }
@@ -210,12 +199,12 @@ class ResidentAwayDaysService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @param $residentLedgerService
+     * @param ResidentLedgerService $residentLedgerService
      * @param array $params
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function edit($id, $residentLedgerService, array $params): void
+    public function edit($id, ResidentLedgerService $residentLedgerService, array $params): void
     {
         try {
 
@@ -272,6 +261,7 @@ class ResidentAwayDaysService extends BaseService implements IGridService
             $entity->setEnd($end);
             $entity->setReason($params['reason']);
 
+            $totalDays = 0;
             if ($start !== null && $end !== null) {
                 $residentAwayDays = $resident->getResidentAwayDays();
 
@@ -283,7 +273,11 @@ class ResidentAwayDaysService extends BaseService implements IGridService
                         }
                     }
                 }
+
+                $totalDays = $end->diff($start)->days + 1;
             }
+
+            $entity->setTotalDays($totalDays);
 
             $this->validate($entity, null, ['api_admin_resident_away_days_edit']);
 
@@ -291,7 +285,7 @@ class ResidentAwayDaysService extends BaseService implements IGridService
             $this->em->flush();
 
             //Re-Calculate Ledger
-            $this->reCalculateLedgerNotPrivatePayPart($residentLedgerService, $currentSpace, $residentId, $entity->getStart());
+            $this->recalculateLedger($residentLedgerService, $currentSpace, $residentId, $entity->getStart());
 
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {

@@ -76,11 +76,13 @@ class ResidentExpenseItemService extends BaseService implements IGridService
     }
 
     /**
+     * @param ResidentLedgerService $residentLedgerService
      * @param array $params
      * @return int|null
-     * @throws \Throwable
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function add(array $params): ?int
+    public function add(ResidentLedgerService $residentLedgerService, array $params): ?int
     {
         $insert_id = null;
         try {
@@ -129,30 +131,10 @@ class ResidentExpenseItemService extends BaseService implements IGridService
             $this->validate($residentExpenseItem, null, ['api_admin_resident_expense_item_add']);
 
             $this->em->persist($residentExpenseItem);
-
             $this->em->flush();
 
-            //Re-Calculate Ledger Balance Due
-            $expenseItemDate = $residentExpenseItem->getDate() ?? new \DateTime('now');
-
-            $dateStartFormatted = $expenseItemDate->format('m/01/Y 00:00:00');
-            $dateEndFormatted = $expenseItemDate->format('m/t/Y 23:59:59');
-            $dateStart = new \DateTime($dateStartFormatted);
-            $dateEnd = new \DateTime($dateEndFormatted);
-
-            /** @var ResidentLedgerRepository $ledgerRepo */
-            $ledgerRepo = $this->em->getRepository(ResidentLedger::class);
-            /** @var ResidentLedger $ledger */
-            $ledger = $ledgerRepo->getResidentLedgerByDate($currentSpace, null, $residentId, $dateStart, $dateEnd);
-
-            if ($ledger !== null) {
-                $oldPrivatePayBalanceDue = $ledger->getPrivatePayBalanceDue();
-                $newPrivatePayBalanceDue = $oldPrivatePayBalanceDue + $residentExpenseItem->getAmount();
-                $ledger->setPrivatePayBalanceDue($newPrivatePayBalanceDue);
-                $this->em->persist($ledger);
-
-                $this->em->flush();
-            }
+            //Re-Calculate Ledger
+            $this->recalculateLedger($residentLedgerService, $currentSpace, $residentId,  $residentExpenseItem->getDate());
 
             $this->em->getConnection()->commit();
 
@@ -167,11 +149,41 @@ class ResidentExpenseItemService extends BaseService implements IGridService
     }
 
     /**
-     * @param $id
-     * @param array $params
-     * @throws \Throwable
+     * @param ResidentLedgerService $residentLedgerService
+     * @param $currentSpace
+     * @param $residentId
+     * @param $date
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function edit($id, array $params): void
+    private function recalculateLedger(ResidentLedgerService $residentLedgerService, $currentSpace, $residentId, $date): void
+    {
+        $dateStartFormatted = $date->format('m/01/Y 00:00:00');
+        $dateEndFormatted = $date->format('m/t/Y 23:59:59');
+        $dateStart = new \DateTime($dateStartFormatted);
+        $dateEnd = new \DateTime($dateEndFormatted);
+
+        /** @var ResidentLedgerRepository $ledgerRepo */
+        $ledgerRepo = $this->em->getRepository(ResidentLedger::class);
+        /** @var ResidentLedger $ledger */
+        $ledger = $ledgerRepo->getResidentLedgerByDate($currentSpace, null, $residentId, $dateStart, $dateEnd);
+
+        if ($ledger !== null) {
+            $recalculateLedger = $residentLedgerService->calculateLedgerData($currentSpace, $ledger, $residentId);
+
+            $this->em->persist($recalculateLedger);
+
+            $this->em->flush();
+        }
+    }
+
+    /**
+     * @param $id
+     * @param ResidentLedgerService $residentLedgerService
+     * @param array $params
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function edit($id, ResidentLedgerService $residentLedgerService, array $params): void
     {
         try {
 
@@ -229,35 +241,11 @@ class ResidentExpenseItemService extends BaseService implements IGridService
             $this->validate($entity, null, ['api_admin_resident_expense_item_edit']);
 
             $this->em->persist($entity);
-
-            //Re-Calculate Ledger Balance Due
-            $uow = $this->em->getUnitOfWork();
-            $uow->computeChangeSets();
-
-            $changeSet = $this->em->getUnitOfWork()->getEntityChangeSet($entity);
-
-            if (!empty($changeSet) && array_key_exists('amount', $changeSet)) {
-                $expenseItemDate = $entity->getDate() ?? new \DateTime('now');
-
-                $dateStartFormatted = $expenseItemDate->format('m/01/Y 00:00:00');
-                $dateEndFormatted = $expenseItemDate->format('m/t/Y 23:59:59');
-                $dateStart = new \DateTime($dateStartFormatted);
-                $dateEnd = new \DateTime($dateEndFormatted);
-
-                /** @var ResidentLedgerRepository $ledgerRepo */
-                $ledgerRepo = $this->em->getRepository(ResidentLedger::class);
-                /** @var ResidentLedger $ledger */
-                $ledger = $ledgerRepo->getResidentLedgerByDate($currentSpace, null, $residentId, $dateStart, $dateEnd);
-
-                if ($ledger !== null) {
-                    $oldPrivatePayBalanceDue = $ledger->getPrivatePayBalanceDue();
-                    $newPrivatePayBalanceDue = $oldPrivatePayBalanceDue + $changeSet['amount']['1'] - $changeSet['amount']['0'];
-                    $ledger->setPrivatePayBalanceDue($newPrivatePayBalanceDue);
-                    $this->em->persist($ledger);
-                }
-            }
-
             $this->em->flush();
+
+            //Re-Calculate Ledger
+            $this->recalculateLedger($residentLedgerService, $currentSpace, $residentId, $entity->getDate());
+
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();

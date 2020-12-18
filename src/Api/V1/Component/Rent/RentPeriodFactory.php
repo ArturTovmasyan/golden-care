@@ -194,12 +194,20 @@ class RentPeriodFactory
             ++$days;
         }
 
+        $residentAwayDays = [];
         $absentDaysArray = [];
         $absentDays = 0;
         if (!empty($awayDaysIntervals)) {
             /** @var ImtDateTimeInterval $awayDaysInterval */
             foreach ($awayDaysIntervals as $awayDaysInterval) {
-                $absentDaysArray[] = $this->datesOverlap($overlappingInterval->getStart(), $overlappingInterval->getEnd(), $awayDaysInterval->getStart(), $awayDaysInterval->getEnd());
+                $overlapDays = $this->datesOverlap($overlappingInterval->getStart(), $overlappingInterval->getEnd(), $awayDaysInterval->getStart(), $awayDaysInterval->getEnd());
+                $absentDaysArray[] = $overlapDays;
+                if ($overlapDays > 0) {
+                    $residentAwayDays[] = [
+                        'start' => $awayDaysInterval->getStart()->format('m/d/Y'),
+                        'days' => $overlapDays,
+                    ];
+                }
             }
 
             $absentDays = array_sum($absentDaysArray);
@@ -215,6 +223,7 @@ class RentPeriodFactory
             'amount' => $period->calculateForRoomRentInterval($overlappingInterval, $amount),
             'days' => $days,
             'absentDays' => $absentDays,
+            'residentAwayDays' => $residentAwayDays,
         );
     }
 

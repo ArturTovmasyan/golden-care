@@ -275,6 +275,7 @@ class ResidentLedgerService extends BaseService implements IGridService
             $residentLedger->setSource($amountData['paymentSources']);
             $residentLedger->setPrivatPaySource($amountData['privatPayPaymentSources']);
             $residentLedger->setNotPrivatPaySource($amountData['notPrivatPayPaymentSources']);
+            $entity->setAwayDays($amountData['awayDays']);
 
             $this->em->persist($residentLedger);
             $this->em->flush();
@@ -325,6 +326,8 @@ class ResidentLedgerService extends BaseService implements IGridService
         $privatPayPaymentSources = [];
         $notPrivatPayPaymentSources = [];
         $rentData = [];
+        $residentAwayDays = [];
+        $finalAwayDays = [];
         if (!empty($data)) {
             foreach ($data as $rent) {
                 $rentData[] = [
@@ -411,12 +414,39 @@ class ResidentLedgerService extends BaseService implements IGridService
                                 'id' => $rentSource['id'],
                                 'amount' => round($calcResults['amount'], 2),
                             ];
+
+                            if (!empty($calcResults['residentAwayDays'])) {
+                                $residentAwayDays[] = $calcResults['residentAwayDays'];
+                            }
                         }
 
                         $sourceAmount += $calcResults['amount'];
 
                         $paymentSources[] = $rentSource;
                     }
+                }
+            }
+
+            if (!empty($residentAwayDays)) {
+                $awayDaysData = [];
+                foreach ($residentAwayDays as $awayDayArray) {
+                    foreach ($awayDayArray as $residentAwayDay) {
+                        if (array_key_exists($residentAwayDay['start'], $finalAwayDays)) {
+                            $awayDaysData[$residentAwayDay['start']] += $residentAwayDay['days'];
+                        } else {
+                            $awayDaysData[$residentAwayDay['start']] =  $residentAwayDay['days'];
+                        }
+                    }
+                }
+
+                $awayDaysData = array_combine(array_keys($awayDaysData), array_values($awayDaysData));
+                ksort($awayDaysData);
+
+                foreach ($awayDaysData as $key => $value) {
+                    $finalAwayDays[] = [
+                        'date' => $key,
+                        'days' => $value,
+                    ];
                 }
             }
 
@@ -434,6 +464,7 @@ class ResidentLedgerService extends BaseService implements IGridService
             'privatPayPaymentSources' => $privatPayPaymentSources,
             'notPrivatPayAmount' => $notPrivatPaySourceAmount,
             'notPrivatPayPaymentSources' => $notPrivatPayPaymentSources,
+            'awayDays' => $finalAwayDays,
         ];
     }
 
@@ -783,7 +814,7 @@ class ResidentLedgerService extends BaseService implements IGridService
             $this->em->persist($entity);
             $this->em->flush();
 
-            $entity = $this->calculateLedgerData($currentSpace, $repo, $entity, $residentId);
+            $entity = $this->calculateLedgerData($currentSpace, $entity, $residentId);
 
             $this->em->persist($entity);
             $this->em->flush();
@@ -798,13 +829,12 @@ class ResidentLedgerService extends BaseService implements IGridService
 
     /**
      * @param $currentSpace
-     * @param ResidentLedgerRepository $repo
      * @param ResidentLedger $entity
      * @param $residentId
      * @return ResidentLedger
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Exception
      */
-    private function calculateLedgerData($currentSpace, ResidentLedgerRepository $repo, ResidentLedger $entity, $residentId): ResidentLedger
+    public function calculateLedgerData($currentSpace, ResidentLedger $entity, $residentId): ResidentLedger
     {
         $calculationDate = $entity->getCreatedAt() ?? new \DateTime('now');
 
@@ -830,6 +860,7 @@ class ResidentLedgerService extends BaseService implements IGridService
         $entity->setSource($amountData['paymentSources']);
         $entity->setPrivatPaySource($amountData['privatPayPaymentSources']);
         $entity->setNotPrivatPaySource($amountData['notPrivatPayPaymentSources']);
+        $entity->setAwayDays($amountData['awayDays']);
 
         $relationsAmount = $this->calculateRelationsAmount($currentSpace, $entity->getId(), $residentId, $calculationDate);
 
@@ -872,7 +903,7 @@ class ResidentLedgerService extends BaseService implements IGridService
             }
 
             if ($entity->getResident() !== null) {
-                $entity = $this->calculateLedgerData($currentSpace, $repo, $entity, $entity->getResident()->getId());
+                $entity = $this->calculateLedgerData($currentSpace, $entity, $entity->getResident()->getId());
             }
 
             $this->em->persist($entity);

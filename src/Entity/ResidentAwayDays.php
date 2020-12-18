@@ -7,6 +7,7 @@ use App\Model\Persistence\Entity\UserAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation as Serializer;
 use App\Annotation\Grid;
 
 /**
@@ -31,6 +32,11 @@ use App\Annotation\Grid;
  *              "id"         = "end",
  *              "type"       = "date",
  *              "field"      = "rad.end"
+ *          },
+ *          {
+ *              "id"         = "total_days",
+ *              "type"       = "number",
+ *              "field"      = "rad.totalDays"
  *          },
  *          {
  *              "id"         = "reason",
@@ -134,6 +140,16 @@ class ResidentAwayDays
     private $reason;
 
     /**
+     * @var int
+     * @ORM\Column(name="total_days", type="integer", length=4, nullable=true)
+     * @Groups({
+     *     "api_admin_resident_away_days_list",
+     *     "api_admin_resident_away_days_get"
+     * })
+     */
+    private $totalDays;
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -211,5 +227,21 @@ class ResidentAwayDays
     public function setReason(?string $reason): void
     {
         $this->reason = $reason;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalDays(): int
+    {
+        return $this->totalDays;
+    }
+
+    /**
+     * @param int $totalDays
+     */
+    public function setTotalDays(int $totalDays): void
+    {
+        $this->totalDays = $totalDays;
     }
 }

@@ -187,6 +187,7 @@ class CreateResidentLedgerCommand extends Command
                                     $residentLedger->setSource($amountData['paymentSources']);
                                     $residentLedger->setPrivatPaySource($amountData['privatPayPaymentSources']);
                                     $residentLedger->setNotPrivatPaySource($amountData['notPrivatPayPaymentSources']);
+                                    $residentLedger->setAwayDays($amountData['awayDays']);
 
                                     $residentLedger->setUpdatedBy($residentLedger->getCreatedBy());
 

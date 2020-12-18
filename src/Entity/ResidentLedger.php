@@ -190,6 +190,16 @@ class ResidentLedger implements PreviousAndNextItemsService
     private $notPrivatPaySource = [];
 
     /**
+     * @var array $awayDays
+     * @ORM\Column(name="away_days", type="json_array", nullable=true)
+     * @Groups({
+     *     "api_admin_resident_ledger_list",
+     *     "api_admin_resident_ledger_get"
+     * })
+     */
+    private $awayDays = [];
+
+    /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="App\Entity\ResidentCreditItem", mappedBy="ledger", cascade={"remove", "persist"})
      * @ORM\OrderBy({"date" = "ASC"})
@@ -491,6 +501,22 @@ class ResidentLedger implements PreviousAndNextItemsService
     public function setNotPrivatPaySource(array $notPrivatPaySource): void
     {
         $this->notPrivatPaySource = $notPrivatPaySource;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAwayDays(): array
+    {
+        return $this->awayDays;
+    }
+
+    /**
+     * @param array $awayDays
+     */
+    public function setAwayDays(array $awayDays): void
+    {
+        $this->awayDays = $awayDays;
     }
 
     /**

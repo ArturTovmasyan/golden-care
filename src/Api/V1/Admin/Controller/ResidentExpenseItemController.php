@@ -4,6 +4,7 @@ namespace App\Api\V1\Admin\Controller;
 
 use App\Annotation\Grant;
 use App\Api\V1\Admin\Service\ResidentExpenseItemService;
+use App\Api\V1\Admin\Service\ResidentLedgerService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\ResidentExpenseItem;
 use Symfony\Component\HttpFoundation\Request;
@@ -94,11 +95,13 @@ class ResidentExpenseItemController extends BaseController
      *
      * @param Request $request
      * @param ResidentExpenseItemService $residentExpenseItemService
+     * @param ResidentLedgerService $residentLedgerService
      * @return JsonResponse
      */
-    public function addAction(Request $request, ResidentExpenseItemService $residentExpenseItemService): JsonResponse
+    public function addAction(Request $request, ResidentExpenseItemService $residentExpenseItemService, ResidentLedgerService $residentLedgerService): JsonResponse
     {
         $id = $residentExpenseItemService->add(
+            $residentLedgerService,
             [
                 'resident_id' => $request->get('resident_id'),
                 'expense_item_id' => $request->get('expense_item_id'),
@@ -123,12 +126,14 @@ class ResidentExpenseItemController extends BaseController
      * @param Request $request
      * @param $id
      * @param ResidentExpenseItemService $residentExpenseItemService
+     * @param ResidentLedgerService $residentLedgerService
      * @return JsonResponse
      */
-    public function editAction(Request $request, $id, ResidentExpenseItemService $residentExpenseItemService): JsonResponse
+    public function editAction(Request $request, $id, ResidentExpenseItemService $residentExpenseItemService, ResidentLedgerService $residentLedgerService): JsonResponse
     {
         $residentExpenseItemService->edit(
             $id,
+            $residentLedgerService,
             [
                 'resident_id' => $request->get('resident_id'),
                 'expense_item_id' => $request->get('expense_item_id'),
