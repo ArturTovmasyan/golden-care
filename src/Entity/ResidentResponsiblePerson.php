@@ -38,8 +38,8 @@ class ResidentResponsiblePerson
      * @Groups({
      *     "api_admin_resident_responsible_person_list",
      *     "api_admin_resident_responsible_person_get",
-     *     "api_admin_resident_payment_received_item_list",
-     *     "api_admin_resident_payment_received_item_get",
+     *     "api_admin_resident_private_pay_payment_received_item_list",
+     *     "api_admin_resident_private_pay_payment_received_item_get",
      *     "api_admin_resident_ledger_get"
      * })
      */
@@ -93,8 +93,8 @@ class ResidentResponsiblePerson
      * @Groups({
      *     "api_admin_resident_responsible_person_list",
      *     "api_admin_resident_responsible_person_get",
-     *     "api_admin_resident_payment_received_item_list",
-     *     "api_admin_resident_payment_received_item_get",
+     *     "api_admin_resident_private_pay_payment_received_item_list",
+     *     "api_admin_resident_private_pay_payment_received_item_get",
      *     "api_admin_resident_ledger_get"
      * })
      */
@@ -129,9 +129,9 @@ class ResidentResponsiblePerson
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\ResidentPaymentReceivedItem", mappedBy="responsiblePerson", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentPrivatePayPaymentReceivedItem", mappedBy="responsiblePerson", cascade={"remove", "persist"})
      */
-    private $residentPaymentReceivedItems;
+    private $residentPrivatePayPaymentReceivedItems;
 
     /**
      * @return int
@@ -255,16 +255,16 @@ class ResidentResponsiblePerson
     /**
      * @return ArrayCollection
      */
-    public function getResidentPaymentReceivedItems(): ArrayCollection
+    public function getResidentPrivatePayPaymentReceivedItems(): ArrayCollection
     {
-        return $this->residentPaymentReceivedItems;
+        return $this->residentPrivatePayPaymentReceivedItems;
     }
 
     /**
-     * @param ArrayCollection $residentPaymentReceivedItems
+     * @param ArrayCollection $residentPrivatePayPaymentReceivedItems
      */
-    public function setResidentPaymentReceivedItems(ArrayCollection $residentPaymentReceivedItems): void
+    public function setResidentPrivatePayPaymentReceivedItems(ArrayCollection $residentPrivatePayPaymentReceivedItems): void
     {
-        $this->residentPaymentReceivedItems = $residentPaymentReceivedItems;
+        $this->residentPrivatePayPaymentReceivedItems = $residentPrivatePayPaymentReceivedItems;
     }
 }

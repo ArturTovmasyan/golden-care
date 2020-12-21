@@ -449,10 +449,14 @@ persistence:
           title: 'ResidentAwayDays'
           class: App\Entity\ResidentAwayDays
           route: api_admin_resident_away_days_list
-        resident_payment_received_item:
-          title: 'ResidentPaymentReceivedItem'
-          class: App\Entity\ResidentPaymentReceivedItem
-          route: api_admin_resident_payment_received_item_list
+        resident_private_pay_payment_received_item:
+          title: 'ResidentPrivatePayPaymentReceivedItem'
+          class: App\Entity\ResidentPrivatePayPaymentReceivedItem
+          route: api_admin_resident_private_pay_payment_received_item_list
+        resident_not_private_pay_payment_received_item:
+          title: 'ResidentNotPrivatePayPaymentReceivedItem'
+          class: App\Entity\ResidentNotPrivatePayPaymentReceivedItem
+          route: api_admin_resident_not_private_pay_payment_received_item_list
 
         admission:
           title: 'ResidentAdmission'

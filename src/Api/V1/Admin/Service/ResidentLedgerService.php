@@ -18,7 +18,8 @@ use App\Entity\ResidentAwayDays;
 use App\Entity\ResidentCreditItem;
 use App\Entity\ResidentDiscountItem;
 use App\Entity\ResidentExpenseItem;
-use App\Entity\ResidentPaymentReceivedItem;
+use App\Entity\ResidentNotPrivatePayPaymentReceivedItem;
+use App\Entity\ResidentPrivatePayPaymentReceivedItem;
 use App\Entity\ResidentRent;
 use App\Entity\Resident;
 use App\Entity\ResidentLedger;
@@ -34,7 +35,8 @@ use App\Repository\ResidentCreditItemRepository;
 use App\Repository\ResidentDiscountItemRepository;
 use App\Repository\ResidentExpenseItemRepository;
 use App\Repository\ResidentLedgerRepository;
-use App\Repository\ResidentPaymentReceivedItemRepository;
+use App\Repository\ResidentNotPrivatePayPaymentReceivedItemRepository;
+use App\Repository\ResidentPrivatePayPaymentReceivedItemRepository;
 use App\Repository\ResidentRentRepository;
 use App\Repository\ResidentRepository;
 use App\Repository\ResidentResponsiblePersonRepository;
@@ -136,13 +138,8 @@ class ResidentLedgerService extends BaseService implements IGridService
 
         if (!empty($priorLedgers)) {
             foreach ($priorLedgers as $priorLedger) {
-                if ($priorLedger['privatePayBalanceDue'] > 0) {
-                    $priorPrivatPayBalanceDue += $priorLedger['privatePayBalanceDue'];
-                }
-
-                if ($priorLedger['notPrivatePayBalanceDue'] > 0) {
-                    $priorNotPrivatPayBalanceDue += $priorLedger['notPrivatePayBalanceDue'];
-                }
+                $priorPrivatPayBalanceDue += $priorLedger['privatePayBalanceDue'];
+                $priorNotPrivatPayBalanceDue += $priorLedger['notPrivatePayBalanceDue'];
             }
         }
 
@@ -275,7 +272,7 @@ class ResidentLedgerService extends BaseService implements IGridService
             $residentLedger->setSource($amountData['paymentSources']);
             $residentLedger->setPrivatPaySource($amountData['privatPayPaymentSources']);
             $residentLedger->setNotPrivatPaySource($amountData['notPrivatPayPaymentSources']);
-            $entity->setAwayDays($amountData['awayDays']);
+            $residentLedger->setAwayDays($amountData['awayDays']);
 
             $this->em->persist($residentLedger);
             $this->em->flush();
@@ -517,19 +514,30 @@ class ResidentLedgerService extends BaseService implements IGridService
             }
         }
 
-        /** @var ResidentPaymentReceivedItemRepository $residentPaymentReceivedItemRepo */
-        $residentPaymentReceivedItemRepo = $this->em->getRepository(ResidentPaymentReceivedItem::class);
-        $residentPaymentReceivedItems = $residentPaymentReceivedItemRepo->getByInterval($currentSpace, null, $ledgerId, $dateStart, $dateEnd);
+        /** @var ResidentPrivatePayPaymentReceivedItemRepository $residentPrivatePayPaymentReceivedItemRepo */
+        $residentPrivatePayPaymentReceivedItemRepo = $this->em->getRepository(ResidentPrivatePayPaymentReceivedItem::class);
+        $residentPrivatePayPaymentReceivedItems = $residentPrivatePayPaymentReceivedItemRepo->getByInterval($currentSpace, null, $ledgerId, $dateStart, $dateEnd);
 
-        $paymentReceivedItemAmount = 0;
-        if (!empty($residentPaymentReceivedItems)) {
-            foreach ($residentPaymentReceivedItems as $paymentReceivedItem) {
-                $paymentReceivedItemAmount += $paymentReceivedItem['amount'];
+        $privatePayPaymentReceivedItemAmount = 0;
+        if (!empty($residentPrivatePayPaymentReceivedItems)) {
+            foreach ($residentPrivatePayPaymentReceivedItems as $privatePayPaymentReceivedItem) {
+                $privatePayPaymentReceivedItemAmount += $privatePayPaymentReceivedItem['amount'];
             }
         }
 
-        $privatePayRelationsAmount = $expenseItemAmount - $creditItemAmount - $discountItemAmount - $paymentReceivedItemAmount;
-        $notPrivatePayRelationsAmount = -$paymentReceivedItemAmount;
+        /** @var ResidentNotPrivatePayPaymentReceivedItemRepository $residentNotPrivatePayPaymentReceivedItemRepo */
+        $residentNotPrivatePayPaymentReceivedItemRepo = $this->em->getRepository(ResidentNotPrivatePayPaymentReceivedItem::class);
+        $residentNotPrivatePayPaymentReceivedItems = $residentNotPrivatePayPaymentReceivedItemRepo->getByInterval($currentSpace, null, $ledgerId, $dateStart, $dateEnd);
+
+        $notPrivatePayPaymentReceivedItemAmount = 0;
+        if (!empty($residentNotPrivatePayPaymentReceivedItems)) {
+            foreach ($residentNotPrivatePayPaymentReceivedItems as $notPrivatePayPaymentReceivedItem) {
+                $notPrivatePayPaymentReceivedItemAmount += $notPrivatePayPaymentReceivedItem['amount'];
+            }
+        }
+
+        $privatePayRelationsAmount = $expenseItemAmount - $creditItemAmount - $discountItemAmount - $privatePayPaymentReceivedItemAmount;
+        $notPrivatePayRelationsAmount = -$notPrivatePayPaymentReceivedItemAmount;
 
         return [
             'privatePayRelationsAmount' => $privatePayRelationsAmount,
@@ -733,79 +741,147 @@ class ResidentLedgerService extends BaseService implements IGridService
             $paymentTypeRepo = $this->em->getRepository(RpPaymentType::class);
             /** @var ResidentResponsiblePersonRepository $responsiblePersonRepo */
             $responsiblePersonRepo = $this->em->getRepository(ResidentResponsiblePerson::class);
-            $addedPaymentReceivedItems = [];
-            $editedPaymentReceivedItems = [];
-            $editedPaymentReceivedItemsIds = [];
-            if (!empty($params['resident_payment_received_items'])) {
-                foreach ($params['resident_payment_received_items'] as $paymentReceivedItem) {
-                    if (empty($paymentReceivedItem['id'])) {
-                        $addedPaymentReceivedItems[] = $paymentReceivedItem;
+            $addedPrivatePayPaymentReceivedItems = [];
+            $editedPrivatePayPaymentReceivedItems = [];
+            $editedPrivatePayPaymentReceivedItemsIds = [];
+            if (!empty($params['resident_private_pay_payment_received_items'])) {
+                foreach ($params['resident_private_pay_payment_received_items'] as $privatePayPaymentReceivedItem) {
+                    if (empty($privatePayPaymentReceivedItem['id'])) {
+                        $addedPrivatePayPaymentReceivedItems[] = $privatePayPaymentReceivedItem;
                     } else {
-                        $editedPaymentReceivedItems[$paymentReceivedItem['id']] = $paymentReceivedItem;
-                        $editedPaymentReceivedItemsIds[] = $paymentReceivedItem['id'];
+                        $editedPrivatePayPaymentReceivedItems[$privatePayPaymentReceivedItem['id']] = $privatePayPaymentReceivedItem;
+                        $editedPrivatePayPaymentReceivedItemsIds[] = $privatePayPaymentReceivedItem['id'];
                     }
                 }
             }
 
-            if ($entity->getResidentPaymentReceivedItems() !== null) {
-                /** @var ResidentPaymentReceivedItem $existingPaymentReceivedItem */
-                foreach ($entity->getResidentPaymentReceivedItems() as $existingPaymentReceivedItem) {
-                    if (\in_array($existingPaymentReceivedItem->getId(), $editedPaymentReceivedItemsIds, false)) {
-                        $existingPaymentReceivedItemDate = new \DateTime($editedPaymentReceivedItems[$existingPaymentReceivedItem->getId()]['date']);
-                        if ($entity->getCreatedAt()->format('Y') !== $existingPaymentReceivedItemDate->format('Y') || $entity->getCreatedAt()->format('m') !== $existingPaymentReceivedItemDate->format('m')) {
+            if ($entity->getResidentPrivatePayPaymentReceivedItems() !== null) {
+                /** @var ResidentPrivatePayPaymentReceivedItem $existingPrivatePayPaymentReceivedItem */
+                foreach ($entity->getResidentPrivatePayPaymentReceivedItems() as $existingPrivatePayPaymentReceivedItem) {
+                    if (\in_array($existingPrivatePayPaymentReceivedItem->getId(), $editedPrivatePayPaymentReceivedItemsIds, false)) {
+                        $existingPrivatePayPaymentReceivedItemDate = new \DateTime($editedPrivatePayPaymentReceivedItems[$existingPrivatePayPaymentReceivedItem->getId()]['date']);
+                        if ($entity->getCreatedAt()->format('Y') !== $existingPrivatePayPaymentReceivedItemDate->format('Y') || $entity->getCreatedAt()->format('m') !== $existingPrivatePayPaymentReceivedItemDate->format('m')) {
                             throw new InvalidEffectiveDateException();
                         }
 
-                        $paymentTypeId = $editedPaymentReceivedItems[$existingPaymentReceivedItem->getId()]['payment_type_id'] ?? 0;
-                        $responsiblePersonId = $editedPaymentReceivedItems[$existingPaymentReceivedItem->getId()]['responsible_person_id'] ?? 0;
+                        $paymentTypeId = $editedPrivatePayPaymentReceivedItems[$existingPrivatePayPaymentReceivedItem->getId()]['payment_type_id'] ?? 0;
+                        $responsiblePersonId = $editedPrivatePayPaymentReceivedItems[$existingPrivatePayPaymentReceivedItem->getId()]['responsible_person_id'] ?? 0;
 
                         /** @var RpPaymentType $paymentType */
                         $paymentType = $paymentTypeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(RpPaymentType::class), $paymentTypeId);
                         /** @var ResidentResponsiblePerson $responsiblePerson */
                         $responsiblePerson = $responsiblePersonRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $responsiblePersonId);
 
-                        $existingPaymentReceivedItem->setPaymentType($paymentType);
-                        $existingPaymentReceivedItem->setResponsiblePerson($responsiblePerson);
-                        $existingPaymentReceivedItem->setDate($existingPaymentReceivedItemDate);
-                        $existingPaymentReceivedItem->setAmount($editedPaymentReceivedItems[$existingPaymentReceivedItem->getId()]['amount']);
-                        $existingPaymentReceivedItem->setTransactionNumber($editedPaymentReceivedItems[$existingPaymentReceivedItem->getId()]['transaction_number']);
-                        $existingPaymentReceivedItem->setNotes($editedPaymentReceivedItems[$existingPaymentReceivedItem->getId()]['notes'] ?? '');
+                        $existingPrivatePayPaymentReceivedItem->setPaymentType($paymentType);
+                        $existingPrivatePayPaymentReceivedItem->setResponsiblePerson($responsiblePerson);
+                        $existingPrivatePayPaymentReceivedItem->setDate($existingPrivatePayPaymentReceivedItemDate);
+                        $existingPrivatePayPaymentReceivedItem->setAmount($editedPrivatePayPaymentReceivedItems[$existingPrivatePayPaymentReceivedItem->getId()]['amount']);
+                        $existingPrivatePayPaymentReceivedItem->setTransactionNumber($editedPrivatePayPaymentReceivedItems[$existingPrivatePayPaymentReceivedItem->getId()]['transaction_number']);
+                        $existingPrivatePayPaymentReceivedItem->setNotes($editedPrivatePayPaymentReceivedItems[$existingPrivatePayPaymentReceivedItem->getId()]['notes'] ?? '');
 
-                        $this->em->persist($existingPaymentReceivedItem);
+                        $this->em->persist($existingPrivatePayPaymentReceivedItem);
                     } else {
-                        $entity->removeResidentPaymentReceivedItem($existingPaymentReceivedItem);
-                        $this->em->remove($existingPaymentReceivedItem);
+                        $entity->removeResidentPrivatePayPaymentReceivedItem($existingPrivatePayPaymentReceivedItem);
+                        $this->em->remove($existingPrivatePayPaymentReceivedItem);
                     }
                 }
             }
 
-            if (!empty($addedPaymentReceivedItems)) {
-                foreach ($addedPaymentReceivedItems as $addedPaymentReceivedItem) {
-                    $paymentReceivedItemDate = new \DateTime($addedPaymentReceivedItem['date']);
-                    if ($entity->getCreatedAt()->format('Y') !== $paymentReceivedItemDate->format('Y') || $entity->getCreatedAt()->format('m') !== $paymentReceivedItemDate->format('m')) {
+            if (!empty($addedPrivatePayPaymentReceivedItems)) {
+                foreach ($addedPrivatePayPaymentReceivedItems as $addedPrivatePayPaymentReceivedItem) {
+                    $privatePayPaymentReceivedItemDate = new \DateTime($addedPrivatePayPaymentReceivedItem['date']);
+                    if ($entity->getCreatedAt()->format('Y') !== $privatePayPaymentReceivedItemDate->format('Y') || $entity->getCreatedAt()->format('m') !== $privatePayPaymentReceivedItemDate->format('m')) {
                         throw new InvalidEffectiveDateException();
                     }
 
-                    $newPaymentReceivedItem = new ResidentPaymentReceivedItem();
+                    $newPrivatePayPaymentReceivedItem = new ResidentPrivatePayPaymentReceivedItem();
 
-                    $paymentTypeId = $addedPaymentReceivedItem['payment_type_id'] ?? 0;
-                    $responsiblePersonId = $addedPaymentReceivedItem['responsible_person_id'] ?? 0;
+                    $paymentTypeId = $addedPrivatePayPaymentReceivedItem['payment_type_id'] ?? 0;
+                    $responsiblePersonId = $addedPrivatePayPaymentReceivedItem['responsible_person_id'] ?? 0;
 
                     /** @var RpPaymentType $paymentType */
                     $paymentType = $paymentTypeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(RpPaymentType::class), $paymentTypeId);
                     /** @var ResidentResponsiblePerson $responsiblePerson */
                     $responsiblePerson = $responsiblePersonRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $responsiblePersonId);
 
-                    $newPaymentReceivedItem->setPaymentType($paymentType);
-                    $newPaymentReceivedItem->setResponsiblePerson($responsiblePerson);
-                    $newPaymentReceivedItem->setDate($paymentReceivedItemDate);
-                    $newPaymentReceivedItem->setAmount($addedPaymentReceivedItem['amount']);
-                    $newPaymentReceivedItem->setTransactionNumber($addedPaymentReceivedItem['transaction_number']);
-                    $newPaymentReceivedItem->setNotes($addedPaymentReceivedItem['notes'] ?? '');
-                    $newPaymentReceivedItem->setLedger($entity);
-                    $entity->addResidentPaymentReceivedItem($newPaymentReceivedItem);
+                    $newPrivatePayPaymentReceivedItem->setPaymentType($paymentType);
+                    $newPrivatePayPaymentReceivedItem->setResponsiblePerson($responsiblePerson);
+                    $newPrivatePayPaymentReceivedItem->setDate($privatePayPaymentReceivedItemDate);
+                    $newPrivatePayPaymentReceivedItem->setAmount($addedPrivatePayPaymentReceivedItem['amount']);
+                    $newPrivatePayPaymentReceivedItem->setTransactionNumber($addedPrivatePayPaymentReceivedItem['transaction_number']);
+                    $newPrivatePayPaymentReceivedItem->setNotes($addedPrivatePayPaymentReceivedItem['notes'] ?? '');
+                    $newPrivatePayPaymentReceivedItem->setLedger($entity);
+                    $entity->addResidentPrivatePayPaymentReceivedItem($newPrivatePayPaymentReceivedItem);
 
-                    $this->em->persist($newPaymentReceivedItem);
+                    $this->em->persist($newPrivatePayPaymentReceivedItem);
+                }
+            }
+
+            $addedNotPrivatePayPaymentReceivedItems = [];
+            $editedNotPrivatePayPaymentReceivedItems = [];
+            $editedNotPrivatePayPaymentReceivedItemsIds = [];
+            if (!empty($params['resident_not_private_pay_payment_received_items'])) {
+                foreach ($params['resident_not_private_pay_payment_received_items'] as $notPrivatePayPaymentReceivedItem) {
+                    if (empty($notPrivatePayPaymentReceivedItem['id'])) {
+                        $addedNotPrivatePayPaymentReceivedItems[] = $notPrivatePayPaymentReceivedItem;
+                    } else {
+                        $editedNotPrivatePayPaymentReceivedItems[$notPrivatePayPaymentReceivedItem['id']] = $notPrivatePayPaymentReceivedItem;
+                        $editedNotPrivatePayPaymentReceivedItemsIds[] = $notPrivatePayPaymentReceivedItem['id'];
+                    }
+                }
+            }
+
+            if ($entity->getResidentNotPrivatePayPaymentReceivedItems() !== null) {
+                /** @var ResidentNotPrivatePayPaymentReceivedItem $existingNotPrivatePayPaymentReceivedItem */
+                foreach ($entity->getResidentNotPrivatePayPaymentReceivedItems() as $existingNotPrivatePayPaymentReceivedItem) {
+                    if (\in_array($existingNotPrivatePayPaymentReceivedItem->getId(), $editedNotPrivatePayPaymentReceivedItemsIds, false)) {
+                        $existingNotPrivatePayPaymentReceivedItemDate = new \DateTime($editedNotPrivatePayPaymentReceivedItems[$existingNotPrivatePayPaymentReceivedItem->getId()]['date']);
+                        if ($entity->getCreatedAt()->format('Y') !== $existingNotPrivatePayPaymentReceivedItemDate->format('Y') || $entity->getCreatedAt()->format('m') !== $existingNotPrivatePayPaymentReceivedItemDate->format('m')) {
+                            throw new InvalidEffectiveDateException();
+                        }
+
+                        $paymentTypeId = $editedNotPrivatePayPaymentReceivedItems[$existingNotPrivatePayPaymentReceivedItem->getId()]['payment_type_id'] ?? 0;
+
+                        /** @var RpPaymentType $paymentType */
+                        $paymentType = $paymentTypeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(RpPaymentType::class), $paymentTypeId);
+
+                        $existingNotPrivatePayPaymentReceivedItem->setPaymentType($paymentType);
+                        $existingNotPrivatePayPaymentReceivedItem->setDate($existingNotPrivatePayPaymentReceivedItemDate);
+                        $existingNotPrivatePayPaymentReceivedItem->setAmount($editedNotPrivatePayPaymentReceivedItems[$existingNotPrivatePayPaymentReceivedItem->getId()]['amount']);
+                        $existingNotPrivatePayPaymentReceivedItem->setTransactionNumber($editedNotPrivatePayPaymentReceivedItems[$existingNotPrivatePayPaymentReceivedItem->getId()]['transaction_number']);
+                        $existingNotPrivatePayPaymentReceivedItem->setNotes($editedNotPrivatePayPaymentReceivedItems[$existingNotPrivatePayPaymentReceivedItem->getId()]['notes'] ?? '');
+
+                        $this->em->persist($existingNotPrivatePayPaymentReceivedItem);
+                    } else {
+                        $entity->removeResidentNotPrivatePayPaymentReceivedItem($existingNotPrivatePayPaymentReceivedItem);
+                        $this->em->remove($existingNotPrivatePayPaymentReceivedItem);
+                    }
+                }
+            }
+
+            if (!empty($addedNotPrivatePayPaymentReceivedItems)) {
+                foreach ($addedNotPrivatePayPaymentReceivedItems as $addedNotPrivatePayPaymentReceivedItem) {
+                    $notPrivatePayPaymentReceivedItemDate = new \DateTime($addedNotPrivatePayPaymentReceivedItem['date']);
+                    if ($entity->getCreatedAt()->format('Y') !== $notPrivatePayPaymentReceivedItemDate->format('Y') || $entity->getCreatedAt()->format('m') !== $notPrivatePayPaymentReceivedItemDate->format('m')) {
+                        throw new InvalidEffectiveDateException();
+                    }
+
+                    $newNotPrivatePayPaymentReceivedItem = new ResidentNotPrivatePayPaymentReceivedItem();
+
+                    $paymentTypeId = $addedNotPrivatePayPaymentReceivedItem['payment_type_id'] ?? 0;
+
+                    /** @var RpPaymentType $paymentType */
+                    $paymentType = $paymentTypeRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(RpPaymentType::class), $paymentTypeId);
+
+                    $newNotPrivatePayPaymentReceivedItem->setPaymentType($paymentType);
+                    $newNotPrivatePayPaymentReceivedItem->setDate($notPrivatePayPaymentReceivedItemDate);
+                    $newNotPrivatePayPaymentReceivedItem->setAmount($addedNotPrivatePayPaymentReceivedItem['amount']);
+                    $newNotPrivatePayPaymentReceivedItem->setTransactionNumber($addedNotPrivatePayPaymentReceivedItem['transaction_number']);
+                    $newNotPrivatePayPaymentReceivedItem->setNotes($addedNotPrivatePayPaymentReceivedItem['notes'] ?? '');
+                    $newNotPrivatePayPaymentReceivedItem->setLedger($entity);
+                    $entity->addResidentNotPrivatePayPaymentReceivedItem($newNotPrivatePayPaymentReceivedItem);
+
+                    $this->em->persist($newNotPrivatePayPaymentReceivedItem);
                 }
             }
 
@@ -873,7 +949,7 @@ class ResidentLedgerService extends BaseService implements IGridService
         $entity->setNotPrivatePayBalanceDue(round($currentMonthNotPrivatPayBalanceDue, 2));
 
         //If all payments have been received set late payment to null
-        if (round($currentMonthPrivatPayBalanceDue, 2) <= 0 && round($currentMonthNotPrivatPayBalanceDue, 2) <= 0) {
+        if (round($currentMonthPrivatPayBalanceDue, 2) <= 0) {
             $entity->setLatePayment(null);
         }
 

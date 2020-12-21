@@ -98,8 +98,8 @@ class ResponsiblePerson
      *     "api_admin_resident_responsible_person_get",
      *     "api_admin_resident_event_list",
      *     "api_admin_resident_event_get",
-     *     "api_admin_resident_payment_received_item_list",
-     *     "api_admin_resident_payment_received_item_get",
+     *     "api_admin_resident_private_pay_payment_received_item_list",
+     *     "api_admin_resident_private_pay_payment_received_item_get",
      *     "api_admin_resident_ledger_get"
      * })
      */
@@ -127,8 +127,8 @@ class ResponsiblePerson
      *     "api_admin_resident_responsible_person_get",
      *     "api_admin_resident_event_list",
      *     "api_admin_resident_event_get",
-     *     "api_admin_resident_payment_received_item_list",
-     *     "api_admin_resident_payment_received_item_get",
+     *     "api_admin_resident_private_pay_payment_received_item_list",
+     *     "api_admin_resident_private_pay_payment_received_item_get",
      *     "api_admin_resident_ledger_get"
      * })
      */

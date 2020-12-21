@@ -163,7 +163,8 @@ class ResidentLedgerController extends BaseController
                 'resident_expense_items' => $request->get('resident_expense_items'),
                 'resident_credit_items' => $request->get('resident_credit_items'),
                 'resident_discount_items' => $request->get('resident_discount_items'),
-                'resident_payment_received_items' => $request->get('resident_payment_received_items'),
+                'resident_private_pay_payment_received_items' => $request->get('resident_private_pay_payment_received_items'),
+                'resident_not_private_pay_payment_received_items' => $request->get('resident_not_private_pay_payment_received_items'),
                 'resident_away_days' => $request->get('resident_away_days'),
                 'late_payment_id' => $request->get('late_payment_id')
             ]

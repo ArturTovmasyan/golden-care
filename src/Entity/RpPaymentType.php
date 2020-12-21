@@ -60,8 +60,10 @@ class RpPaymentType
      * @Groups({
      *     "api_admin_rp_payment_type_list",
      *     "api_admin_rp_payment_type_get",
-     *     "api_admin_resident_payment_received_item_list",
-     *     "api_admin_resident_payment_received_item_get",
+     *     "api_admin_resident_private_pay_payment_received_item_list",
+     *     "api_admin_resident_private_pay_payment_received_item_get",
+     *     "api_admin_resident_not_private_pay_payment_received_item_list",
+     *     "api_admin_resident_not_private_pay_payment_received_item_get",
      *     "api_admin_resident_ledger_get"
      * })
      */
@@ -84,8 +86,10 @@ class RpPaymentType
      * @Groups({
      *     "api_admin_rp_payment_type_list",
      *     "api_admin_rp_payment_type_get",
-     *     "api_admin_resident_payment_received_item_list",
-     *     "api_admin_resident_payment_received_item_get",
+     *     "api_admin_private_pay_resident_payment_received_item_list",
+     *     "api_admin_private_pay_resident_payment_received_item_get",
+     *     "api_admin_resident_not_private_pay_payment_received_item_list",
+     *     "api_admin_resident_not_private_pay_payment_received_item_get",
      *     "api_admin_resident_ledger_get"
      * })
      */
@@ -110,9 +114,15 @@ class RpPaymentType
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\ResidentPaymentReceivedItem", mappedBy="paymentType", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentPrivatePayPaymentReceivedItem", mappedBy="paymentType", cascade={"remove", "persist"})
      */
-    private $residentPaymentReceivedItems;
+    private $residentPrivatePayPaymentReceivedItems;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentNotPrivatePayPaymentReceivedItem", mappedBy="paymentType", cascade={"remove", "persist"})
+     */
+    private $residentNotPrivatePayPaymentReceivedItems;
 
     public function getId(): ?int
     {
@@ -154,16 +164,32 @@ class RpPaymentType
     /**
      * @return ArrayCollection
      */
-    public function getResidentPaymentReceivedItems(): ArrayCollection
+    public function getResidentPrivatePayPaymentReceivedItems(): ArrayCollection
     {
-        return $this->residentPaymentReceivedItems;
+        return $this->residentPrivatePayPaymentReceivedItems;
     }
 
     /**
-     * @param ArrayCollection $residentPaymentReceivedItems
+     * @param ArrayCollection $residentPrivatePayPaymentReceivedItems
      */
-    public function setResidentPaymentReceivedItems(ArrayCollection $residentPaymentReceivedItems): void
+    public function setResidentPrivatePayPaymentReceivedItems(ArrayCollection $residentPrivatePayPaymentReceivedItems): void
     {
-        $this->residentPaymentReceivedItems = $residentPaymentReceivedItems;
+        $this->residentPrivatePayPaymentReceivedItems = $residentPrivatePayPaymentReceivedItems;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentNotPrivatePayPaymentReceivedItems(): ArrayCollection
+    {
+        return $this->residentNotPrivatePayPaymentReceivedItems;
+    }
+
+    /**
+     * @param ArrayCollection $residentNotPrivatePayPaymentReceivedItems
+     */
+    public function setResidentNotPrivatePayPaymentReceivedItems(ArrayCollection $residentNotPrivatePayPaymentReceivedItems): void
+    {
+        $this->residentNotPrivatePayPaymentReceivedItems = $residentNotPrivatePayPaymentReceivedItems;
     }
 }

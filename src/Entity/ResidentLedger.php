@@ -69,8 +69,10 @@ class ResidentLedger implements PreviousAndNextItemsService
      *     "api_admin_resident_credit_item_get",
      *     "api_admin_resident_discount_item_list",
      *     "api_admin_resident_discount_item_get",
-     *     "api_admin_resident_payment_received_item_list",
-     *     "api_admin_resident_payment_received_item_get",
+     *     "api_admin_resident_private_pay_payment_received_item_list",
+     *     "api_admin_resident_private_pay_payment_received_item_get",
+     *     "api_admin_resident_not_private_pay_payment_received_item_list",
+     *     "api_admin_resident_not_private_pay_payment_received_item_get",
      *     "api_admin_resident_away_days_list",
      *     "api_admin_resident_away_days_get",
      *     "api_admin_resident_key_finance_date_list",
@@ -227,7 +229,7 @@ class ResidentLedger implements PreviousAndNextItemsService
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\ResidentPaymentReceivedItem", mappedBy="ledger", cascade={"remove", "persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentPrivatePayPaymentReceivedItem", mappedBy="ledger", cascade={"remove", "persist"})
      * @ORM\OrderBy({"date" = "ASC"})
      * @Assert\Valid(groups={
      *     "api_admin_resident_ledger_edit"
@@ -236,7 +238,20 @@ class ResidentLedger implements PreviousAndNextItemsService
      *     "api_admin_resident_ledger_get"
      * })
      */
-    private $residentPaymentReceivedItems;
+    private $residentPrivatePayPaymentReceivedItems;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentNotPrivatePayPaymentReceivedItem", mappedBy="ledger", cascade={"remove", "persist"})
+     * @ORM\OrderBy({"date" = "ASC"})
+     * @Assert\Valid(groups={
+     *     "api_admin_resident_ledger_edit"
+     * })
+     * @Groups({
+     *     "api_admin_resident_ledger_get"
+     * })
+     */
+    private $residentNotPrivatePayPaymentReceivedItems;
 
     /**
      * @var LatePayment
@@ -588,34 +603,67 @@ class ResidentLedger implements PreviousAndNextItemsService
     /**
      * @return mixed
      */
-    public function getResidentPaymentReceivedItems()
+    public function getResidentPrivatePayPaymentReceivedItems()
     {
-        return $this->residentPaymentReceivedItems;
+        return $this->residentPrivatePayPaymentReceivedItems;
     }
 
     /**
-     * @param ArrayCollection $residentPaymentReceivedItems
+     * @param ArrayCollection $residentPrivatePayPaymentReceivedItems
      */
-    public function setResidentPaymentReceivedItems(ArrayCollection $residentPaymentReceivedItems): void
+    public function setResidentPrivatePayPaymentReceivedItems(ArrayCollection $residentPrivatePayPaymentReceivedItems): void
     {
-        $this->residentPaymentReceivedItems = $residentPaymentReceivedItems;
+        $this->residentPrivatePayPaymentReceivedItems = $residentPrivatePayPaymentReceivedItems;
     }
 
     /**
-     * @param ResidentPaymentReceivedItem $residentPaymentReceivedItem
+     * @param ResidentPrivatePayPaymentReceivedItem $residentPrivatePayPaymentReceivedItem
      */
-    public function addResidentPaymentReceivedItem($residentPaymentReceivedItem): void
+    public function addResidentPrivatePayPaymentReceivedItem($residentPrivatePayPaymentReceivedItem): void
     {
-        $residentPaymentReceivedItem->setLedger($this);
-        $this->residentPaymentReceivedItems->add($residentPaymentReceivedItem);
+        $residentPrivatePayPaymentReceivedItem->setLedger($this);
+        $this->residentPrivatePayPaymentReceivedItems->add($residentPrivatePayPaymentReceivedItem);
     }
 
     /**
-     * @param ResidentPaymentReceivedItem $residentPaymentReceivedItem
+     * @param ResidentPrivatePayPaymentReceivedItem $residentPrivatePayPaymentReceivedItem
      */
-    public function removeResidentPaymentReceivedItem($residentPaymentReceivedItem): void
+    public function removeResidentPrivatePayPaymentReceivedItem($residentPrivatePayPaymentReceivedItem): void
     {
-        $this->residentPaymentReceivedItems->removeElement($residentPaymentReceivedItem);
+        $this->residentPrivatePayPaymentReceivedItems->removeElement($residentPrivatePayPaymentReceivedItem);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResidentNotPrivatePayPaymentReceivedItems()
+    {
+        return $this->residentNotPrivatePayPaymentReceivedItems;
+    }
+
+    /**
+     * @param ArrayCollection $residentNotPrivatePayPaymentReceivedItems
+     */
+    public function setResidentNotPrivatePayPaymentReceivedItems(ArrayCollection $residentNotPrivatePayPaymentReceivedItems): void
+    {
+        $this->residentNotPrivatePayPaymentReceivedItems = $residentNotPrivatePayPaymentReceivedItems;
+    }
+
+    /**
+     * @param ResidentNotPrivatePayPaymentReceivedItem $residentNotPrivatePayPaymentReceivedItem
+     */
+    public function addResidentNotPrivatePayPaymentReceivedItem($residentNotPrivatePayPaymentReceivedItem): void
+    {
+        $residentNotPrivatePayPaymentReceivedItem->setLedger($this);
+        $this->residentNotPrivatePayPaymentReceivedItems->add($residentNotPrivatePayPaymentReceivedItem);
+    }
+
+    /**
+     * @param ResidentNotPrivatePayPaymentReceivedItem $residentNotPrivatePayPaymentReceivedItem
+     */
+    public function removeResidentNotPrivatePayPaymentReceivedItem($residentNotPrivatePayPaymentReceivedItem): void
+    {
+        $this->residentNotPrivatePayPaymentReceivedItems->removeElement($residentNotPrivatePayPaymentReceivedItem);
     }
 
     /**
