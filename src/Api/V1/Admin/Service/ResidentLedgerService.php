@@ -890,7 +890,7 @@ class ResidentLedgerService extends BaseService implements IGridService
             $this->em->persist($entity);
             $this->em->flush();
 
-            $entity = $this->calculateLedgerData($currentSpace, $entity, $residentId);
+            $entity = $this->calculateLedgerData($currentSpace, $repo, $entity, $residentId);
 
             $this->em->persist($entity);
             $this->em->flush();
@@ -905,12 +905,13 @@ class ResidentLedgerService extends BaseService implements IGridService
 
     /**
      * @param $currentSpace
+     * @param ResidentLedgerRepository $repo
      * @param ResidentLedger $entity
      * @param $residentId
      * @return ResidentLedger
      * @throws \Exception
      */
-    public function calculateLedgerData($currentSpace, ResidentLedger $entity, $residentId): ResidentLedger
+    public function calculateLedgerData($currentSpace, ResidentLedgerRepository $repo, ResidentLedger $entity, $residentId): ResidentLedger
     {
         $calculationDate = $entity->getCreatedAt() ?? new \DateTime('now');
 
@@ -949,7 +950,8 @@ class ResidentLedgerService extends BaseService implements IGridService
         $entity->setNotPrivatePayBalanceDue(round($currentMonthNotPrivatPayBalanceDue, 2));
 
         //If all payments have been received set late payment to null
-        if (round($currentMonthPrivatPayBalanceDue, 2) <= 0) {
+        $priorLedgerData = $this->calculatePriorLedgerData($currentSpace, $repo, $residentId, $entity->getCreatedAt());
+        if (round($currentMonthPrivatPayBalanceDue, 2) + $priorLedgerData['priorPrivatPayBalanceDue'] <= 0) {
             $entity->setLatePayment(null);
         }
 
@@ -979,7 +981,7 @@ class ResidentLedgerService extends BaseService implements IGridService
             }
 
             if ($entity->getResident() !== null) {
-                $entity = $this->calculateLedgerData($currentSpace, $entity, $entity->getResident()->getId());
+                $entity = $this->calculateLedgerData($currentSpace, $repo, $entity, $entity->getResident()->getId());
             }
 
             $this->em->persist($entity);

@@ -189,7 +189,7 @@ class ResidentAwayDaysService extends BaseService implements IGridService
         $ledger = $ledgerRepo->getResidentLedgerByDate($currentSpace, null, $residentId, $dateStart, $dateEnd);
 
         if ($ledger !== null) {
-            $recalculateLedger = $residentLedgerService->calculateLedgerData($currentSpace, $ledger, $residentId);
+            $recalculateLedger = $residentLedgerService->calculateLedgerData($currentSpace, $ledgerRepo, $ledger, $residentId);
 
             $this->em->persist($recalculateLedger);
 
