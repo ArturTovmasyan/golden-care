@@ -1,0 +1,10 @@
+{% spaceless %}
+{% for key,value in data.data %}
+{{ key }},,{% if data.strategyId == constant('App\\Model\\GroupType::TYPE_FACILITY') %},{% endif %},,,,
+{{ data.strategy }},Room #,{% if data.strategyId == constant('App\\Model\\GroupType::TYPE_FACILITY') %}Room Type,{% endif %}Payment Source,Responsible Person,Amount Due,Date Due,# of Days past the Due Date
+{% for datum in value %}
+"{{ datum.typeName|raw }}","{{ datum.room|raw }}",{% if data.strategyId == constant('App\\Model\\GroupType::TYPE_FACILITY') %}"{{ datum.roomType|raw }}",{% endif %}"{{ datum.paymentSource|raw }}","$ {{ datum.amount|number_format(2, '.', ',') }}","{{ datum.responsiblePerson|raw }}","{{ datum.dueDate|raw }}","{{ datum.days|raw }}"
+{% endfor %}
+
+{% endfor %}
+{% endspaceless %}

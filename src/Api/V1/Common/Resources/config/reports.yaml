@@ -98,6 +98,16 @@ resident:
         group:
           select_all: true
         date: "m/Y"
+    ledger-rent-payment-delinquency:
+      service: App\Api\V1\Admin\Service\Report\ResidentReportService::getLedgerRentPaymentDelinquencyReport
+      title: 'Ledger: Rent Payment Delinquency Report'
+      show_in_resident_list: true
+      show_in_group_list: true
+      formats: ['csv', 'xls']
+      parameters:
+        group:
+          select_all: true
+        date: "m/d/Y"
     move-monthly:
       service: App\Api\V1\Admin\Service\Report\ResidentReportService::getResidentMoveByMonthReport
       title: 'Move-in/Move-Out'

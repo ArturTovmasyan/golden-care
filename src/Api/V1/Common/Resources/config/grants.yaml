@@ -535,6 +535,8 @@ report:
           title: "FACE Sheet: FACE Sheet for selected resident / all residents (pre-admit)"
         ledger-monthly-finance-rent:
           title: "Ledger: Monthly Finance Rent Data Report"
+        ledger-rent-payment-delinquency:
+          title: "Ledger: Rent Payment Delinquency Report"
         move-monthly:
           title: "Move-in/Move-Out"
         profile:

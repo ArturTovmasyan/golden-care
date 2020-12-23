@@ -11,6 +11,7 @@ use App\Entity\Apartment;
 use App\Entity\Diet;
 use App\Entity\EventDefinition;
 use App\Entity\Facility;
+use App\Entity\KeyFinanceDates;
 use App\Entity\PaymentSource;
 use App\Entity\ResidentAwayDays;
 use App\Entity\ResidentExpenseItem;
@@ -35,6 +36,7 @@ use App\Model\GroupType;
 use App\Model\Report\DietaryRestriction;
 use App\Model\Report\FaceSheet;
 use App\Model\Report\LedgerMonthlyFinanceRentData;
+use App\Model\Report\LedgerRentPaymentDelinquency;
 use App\Model\Report\Profile;
 use App\Model\Report\ResidentCovidEvent;
 use App\Model\Report\ResidentDetailedRoster;
@@ -47,6 +49,7 @@ use App\Repository\ApartmentRepository;
 use App\Repository\DietRepository;
 use App\Repository\EventDefinitionRepository;
 use App\Repository\FacilityRepository;
+use App\Repository\KeyFinanceDatesRepository;
 use App\Repository\PaymentSourceRepository;
 use App\Repository\ResidentExpenseItemRepository;
 use App\Repository\ResidentHealthInsuranceRepository;
@@ -1622,6 +1625,199 @@ class ResidentReportService extends BaseService
         $report->setStrategy(GroupType::getTypes()[$type]);
         $report->setStrategyId($type);
         $report->setDate($reportDateFormatted);
+
+        return $report;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupIds
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @param $assessmentId
+     * @param $assessmentFormId
+     * @return LedgerRentPaymentDelinquency
+     */
+    public function getLedgerRentPaymentDelinquencyReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): LedgerRentPaymentDelinquency
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        $type = (int)$group;
+        $typeId = $groupId;
+
+        if (!\in_array($type, [GroupType::TYPE_FACILITY, GroupType::TYPE_APARTMENT], false)) {
+            throw new InvalidParameterException('group');
+        }
+
+        /** @var KeyFinanceDatesRepository $keyFinanceDatesRepo */
+        $keyFinanceDatesRepo = $this->em->getRepository(KeyFinanceDates::class);
+        /** @var KeyFinanceDates $keyFinanceDates */
+        $keyFinanceDates = $keyFinanceDatesRepo->findOneBy(['title' => 'Rent Payment Delinquent Date']);
+
+        $keyFinanceDay = 10;
+        if ($keyFinanceDates !== null) {
+            $keyFinanceDay = $keyFinanceDates->getDate() ? $keyFinanceDates->getDate()->format('d') : 10;
+        }
+
+        $reportDate = new \DateTime('now');
+        $dateEndFormatted= $reportDate->format('m/t/Y 23:59:59');
+        $dateStartFormatted = date('m/01/Y 00:00:00', strtotime($dateEndFormatted . ' -11 months'));
+
+        if (!empty($date)) {
+            $reportDate = new \DateTime($date);
+            $dateEndFormatted= $reportDate->format('m/t/Y 23:59:59');
+            $dateStartFormatted = date('m/01/Y 00:00:00', strtotime($dateEndFormatted . ' -11 months'));
+        }
+
+        $dateStart = new \DateTime($dateStartFormatted);
+        $dateEnd = new \DateTime($dateEndFormatted);
+        $dateEndClone = clone $dateEnd;
+
+        $interval = [];
+        while ($dateEndClone->diff($dateStart)->days > 0 && \count($interval) <= 12) {
+            $start = new \DateTime($dateEndClone->format('Y-m-01 00:00:00'));
+            $end = new \DateTime($dateEndClone->format('Y-m-t 23:59:59'));
+            $keyFinanceDateFormat = 'Y-m-' . $keyFinanceDay . ' 00:00:00';
+            $keyFinanceDate = new \DateTime($dateEndClone->format($keyFinanceDateFormat));
+            $interval[] = [
+                'subInterval' => ImtDateTimeInterval::getWithDateTimes($start, $end),
+                'date' => $start->format('F') . ' ' . $start->format('y'),
+                'dueDate' => $keyFinanceDate->format('m/d/Y'),
+                'days' => $reportDate->diff($keyFinanceDate)->days,
+            ];
+
+            $dateEndClone->modify('last day of previous month');
+        }
+
+        if ($typeId !== null) {
+            $typeIds = [$typeId];
+        } else {
+            switch ($type) {
+                case GroupType::TYPE_FACILITY:
+                    /** @var FacilityRepository $groupRepo */
+                    $groupRepo = $this->em->getRepository(Facility::class);
+
+                    $groupList = $groupRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Facility::class));
+                    $typeIds = array_map(static function ($item) {
+                        return $item->getId();
+                    }, $groupList);
+
+                    break;
+                case GroupType::TYPE_APARTMENT:
+                    /** @var ApartmentRepository $groupRepo */
+                    $groupRepo = $this->em->getRepository(Apartment::class);
+
+                    $groupList = $groupRepo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Apartment::class));
+                    $typeIds = array_map(static function ($item) {
+                        return $item->getId();
+                    }, $groupList);
+
+                    break;
+                default:
+                    throw new IncorrectStrategyTypeException();
+            }
+        }
+
+        $ledgers = [];
+        $residentData = [];
+        if (!empty($typeIds)) {
+            /** @var ResidentAdmissionRepository $residentAdmissionRepo */
+            $residentAdmissionRepo = $this->em->getRepository(ResidentAdmission::class);
+
+            $groupResidents = $residentAdmissionRepo->getActiveResidents($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $type, $typeIds);
+            foreach ($groupResidents as $groupResident) {
+                $residentData[$groupResident['id']] = [
+                    'typeName' => $groupResident['typeName'],
+                    'room' => $groupResident['private'] ? $groupResident['room_number'] : $groupResident['room_number'] . ' ' . $groupResident['bed_number'],
+                    'roomType' => array_key_exists('roomType', $groupResident) ? $groupResident['roomType'] : 'N/A'
+                ];
+            }
+
+            $activeResidentIds = array_map(static function ($item) {
+                return $item['id'];
+            }, $groupResidents);
+
+            /** @var ResidentLedgerRepository $repo */
+            $repo = $this->em->getRepository(ResidentLedger::class);
+
+            $ledgers = $repo->getByIntervalAndResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentLedger::class), $activeResidentIds, $dateStart, $dateEnd);
+        }
+
+        $rentData = [];
+        if (!empty($ledgers)) {
+            $residentIds = array_map(static function (ResidentLedger $item) {
+                return $item->getResident() ? $item->getResident()->getId() : 0;
+            }, $ledgers);
+
+            /** @var ResidentResponsiblePersonRepository $responsiblePersonRepo */
+            $responsiblePersonRepo = $this->em->getRepository(ResidentResponsiblePerson::class);
+            $responsiblePersons = $responsiblePersonRepo->getByResidentIds($currentSpace, null, $residentIds);
+            $responsiblePersonNames = [];
+            foreach ($responsiblePersons as $responsiblePerson) {
+                $responsiblePersonNames[$responsiblePerson['id']] = $responsiblePerson['firstName'] . ' ' . $responsiblePerson['lastName'];
+            }
+
+            /** @var PaymentSourceRepository $paymentSourceRepo */
+            $paymentSourceRepo = $this->em->getRepository(PaymentSource::class);
+            $paymentSources = $paymentSourceRepo->findAll();
+            $sourceTitles = [];
+            /** @var PaymentSource $paymentSource */
+            foreach ($paymentSources as $paymentSource) {
+                $sourceTitles[$paymentSource->getId()] = $paymentSource->getTitle();
+            }
+
+            foreach ($interval as $subVal) {
+                /** @var ResidentLedger $ledger */
+                foreach ($ledgers as $ledger) {
+                    $createdAt = $ledger->getCreatedAt();
+                    $resident = $ledger->getResident();
+
+                    $ledgerResidentId = $resident ? $resident->getId() : 0;
+
+                    if ($createdAt >= $subVal['subInterval']->getStart() && $createdAt <= $subVal['subInterval']->getEnd()) {
+                        if ($ledger->getPrivatePayBalanceDue() > 0 && !empty($ledger->getPrivatPaySource())) {
+                            foreach ($ledger->getPrivatPaySource() as $item) {
+                                $rentData[$subVal['date']][] = [
+                                    'typeName' => $residentData[$ledgerResidentId]['typeName'],
+                                    'room' => $residentData[$ledgerResidentId]['room'],
+                                    'roomType' => $residentData[$ledgerResidentId]['roomType'],
+                                    'paymentSource' => $sourceTitles[$item['id']],
+                                    'amount' => $item['amount'],
+                                    'responsiblePerson' => array_key_exists($item['responsible_person_id'], $responsiblePersonNames) ? $responsiblePersonNames[$item['responsible_person_id']] : 'N/A',
+                                    'dueDate' => $subVal['dueDate'],
+                                    'days' => $subVal['days'],
+                                ];
+                            }
+                        }
+
+                        if ($ledger->getNotPrivatePayBalanceDue() > 0 && !empty($ledger->getNotPrivatPaySource())) {
+                            foreach ($ledger->getNotPrivatPaySource() as $item) {
+                                $rentData[$subVal['date']][] = [
+                                    'typeName' => $residentData[$ledgerResidentId]['typeName'],
+                                    'room' => $residentData[$ledgerResidentId]['room'],
+                                    'roomType' => $residentData[$ledgerResidentId]['roomType'],
+                                    'paymentSource' => $sourceTitles[$item['id']],
+                                    'amount' => $item['amount'],
+                                    'responsiblePerson' => 'N/A',
+                                    'dueDate' => $subVal['dueDate'],
+                                    'days' => $subVal['days'],
+                                ];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $report = new LedgerRentPaymentDelinquency();
+        $report->setData($rentData);
+        $report->setStrategy(GroupType::getTypes()[$type]);
+        $report->setStrategyId($type);
 
         return $report;
     }
