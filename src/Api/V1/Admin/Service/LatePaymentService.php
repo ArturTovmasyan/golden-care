@@ -73,6 +73,16 @@ class LatePaymentService extends BaseService implements IGridService
 
             $latePayment = new LatePayment();
             $latePayment->setTitle($params['title']);
+
+            $day = null;
+            if (!empty($params['day'])) {
+                $day = (int)$params['day'];
+            }
+
+            $latePayment->setDay($day);
+
+            $latePayment->setDescription($params['description']);
+
             $latePayment->setSpace($space);
 
             $this->validate($latePayment, null, ['api_admin_late_payment_add']);
@@ -120,6 +130,16 @@ class LatePaymentService extends BaseService implements IGridService
             }
 
             $entity->setTitle($params['title']);
+
+            $day = null;
+            if (!empty($params['day'])) {
+                $day = (int)$params['day'];
+            }
+
+            $entity->setDay($day);
+
+            $entity->setDescription($params['description']);
+
             $entity->setSpace($space);
 
             $this->validate($entity, null, ['api_admin_late_payment_edit']);

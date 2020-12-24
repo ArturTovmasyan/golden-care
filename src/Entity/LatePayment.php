@@ -24,6 +24,15 @@ use App\Annotation\Grid;
  *          "api_admin_late_payment_edit"
  *     }
  * )
+ * @UniqueEntity(
+ *     fields={"space", "day"},
+ *     errorPath="day",
+ *     message="The day is already in use in this space.",
+ *     groups={
+ *          "api_admin_late_payment_add",
+ *          "api_admin_late_payment_edit"
+ *     }
+ * )
  * @ORM\Table(name="tbl_late_payment")
  * @Grid(
  *     api_admin_late_payment_grid={
@@ -38,6 +47,16 @@ use App\Annotation\Grid;
  *              "type"       = "string",
  *              "field"      = "lp.title",
  *              "link"       = ":edit"
+ *          },
+ *          {
+ *              "id"         = "day",
+ *              "type"       = "number",
+ *              "field"      = "lp.day"
+ *          },
+ *          {
+ *              "id"         = "description",
+ *              "type"       = "string",
+ *              "field"      = "CONCAT(TRIM(SUBSTRING(lp.description, 1, 100)), CASE WHEN LENGTH(lp.description) > 100 THEN '…' ELSE '' END)"
  *          },
  *          {
  *              "id"         = "space",
@@ -90,12 +109,52 @@ class LatePayment
     private $title;
 
     /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_late_payment_add",
+     *     "api_admin_late_payment_edit"
+     * })
+     * @Assert\Range(
+     *      min = 1,
+     *      max = 365,
+     *      groups={
+     *          "api_admin_late_payment_add",
+     *          "api_admin_late_payment_edit"
+     * })
+     * @ORM\Column(name="day", type="integer", length=3)
+     * @Groups({
+     *     "api_admin_late_payment_list",
+     *     "api_admin_late_payment_get",
+     *     "api_admin_resident_ledger_list",
+     *     "api_admin_resident_ledger_get"
+     * })
+     */
+    private $day = 1;
+
+    /**
+     * @var string $description
+     * @ORM\Column(name="description", type="text", length=256)
+     * @Assert\Length(
+     *      max = 256,
+     *      maxMessage = "Description cannot be longer than {{ limit }} characters",
+     *      groups={
+     *          "api_admin_late_payment_add",
+     *          "api_admin_late_payment_edit"
+     * })
+     * @Groups({
+     *     "api_admin_late_payment_list",
+     *     "api_admin_late_payment_get"
+     * })
+     */
+    private $description;
+
+    /**
      * @var Space
      * @Assert\NotNull(message = "Please select a Space", groups={
      *     "api_admin_late_payment_add",
      *     "api_admin_late_payment_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\Space", inversedBy="expenseItems")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Space", inversedBy="latePayment")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_space", referencedColumnName="id", onDelete="CASCADE")
      * })
@@ -131,6 +190,38 @@ class LatePayment
     {
         $title = preg_replace('/\s\s+/', ' ', $title);
         $this->title = $title;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getDay(): ?int
+    {
+        return $this->day;
+    }
+
+    /**
+     * @param int|null $day
+     */
+    public function setDay(?int $day): void
+    {
+        $this->day = $day;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string|null $description
+     */
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
     }
 
     /**

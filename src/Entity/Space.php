@@ -164,7 +164,9 @@ class Space
      *     "api_lead_web_email_list",
      *     "api_lead_web_email_get",
      *     "api_admin_key_finance_dates_list",
-     *     "api_admin_key_finance_dates_get"
+     *     "api_admin_key_finance_dates_get",
+     *     "api_admin_late_payment_list",
+     *     "api_admin_late_payment_get"
      * })
      */
     private $id;
@@ -281,7 +283,9 @@ class Space
      *     "api_lead_web_email_list",
      *     "api_lead_web_email_get",
      *     "api_admin_key_finance_dates_list",
-     *     "api_admin_key_finance_dates_get"
+     *     "api_admin_key_finance_dates_get",
+     *     "api_admin_late_payment_list",
+     *     "api_admin_late_payment_get"
      * })
      */
     private $name;
@@ -579,6 +583,12 @@ class Space
      * @ORM\OneToMany(targetEntity="App\Entity\KeyFinanceDates", mappedBy="space", cascade={"remove", "persist"})
      */
     private $keyFinanceDates;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\LatePayment", mappedBy="space", cascade={"remove", "persist"})
+     */
+    private $latePayment;
 
     /**
      * Space constructor.
@@ -1402,5 +1412,21 @@ class Space
     public function setKeyFinanceDates(ArrayCollection $keyFinanceDates): void
     {
         $this->keyFinanceDates = $keyFinanceDates;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLatePayment(): ArrayCollection
+    {
+        return $this->latePayment;
+    }
+
+    /**
+     * @param ArrayCollection $latePayment
+     */
+    public function setLatePayment(ArrayCollection $latePayment): void
+    {
+        $this->latePayment = $latePayment;
     }
 }

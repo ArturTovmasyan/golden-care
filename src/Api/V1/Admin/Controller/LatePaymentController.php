@@ -99,6 +99,8 @@ class LatePaymentController extends BaseController
         $id = $latePaymentService->add(
             [
                 'title' => $request->get('title'),
+                'day' => $request->get('day'),
+                'description' => $request->get('description'),
                 'space_id' => $request->get('space_id')
             ]
         );
@@ -126,6 +128,8 @@ class LatePaymentController extends BaseController
             $id,
             [
                 'title' => $request->get('title'),
+                'day' => $request->get('day'),
+                'description' => $request->get('description'),
                 'space_id' => $request->get('space_id')
             ]
         );
