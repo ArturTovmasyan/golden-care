@@ -51,7 +51,6 @@ use App\Repository\EventDefinitionRepository;
 use App\Repository\FacilityRepository;
 use App\Repository\KeyFinanceDatesRepository;
 use App\Repository\PaymentSourceRepository;
-use App\Repository\ResidentExpenseItemRepository;
 use App\Repository\ResidentHealthInsuranceRepository;
 use App\Repository\PhysicianPhoneRepository;
 use App\Repository\ResidentAdmissionRepository;
@@ -1661,7 +1660,7 @@ class ResidentReportService extends BaseService
 
         $keyFinanceDay = 10;
         if ($keyFinanceDates !== null) {
-            $keyFinanceDay = $keyFinanceDates->getDate() ? $keyFinanceDates->getDate()->format('d') : 10;
+            $keyFinanceDay = $keyFinanceDates->getDay();
         }
 
         $reportDate = new \DateTime('now');

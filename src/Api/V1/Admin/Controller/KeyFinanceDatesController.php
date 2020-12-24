@@ -100,7 +100,7 @@ class KeyFinanceDatesController extends BaseController
             [
                 'type' => $request->get('type'),
                 'title' => $request->get('title'),
-                'date' => $request->get('date'),
+                'day' => $request->get('day'),
                 'description' => $request->get('description') ?? '',
                 'space_id' => $request->get('space_id')
             ]
@@ -129,7 +129,7 @@ class KeyFinanceDatesController extends BaseController
             $id,
             [
                 'title' => $request->get('title'),
-                'date' => $request->get('date'),
+                'day' => $request->get('day'),
                 'description' => $request->get('description') ?? '',
                 'space_id' => $request->get('space_id')
             ]

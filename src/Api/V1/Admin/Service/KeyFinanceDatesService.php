@@ -77,12 +77,12 @@ class KeyFinanceDatesService extends BaseService implements IGridService
             $keyFinanceDates->setType($type);
             $keyFinanceDates->setTitle($params['title']);
 
-            $date = null;
-            if (!empty($params['date'])) {
-                $date = new \DateTime($params['date']);
+            $day = null;
+            if (!empty($params['day'])) {
+                $day = (int)$params['day'];
             }
 
-            $keyFinanceDates->setDate($date);
+            $keyFinanceDates->setDay($day);
 
             $keyFinanceDates->setDescription($params['description']);
             $keyFinanceDates->setSpace($space);
@@ -133,12 +133,12 @@ class KeyFinanceDatesService extends BaseService implements IGridService
 
             $entity->setTitle($params['title']);
 
-            $date = null;
-            if (!empty($params['date'])) {
-                $date = new \DateTime($params['date']);
+            $day = null;
+            if (!empty($params['day'])) {
+                $day = (int)$params['day'];
             }
 
-            $entity->setDate($date);
+            $entity->setDay($day);
 
             $entity->setDescription($params['description']);
             $entity->setSpace($space);

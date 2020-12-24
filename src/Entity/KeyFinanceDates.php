@@ -48,9 +48,9 @@ use App\Annotation\Grid;
  *              "link"       = ":edit"
  *          },
  *          {
- *              "id"         = "date",
- *              "type"       = "date",
- *              "field"      = "kfd.date"
+ *              "id"         = "day",
+ *              "type"       = "number",
+ *              "field"      = "kfd.day"
  *          },
  *          {
  *              "id"         = "description",
@@ -123,22 +123,25 @@ class KeyFinanceDates
     private $title;
 
     /**
-     * @var \DateTime
+     * @var int
      * @Assert\NotBlank(groups={
      *     "api_admin_key_finance_dates_add",
      *     "api_admin_key_finance_dates_edit"
      * })
-     * @Assert\DateTime(groups={
-     *     "api_admin_key_finance_dates_add",
-     *     "api_admin_key_finance_dates_edit"
+     * @Assert\Range(
+     *      min = 1,
+     *      max = 28,
+     *      groups={
+     *          "api_admin_key_finance_dates_add",
+     *          "api_admin_key_finance_dates_edit"
      * })
-     * @ORM\Column(name="date", type="datetime")
+     * @ORM\Column(name="day", type="integer", length=2)
      * @Groups({
      *     "api_admin_key_finance_dates_list",
      *     "api_admin_key_finance_dates_get"
      * })
      */
-    private $date;
+    private $day = 1;
 
     /**
      * @var string $description
@@ -214,19 +217,19 @@ class KeyFinanceDates
     }
 
     /**
-     * @return \DateTime|null
+     * @return int|null
      */
-    public function getDate(): ?\DateTime
+    public function getDay(): ?int
     {
-        return $this->date;
+        return $this->day;
     }
 
     /**
-     * @param \DateTime|null $date
+     * @param int|null $day
      */
-    public function setDate(?\DateTime $date): void
+    public function setDay(?int $day): void
     {
-        $this->date = $date;
+        $this->day = $day;
     }
 
     public function getDescription(): ?string
