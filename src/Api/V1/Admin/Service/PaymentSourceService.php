@@ -3,13 +3,17 @@
 namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
+use App\Api\V1\Common\Service\Exception\MissingBaseRateForCareLevelException;
 use App\Api\V1\Common\Service\Exception\PaymentSourceNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\CareLevel;
 use App\Entity\PaymentSource;
+use App\Entity\PaymentSourceBaseRate;
 use App\Entity\ResidentLedger;
 use App\Entity\ResidentRent;
 use App\Entity\Space;
+use App\Repository\CareLevelRepository;
 use App\Repository\PaymentSourceRepository;
 use App\Repository\ResidentLedgerRepository;
 use App\Repository\ResidentRentRepository;
@@ -67,8 +71,6 @@ class PaymentSourceService extends BaseService implements IGridService
         $insert_id = null;
         try {
             $this->em->getConnection()->beginTransaction();
-
-            $currentSpace = $this->grantService->getCurrentSpace();
 
             /** @var Space $space */
             $space = $this->getSpace($params['space_id']);
@@ -148,6 +150,31 @@ class PaymentSourceService extends BaseService implements IGridService
 
             $period = $params['period'] ? (int)$params['period'] : 0;
             $careLevelAdjustment = (bool)$params['care_level_adjustment'];
+
+            if ($careLevelAdjustment) {
+                /** @var CareLevelRepository $careLevelRepo */
+                $careLevelRepo = $this->em->getRepository(CareLevel::class);
+                $careLevels = $careLevelRepo->list($currentSpace, null);
+                $countCareLevels = count($careLevels);
+
+                $paymentSources = $repo->findByIdsWithRates($currentSpace, null, [$entity->getId()]);
+                /** @var PaymentSource $paymentSource */
+                $paymentSource = $paymentSources[0];
+                /** @var PaymentSourceBaseRate $baseRate */
+                $baseRate = $paymentSource->getBaseRates()[0];
+                $countLevels = count($baseRate->getLevels());
+
+                if ($countLevels < $countCareLevels) {
+                    $diff = $countCareLevels - $countLevels;
+                    if ($diff > 1) {
+                        $exceptionMessage = 'Missing Base Rate for ' . $diff . ' Care Levels.';
+                    } else {
+                        $exceptionMessage = 'Missing Base Rate for ' . $diff . ' Care Level.';
+                    }
+
+                    throw new MissingBaseRateForCareLevelException($exceptionMessage);
+                }
+            }
 
             $entity->setTitle($params['title']);
             $entity->setPrivatePay((bool)$params['private_pay']);

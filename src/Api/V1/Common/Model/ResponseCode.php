@@ -64,7 +64,6 @@ class ResponseCode
     const RESIDENT_MEDICAL_HISTORY_CONDITION_NOT_FOUND_EXCEPTION = 654;
     const MEDICAL_HISTORY_CONDITION_NOT_SINGLE_EXCEPTION         = 655;
     const RESPONSIBLE_PERSON_NOT_FOUND_EXCEPTION                 = 656;
-    const RESPONSIBLE_PERSON_ROLE_NOT_FOUND_EXCEPTION            = 656;
     const RESIDENT_DIAGNOSIS_NOT_FOUND_EXCEPTION                 = 657;
     const DIAGNOSIS_NOT_SINGLE_EXCEPTION                         = 658;
     const RESIDENT_RESPONSIBLE_PERSON_NOT_FOUND_EXCEPTION        = 659;
@@ -78,6 +77,9 @@ class ResponseCode
     const RESIDENT_RENT_NOT_FOUND_EXCEPTION                      = 667;
     const RESIDENT_RENT_NEGATIVE_REMAINING_TOTAL                 = 668;
     const ASSESSMENT_CARE_LEVEL_NOT_FOUND_EXCEPTION              = 669;
+    const RESPONSIBLE_PERSON_ROLE_NOT_FOUND_EXCEPTION            = 670;
+    const DATES_OVERLAP_EXCEPTION                                = 671;
+    const MISSING_BASE_RATE_FOR_CARE_LEVEL                       = 672;
     const GRID_OPTIONS_NOT_FOUND_EXCEPTION                       = 680;
     const ASSESSMENT_FORM_NOT_FOUND_EXCEPTION                    = 681;
     const EVENT_DEFINITION_NOT_FOUND_EXCEPTION                   = 682;
@@ -198,7 +200,6 @@ class ResponseCode
     const LATE_PAYMENT_NOT_FOUND_EXCEPTION                       = 798;
     const START_AND_END_DATE_NOT_SAME_MONTH_EXCEPTION            = 799;
     const INCORRECT_REPORT_PARAMETER                             = 800;
-    const DATES_OVERLAP_EXCEPTION                                = 801;
     const INVALID_GRANT_CONFIG                                   = 900;
     const DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       = 901;
     const RESOURCE_NOT_FOUND_EXCEPTION                           = 902;
@@ -262,6 +263,7 @@ class ResponseCode
         self::RESIDENT_MEDICAL_HISTORY_CONDITION_NOT_FOUND_EXCEPTION => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Medical History Condition not found.'],
         self::MEDICAL_HISTORY_CONDITION_NOT_SINGLE_EXCEPTION         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Medical History Condition not single.'],
         self::RESPONSIBLE_PERSON_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Responsible person not found.'],
+        self::MISSING_BASE_RATE_FOR_CARE_LEVEL                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Missing Base Rate for some Care Levels.'],
         self::RESPONSIBLE_PERSON_ROLE_NOT_FOUND_EXCEPTION            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Responsible person\'s role not found.'],
         self::RESIDENT_DIAGNOSIS_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Diagnosis not found.'],
         self::DIAGNOSIS_NOT_SINGLE_EXCEPTION                         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Diagnosis is not single.'],
@@ -395,8 +397,8 @@ class ResponseCode
         self::RESIDENT_DISCOUNT_ITEM_NOT_FOUND_EXCEPTION             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Discount Item not found.'],
         self::LATE_PAYMENT_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Late Payment not found.'],
         self::START_AND_END_DATE_NOT_SAME_MONTH_EXCEPTION            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Start and End Dates should be the same month and year.'],
-        self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::DATES_OVERLAP_EXCEPTION                                => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Dates overlap with already existing Away Days.'],
+        self::INCORRECT_REPORT_PARAMETER                             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Incorrect report parameter(s): %s.'],
         self::INVALID_GRANT_CONFIG                                   => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Invalid Grant configuration.'],
         self::DEFAULT_ROLE_NOT_FOUND_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Default Role not found.'],
         self::RESOURCE_NOT_FOUND_EXCEPTION                           => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Requested resource not found.'],

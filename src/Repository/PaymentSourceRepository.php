@@ -248,4 +248,44 @@ class PaymentSourceRepository extends EntityRepository implements RelatedInfoInt
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $ids
+     * @return mixed
+     */
+    public function findByIdsWithRates(Space $space = null, array $entityGrants = null, $ids)
+    {
+        $qb = $this
+            ->createQueryBuilder('ps')
+            ->join('ps.baseRates', 'br')
+            ->join('br.levels', 'l')
+            ->where('ps.id IN (:ids)')
+            ->andWhere('br.date = (SELECT MAX(mbr.date) FROM App:PaymentSourceBaseRate mbr JOIN mbr.paymentSource mps WHERE mbr.date <= :now AND mps.id = ps.id GROUP BY mps.id) ')
+            ->setParameter('ids', $ids)
+            ->setParameter('now', new \DateTime('now'));
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = ps.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('ps.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb->groupBy('ps.id')
+            ->getQuery()
+            ->getResult();
+    }
 }
