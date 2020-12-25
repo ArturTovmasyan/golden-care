@@ -160,9 +160,12 @@ class PaymentSourceService extends BaseService implements IGridService
                 $paymentSources = $repo->findByIdsWithRates($currentSpace, null, [$entity->getId()]);
                 /** @var PaymentSource $paymentSource */
                 $paymentSource = $paymentSources[0];
-                /** @var PaymentSourceBaseRate $baseRate */
-                $baseRate = $paymentSource->getBaseRates()[0];
-                $countLevels = count($baseRate->getLevels());
+                $countLevels = 0;
+                if ($paymentSource !== null) {
+                    /** @var PaymentSourceBaseRate $baseRate */
+                    $baseRate = $paymentSource->getBaseRates()[0];
+                    $countLevels = count($baseRate->getLevels());
+                }
 
                 if ($countLevels < $countCareLevels) {
                     $diff = $countCareLevels - $countLevels;
