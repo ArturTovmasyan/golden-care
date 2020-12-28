@@ -111,7 +111,7 @@ class CreditItem
      * @ORM\Column(name="amount", type="float", length=10, nullable=true)
      * @Assert\GreaterThan(
      *      value = 0,
-     *      message = "This value should be greater than ${{ value }}.",
+     *      message = "This value should be greater than $0.",
      *      groups={
      *          "api_admin_credit_item_edit",
      *          "api_admin_credit_item_add"
@@ -119,7 +119,7 @@ class CreditItem
      * )
      * @Assert\LessThan(
      *      value = 1000000,
-     *      message = "This value should be less than ${{ value }}.",
+     *      message = "This value should be less than $1000000.",
      *      groups={
      *          "api_admin_credit_item_edit",
      *          "api_admin_credit_item_add"
