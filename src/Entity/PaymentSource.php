@@ -254,23 +254,6 @@ class PaymentSource
     private $fieldName;
 
     /**
-     * @var string
-     * @Assert\Length(
-     *      max = 32,
-     *      maxMessage = "Field Text cannot be longer than {{ limit }} characters",
-     *      groups={
-     *          "api_admin_payment_source_add",
-     *          "api_admin_payment_source_edit"
-     * })
-     * @ORM\Column(name="field_text", type="string", length=32, nullable=true)
-     * @Groups({
-     *     "api_admin_payment_source_list",
-     *     "api_admin_payment_source_get"
-     * })
-     */
-    private $fieldText;
-
-    /**
      * @var bool
      * @ORM\Column(name="only_for_occupied_days", type="boolean")
      * @Groups({
@@ -489,22 +472,6 @@ class PaymentSource
     public function setFieldName(?string $fieldName): void
     {
         $this->fieldName = $fieldName;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getFieldText(): ?string
-    {
-        return $this->fieldText;
-    }
-
-    /**
-     * @param string|null $fieldText
-     */
-    public function setFieldText(?string $fieldText): void
-    {
-        $this->fieldText = $fieldText;
     }
 
     /**

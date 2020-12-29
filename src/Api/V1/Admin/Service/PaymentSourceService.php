@@ -91,7 +91,6 @@ class PaymentSourceService extends BaseService implements IGridService
             $paymentSource->setResidentName((bool)$params['resident_name']);
             $paymentSource->setDateOfBirth((bool)$params['date_of_birth']);
             $paymentSource->setFieldName($params['field_name']);
-            $paymentSource->setFieldText($params['field_text']);
             $paymentSource->setOnlyForOccupiedDays((bool)$params['only_for_occupied_days']);
 
             $this->validate($paymentSource, null, ['api_admin_payment_source_add']);
@@ -187,7 +186,6 @@ class PaymentSourceService extends BaseService implements IGridService
             $entity->setResidentName((bool)$params['resident_name']);
             $entity->setDateOfBirth((bool)$params['date_of_birth']);
             $entity->setFieldName($params['field_name']);
-            $entity->setFieldText($params['field_text']);
             $entity->setOnlyForOccupiedDays((bool)$params['only_for_occupied_days']);
 
             $this->validate($entity, null, ['api_admin_payment_source_edit']);

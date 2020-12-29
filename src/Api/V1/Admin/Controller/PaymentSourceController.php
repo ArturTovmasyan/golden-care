@@ -107,7 +107,6 @@ class PaymentSourceController extends BaseController
                 'resident_name' => $request->get('resident_name'),
                 'date_of_birth' => $request->get('date_of_birth'),
                 'field_name' => $request->get('field_name'),
-                'field_text' => $request->get('field_text'),
                 'only_for_occupied_days' => $request->get('only_for_occupied_days')
             ]
         );
@@ -143,7 +142,6 @@ class PaymentSourceController extends BaseController
                 'resident_name' => $request->get('resident_name'),
                 'date_of_birth' => $request->get('date_of_birth'),
                 'field_name' => $request->get('field_name'),
-                'field_text' => $request->get('field_text'),
                 'only_for_occupied_days' => $request->get('only_for_occupied_days')
             ]
         );

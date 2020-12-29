@@ -1790,6 +1790,7 @@ class ResidentReportService extends BaseService
                                     'responsiblePerson' => array_key_exists($item['responsible_person_id'], $responsiblePersonNames) ? $responsiblePersonNames[$item['responsible_person_id']] : 'N/A',
                                     'dueDate' => $subVal['dueDate'],
                                     'days' => $subVal['days'],
+                                    'fieldText' => array_key_exists('field_text', $item) ? $item['field_text'] : '',
                                 ];
                             }
                         }
@@ -1805,6 +1806,7 @@ class ResidentReportService extends BaseService
                                     'responsiblePerson' => 'N/A',
                                     'dueDate' => $subVal['dueDate'],
                                     'days' => $subVal['days'],
+                                    'fieldText' => array_key_exists('field_text', $item) ? $item['field_text'] : '',
                                 ];
                             }
                         }

@@ -369,6 +369,7 @@ class ResidentLedgerService extends BaseService implements IGridService
                     $periods = [];
                     $privatePayIds = [];
                     $sourceAwayDaysOnIds = [];
+                    $sourceAdditionalFields = [];
                     /** @var PaymentSource $source */
                     foreach ($sources as $source) {
                         $periods[$source->getId()] = $source->getPeriod();
@@ -379,6 +380,10 @@ class ResidentLedgerService extends BaseService implements IGridService
 
                         if ($source->isOnlyForOccupiedDays()) {
                             $sourceAwayDaysOnIds[$source->getId()] = $source->getId();
+                        }
+
+                        if (!empty($source->getFieldName())) {
+                            $sourceAdditionalFields[$source->getId()] = $source->getFieldName();
                         }
                     }
 
@@ -396,6 +401,7 @@ class ResidentLedgerService extends BaseService implements IGridService
                                 'id' => $rentSource['id'],
                                 'amount' => round($calcResults['amount'], 2),
                                 'responsible_person_id' => array_key_exists('responsible_person_id', $rentSource) ? $rentSource['responsible_person_id'] : '',
+                                'field_text' => array_key_exists('field_text', $rentSource) && array_key_exists($rentSource['id'], $sourceAdditionalFields) ? $sourceAdditionalFields[$rentSource['id']] . ' - ' . $rentSource['field_text'] : '',
                             ];
                         } else {
                             $calcResults = $rentPeriodFactory->calculateForRoomRentInterval(
@@ -410,6 +416,7 @@ class ResidentLedgerService extends BaseService implements IGridService
                             $notPrivatPayPaymentSources[] = [
                                 'id' => $rentSource['id'],
                                 'amount' => round($calcResults['amount'], 2),
+                                'field_text' => array_key_exists('field_text', $rentSource) && array_key_exists($rentSource['id'], $sourceAdditionalFields) ? $sourceAdditionalFields[$rentSource['id']] . ' - ' . $rentSource['field_text'] : '',
                             ];
 
                             if (!empty($calcResults['residentAwayDays'])) {
