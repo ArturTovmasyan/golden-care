@@ -8,8 +8,10 @@ use App\Api\V1\Common\Service\Exception\CreditItemNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\CreditItem;
+use App\Entity\ResidentLedger;
 use App\Entity\Space;
 use App\Repository\CreditItemRepository;
+use App\Repository\ResidentLedgerRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -36,10 +38,22 @@ class CreditItemService extends BaseService implements IGridService
      */
     public function list($params)
     {
+        $validThroughDate = null;
+        if (!empty($params) || !empty($params[0]['ledger_id'])) {
+            /** @var ResidentLedgerRepository $ledgerRepo */
+            $ledgerRepo = $this->em->getRepository(ResidentLedger::class);
+            /** @var ResidentLedger $ledger */
+            $ledger = $ledgerRepo->find($params[0]['ledger_id']);
+
+            if ($ledger->getCreatedAt() !== null) {
+                $validThroughDate = new \DateTime($ledger->getCreatedAt()->format('Y-m-01 00:00:00'));
+            }
+        }
+
         /** @var CreditItemRepository $repo */
         $repo = $this->em->getRepository(CreditItem::class);
 
-        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(CreditItem::class));
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(CreditItem::class), $validThroughDate);
     }
 
     /**

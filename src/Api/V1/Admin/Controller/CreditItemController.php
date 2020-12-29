@@ -63,7 +63,8 @@ class CreditItemController extends BaseController
             $request,
             CreditItem::class,
             'api_admin_credit_item_list',
-            $creditItemService
+            $creditItemService,
+            ['ledger_id' => $request->get('ledger_id')]
         );
     }
 

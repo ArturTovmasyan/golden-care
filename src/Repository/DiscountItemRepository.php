@@ -50,9 +50,10 @@ class DiscountItemRepository extends EntityRepository implements RelatedInfoInte
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
-     * @return mixed
+     * @param null $validThroughDate
+     * @return int|mixed|string
      */
-    public function list(Space $space = null, array $entityGrants = null)
+    public function list(Space $space = null, array $entityGrants = null, $validThroughDate = null)
     {
         $qb = $this
             ->createQueryBuilder('di')
@@ -62,6 +63,12 @@ class DiscountItemRepository extends EntityRepository implements RelatedInfoInte
                 Join::WITH,
                 's = di.space'
             );
+
+        if ($validThroughDate !== null) {
+            $qb
+                ->andWhere('di.validThroughDate >= :validThroughDate')
+                ->setParameter('validThroughDate', $validThroughDate);
+        }
 
         if ($space !== null) {
             $qb

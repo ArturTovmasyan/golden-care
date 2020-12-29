@@ -63,7 +63,8 @@ class DiscountItemController extends BaseController
             $request,
             DiscountItem::class,
             'api_admin_discount_item_list',
-            $discountItemService
+            $discountItemService,
+            ['ledger_id' => $request->get('ledger_id')]
         );
     }
 
