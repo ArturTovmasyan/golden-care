@@ -283,7 +283,7 @@ class ResidentCreditItem
         $creditItemAmount = $this->creditItem !== null && $this->creditItem->getAmount() > 0 ? $this->creditItem->getAmount() : 0;
 
         if ($this->amount > $creditItemAmount) {
-            $context->buildViolation('The amount "' . $this->amount . '" should be less or equal to Credit Item amount "' . $creditItemAmount . '".')
+            $context->buildViolation('Value should be less or equal to Credit Item amount "' . $creditItemAmount . '".')
                 ->atPath('amount')
                 ->addViolation();
         }

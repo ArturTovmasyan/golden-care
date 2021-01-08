@@ -283,7 +283,7 @@ class ResidentDiscountItem
         $discountItemAmount = $this->discountItem !== null && $this->discountItem->getAmount() > 0 ? $this->discountItem->getAmount() : 0;
 
         if ($this->amount > $discountItemAmount) {
-            $context->buildViolation('The amount "' . $this->amount . '" should be less or equal to Discount Item amount "' . $discountItemAmount . '".')
+            $context->buildViolation('Value should be less or equal to Discount Item amount "' . $discountItemAmount . '".')
                 ->atPath('amount')
                 ->addViolation();
         }
