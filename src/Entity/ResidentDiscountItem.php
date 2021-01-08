@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Class ResidentDiscountItem
@@ -267,5 +268,24 @@ class ResidentDiscountItem
     public function setNotes(?string $notes): void
     {
         $this->notes = $notes;
+    }
+
+    /**
+     * @param ExecutionContextInterface $context
+     * @Assert\Callback(groups={
+     *     "api_admin_resident_discount_item_add",
+     *     "api_admin_resident_discount_item_edit",
+     *     "api_admin_resident_ledger_edit"
+     * })
+     */
+    public function areAmountValid(ExecutionContextInterface $context): void
+    {
+        $discountItemAmount = $this->discountItem !== null && $this->discountItem->getAmount() > 0 ? $this->discountItem->getAmount() : 0;
+
+        if ($this->amount > $discountItemAmount) {
+            $context->buildViolation('The amount "' . $this->amount . '" should be less or equal to Discount Item amount "' . $discountItemAmount . '".')
+                ->atPath('amount')
+                ->addViolation();
+        }
     }
 }
