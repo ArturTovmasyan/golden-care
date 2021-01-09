@@ -87,7 +87,7 @@ class WebEmailGrabberCommand extends Command
                         try {
                             $this->webEmailService->add($data);
                             $this->markRead($user, $service, $message_info->getId());
-                        } catch(\Throwable $ct) {
+                        } catch (\Throwable $ct) {
                             $output->writeln($ct->getMessage());
                         }
                     }
@@ -242,6 +242,12 @@ class WebEmailGrabberCommand extends Command
 
             if (array_key_exists($messageKey, $data)) {
                 $data['Spam'] = $this->checkForSpam($data[$messageKey]);
+
+                //if in Message exist words janitorial, janitor or qualityjanitorialservices42@gmail.com
+                //then mark as spam
+                if (strpos($data[$messageKey], 'janitorial') !== false || strpos($data[$messageKey], 'janitor') !== false || strpos($data[$messageKey], 'qualityjanitorialservices42@gmail.com') !== false) {
+                    $data['Spam'] = true;
+                }
             }
         }
 
@@ -384,7 +390,8 @@ class WebEmailGrabberCommand extends Command
      * @return bool|null
      * @throws \Throwable
      */
-    private function checkForSpam($message): ?bool {
+    private function checkForSpam($message): ?bool
+    {
         $client = new Client();
 
         $response = $client->post('http://127.0.0.1:5000/check', [
