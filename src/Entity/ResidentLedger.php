@@ -27,7 +27,7 @@ use App\Annotation\Grid;
  *          },
  *          {
  *              "id"         = "date_created",
- *              "type"       = "date",
+ *              "type"       = "date_month_year",
  *              "field"      = "rl.createdAt",
  *              "link"       = "/resident/ledger/:id"
  *          },
