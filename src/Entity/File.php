@@ -113,6 +113,16 @@ class File
     private $s3Uri;
 
     /**
+     * @var string $fileName
+     * @ORM\Column(name="file_name", type="string", nullable=true)
+     * @Groups({
+     *     "api_admin_file_list",
+     *     "api_admin_file_get"
+     * })
+     */
+    private $fileName;
+
+    /**
      * @var Document
      * @ORM\OneToOne(targetEntity="App\Entity\Document", mappedBy="file", cascade={"remove", "persist"})
      */
@@ -230,6 +240,22 @@ class File
     public function setS3Uri(?string $s3Uri): void
     {
         $this->s3Uri = $s3Uri;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFileName(): ?string
+    {
+        return $this->fileName;
+    }
+
+    /**
+     * @param string|null $fileName
+     */
+    public function setFileName(?string $fileName): void
+    {
+        $this->fileName = $fileName;
     }
 
     /**

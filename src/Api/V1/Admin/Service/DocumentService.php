@@ -201,7 +201,21 @@ class DocumentService extends BaseService implements IGridService
                     throw new FileExtensionException();
                 }
 
+                $fileName = null;
                 $s3Id = $file->getId() . '.' . MimeUtil::mime2ext($file->getMimeType());
+                if (!empty($params['file_name'])) {
+                    $fileNameArray = explode('.', $params['file_name']);
+                    array_pop($fileNameArray);
+                    $fileName = implode('.', $fileNameArray);
+
+                    $file->setFileName($fileName);
+
+                    $fileName = str_replace(" ","_", $fileName);
+                    $fileName = preg_replace( '/[\W]/', '', $fileName);
+
+                    $s3Id = strtolower($fileName) . '_' . $s3Id;
+                }
+
                 $file->setS3Id($s3Id);
                 $this->em->persist($file);
 
@@ -414,7 +428,21 @@ class DocumentService extends BaseService implements IGridService
                         throw new FileExtensionException();
                     }
 
+                    $fileName = null;
                     $s3Id = $file->getId() . '.' . MimeUtil::mime2ext($file->getMimeType());
+                    if (!empty($params['file_name'])) {
+                        $fileNameArray = explode('.', $params['file_name']);
+                        array_pop($fileNameArray);
+                        $fileName = implode('.', $fileNameArray);
+
+                        $file->setFileName($fileName);
+
+                        $fileName = str_replace(" ","_", $fileName);
+                        $fileName = preg_replace( '/[\W]/', '', $fileName);
+
+                        $s3Id = strtolower($fileName) . '_' . $s3Id;
+                    }
+
                     $file->setS3Id($s3Id);
                     $this->em->persist($file);
 
