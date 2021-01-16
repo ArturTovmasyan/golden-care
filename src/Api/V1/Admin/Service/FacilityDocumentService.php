@@ -158,7 +158,21 @@ class FacilityDocumentService extends BaseService implements IGridService
 
                 $this->em->persist($file);
 
+                $fileName = null;
                 $s3Id = $file->getId() . '.' . $extension;
+                if (!empty($params['file_name'])) {
+                    $fileNameArray = explode('.', $params['file_name']);
+                    array_pop($fileNameArray);
+                    $fileName = implode('.', $fileNameArray);
+
+                    $file->setFileName($fileName);
+
+                    $fileName = str_replace(" ","_", $fileName);
+                    $fileName = preg_replace( '/[\W]/', '', $fileName);
+
+                    $s3Id = strtolower($fileName) . '_' . $s3Id;
+                }
+
                 $file->setS3Id($s3Id);
                 $this->em->persist($file);
 
@@ -273,7 +287,21 @@ class FacilityDocumentService extends BaseService implements IGridService
 
                     $this->em->persist($file);
 
+                    $fileName = null;
                     $s3Id = $file->getId() . '.' . $extension;
+                    if (!empty($params['file_name'])) {
+                        $fileNameArray = explode('.', $params['file_name']);
+                        array_pop($fileNameArray);
+                        $fileName = implode('.', $fileNameArray);
+
+                        $file->setFileName($fileName);
+
+                        $fileName = str_replace(" ","_", $fileName);
+                        $fileName = preg_replace( '/[\W]/', '', $fileName);
+
+                        $s3Id = strtolower($fileName) . '_' . $s3Id;
+                    }
+
                     $file->setS3Id($s3Id);
                     $this->em->persist($file);
 

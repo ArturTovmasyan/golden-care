@@ -112,7 +112,8 @@ class ResidentDocumentController extends BaseController
             [
                 'resident_id' => $request->get('resident_id'),
                 'title' => $request->get('title'),
-                'file' => $request->get('file')
+                'file' => $request->get('file'),
+                'file_name' => $request->get('file_name')
             ]
         );
 
@@ -140,7 +141,8 @@ class ResidentDocumentController extends BaseController
             [
                 'resident_id' => $request->get('resident_id'),
                 'title' => $request->get('title'),
-                'file' => $request->get('file')
+                'file' => $request->get('file'),
+                'file_name' => $request->get('file_name')
             ]
         );
 

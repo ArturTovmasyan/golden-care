@@ -133,7 +133,8 @@ class FacilityDocumentController extends BaseController
                 'category_id' => $request->get('category_id'),
                 'title' => $request->get('title'),
                 'description' => $request->get('description') ?? '',
-                'file' => $request->get('file')
+                'file' => $request->get('file'),
+                'file_name' => $request->get('file_name')
             ]
         );
 
@@ -163,7 +164,8 @@ class FacilityDocumentController extends BaseController
                 'category_id' => $request->get('category_id'),
                 'title' => $request->get('title'),
                 'description' => $request->get('description') ?? '',
-                'file' => $request->get('file')
+                'file' => $request->get('file'),
+                'file_name' => $request->get('file_name')
             ]
         );
 
