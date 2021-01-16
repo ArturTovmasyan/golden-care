@@ -114,7 +114,7 @@ class File
 
     /**
      * @var string $fileName
-     * @ORM\Column(name="file_name", type="string", nullable=true)
+     * @ORM\Column(name="file_name", type="text", nullable=true)
      * @Groups({
      *     "api_admin_file_list",
      *     "api_admin_file_get"
