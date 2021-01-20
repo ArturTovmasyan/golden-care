@@ -80,6 +80,7 @@ class ResponseCode
     const RESPONSIBLE_PERSON_ROLE_NOT_FOUND_EXCEPTION            = 670;
     const DATES_OVERLAP_EXCEPTION                                = 671;
     const MISSING_BASE_RATE_FOR_CARE_LEVEL                       = 672;
+    const START_GREATER_VALID_THROUGH_DATE_EXCEPTION             = 673;
     const GRID_OPTIONS_NOT_FOUND_EXCEPTION                       = 680;
     const ASSESSMENT_FORM_NOT_FOUND_EXCEPTION                    = 681;
     const EVENT_DEFINITION_NOT_FOUND_EXCEPTION                   = 682;
@@ -264,6 +265,7 @@ class ResponseCode
         self::MEDICAL_HISTORY_CONDITION_NOT_SINGLE_EXCEPTION         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Medical History Condition not single.'],
         self::RESPONSIBLE_PERSON_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Responsible person not found.'],
         self::MISSING_BASE_RATE_FOR_CARE_LEVEL                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Missing Base Rate for some Care Levels.'],
+        self::START_GREATER_VALID_THROUGH_DATE_EXCEPTION             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Start date is always prior to the Valid Through date.'],
         self::RESPONSIBLE_PERSON_ROLE_NOT_FOUND_EXCEPTION            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Responsible person\'s role not found.'],
         self::RESIDENT_DIAGNOSIS_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Diagnosis not found.'],
         self::DIAGNOSIS_NOT_SINGLE_EXCEPTION                         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Diagnosis is not single.'],

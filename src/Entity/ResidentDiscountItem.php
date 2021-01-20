@@ -318,9 +318,9 @@ class ResidentDiscountItem
      */
     public function areAmountValid(ExecutionContextInterface $context): void
     {
-        $discountItemAmount = $this->discountItem !== null && $this->discountItem->getAmount() > 0 ? $this->discountItem->getAmount() : 0;
+        $discountItemAmount = $this->discountItem !== null && $this->discountItem->getAmount() > 0 ? $this->discountItem->getAmount() : null;
 
-        if ($this->amount > $discountItemAmount) {
+        if ($discountItemAmount !== null && $this->amount > $discountItemAmount) {
             $context->buildViolation('Value should be less or equal to Discount Item amount "' . $discountItemAmount . '".')
                 ->atPath('amount')
                 ->addViolation();

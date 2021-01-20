@@ -6,7 +6,7 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\CreditItemNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentCreditItemNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
-use App\Api\V1\Common\Service\Exception\StartGreaterEndDateException;
+use App\Api\V1\Common\Service\Exception\StartGreaterValidThroughDateException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\CreditItem;
 use App\Entity\Resident;
@@ -136,7 +136,7 @@ class ResidentCreditItemService extends BaseService implements IGridService
                 $end->setTime(23, 59, 59);
 
                 if ($start > $end) {
-                    throw new StartGreaterEndDateException();
+                    throw new StartGreaterValidThroughDateException();
                 }
             }
 
@@ -259,7 +259,7 @@ class ResidentCreditItemService extends BaseService implements IGridService
                 $end->setTime(23, 59, 59);
 
                 if ($start > $end) {
-                    throw new StartGreaterEndDateException();
+                    throw new StartGreaterValidThroughDateException();
                 }
             }
 

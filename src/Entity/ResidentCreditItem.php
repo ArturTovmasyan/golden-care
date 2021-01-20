@@ -318,9 +318,9 @@ class ResidentCreditItem
      */
     public function areAmountValid(ExecutionContextInterface $context): void
     {
-        $creditItemAmount = $this->creditItem !== null && $this->creditItem->getAmount() > 0 ? $this->creditItem->getAmount() : 0;
+        $creditItemAmount = $this->creditItem !== null && $this->creditItem->getAmount() > 0 ? $this->creditItem->getAmount() : null;
 
-        if ($this->amount > $creditItemAmount) {
+        if ($creditItemAmount !== null && $this->amount > $creditItemAmount) {
             $context->buildViolation('Value should be less or equal to Credit Item amount "' . $creditItemAmount . '".')
                 ->atPath('amount')
                 ->addViolation();
