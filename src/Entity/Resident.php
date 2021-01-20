@@ -168,6 +168,10 @@ class Resident
      *      "api_admin_resident_ledger_get",
      *      "api_admin_resident_expense_item_list",
      *      "api_admin_resident_expense_item_get",
+     *      "api_admin_resident_credit_item_list",
+     *      "api_admin_resident_credit_item_get",
+     *      "api_admin_resident_discount_item_list",
+     *      "api_admin_resident_discount_item_get",
      *      "api_admin_resident_away_days_list",
      *      "api_admin_resident_away_days_get"
      * })
@@ -527,6 +531,20 @@ class Resident
      * @ORM\OrderBy({"date" = "ASC"})
      */
     private $residentExpenseItems;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentCreditItem", mappedBy="resident", cascade={"remove", "persist"})
+     * @ORM\OrderBy({"start" = "ASC"})
+     */
+    private $residentCreditItems;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentDiscountItem", mappedBy="resident", cascade={"remove", "persist"})
+     * @ORM\OrderBy({"start" = "ASC"})
+     */
+    private $residentDiscountItems;
 
     /**
      * @var ArrayCollection
@@ -1052,6 +1070,38 @@ class Resident
     public function setResidentExpenseItems($residentExpenseItems): void
     {
         $this->residentExpenseItems = $residentExpenseItems;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResidentCreditItems()
+    {
+        return $this->residentCreditItems;
+    }
+
+    /**
+     * @param ArrayCollection $residentCreditItems
+     */
+    public function setResidentCreditItems(ArrayCollection $residentCreditItems): void
+    {
+        $this->residentCreditItems = $residentCreditItems;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getResidentDiscountItems()
+    {
+        return $this->residentDiscountItems;
+    }
+
+    /**
+     * @param ArrayCollection $residentDiscountItems
+     */
+    public function setResidentDiscountItems(ArrayCollection $residentDiscountItems): void
+    {
+        $this->residentDiscountItems = $residentDiscountItems;
     }
 
     /**

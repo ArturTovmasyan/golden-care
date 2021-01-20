@@ -4,7 +4,9 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use App\Annotation\Grid;
@@ -15,6 +17,15 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *
  * @ORM\Entity(repositoryClass="App\Repository\ResidentCreditItemRepository")
  * @ORM\Table(name="tbl_resident_credit_item")
+ * @UniqueEntity(
+ *     fields={"resident", "creditItem"},
+ *     errorPath="credit_item_id",
+ *     message="The value is already in use for this Resident.",
+ *     groups={
+ *          "api_admin_resident_credit_item_add",
+ *          "api_admin_resident_credit_item_edit"
+ *     }
+ * )
  * @Grid(
  *     api_admin_resident_credit_item_grid={
  *          {
@@ -24,9 +35,14 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *              "field"      = "rci.id"
  *          },
  *          {
- *              "id"         = "date",
+ *              "id"         = "start",
  *              "type"       = "date",
- *              "field"      = "rci.date"
+ *              "field"      = "rci.start"
+ *          },
+ *          {
+ *              "id"         = "end",
+ *              "type"       = "date",
+ *              "field"      = "rci.end"
  *          },
  *          {
  *              "id"         = "credit_item",
@@ -60,35 +76,33 @@ class ResidentCreditItem
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_resident_credit_item_list",
-     *     "api_admin_resident_credit_item_get",
-     *     "api_admin_resident_ledger_get"
+     *     "api_admin_resident_credit_item_get"
      * })
      */
     private $id;
 
     /**
-     * @var ResidentLedger
-     * @Assert\NotNull(message = "Please select a Ledger", groups={
+     * @var Resident
+     * @Assert\NotNull(message = "Please select a Resident", groups={
      *     "api_admin_resident_credit_item_add",
      *     "api_admin_resident_credit_item_edit"
      * })
-     * @ORM\ManyToOne(targetEntity="App\Entity\ResidentLedger", inversedBy="residentCreditItems")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Resident", inversedBy="residentCreditItems")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_ledger", referencedColumnName="id", onDelete="CASCADE")
+     *   @ORM\JoinColumn(name="id_resident", referencedColumnName="id", onDelete="CASCADE")
      * })
      * @Groups({
      *     "api_admin_resident_credit_item_list",
      *     "api_admin_resident_credit_item_get"
      * })
      */
-    private $ledger;
+    private $resident;
 
     /**
      * @var CreditItem
      * @Assert\NotNull(message = "Please select a Credit Item", groups={
      *     "api_admin_resident_credit_item_add",
-     *     "api_admin_resident_credit_item_edit",
-     *     "api_admin_resident_ledger_edit"
+     *     "api_admin_resident_credit_item_edit"
      * })
      * @ORM\ManyToOne(targetEntity="App\Entity\CreditItem", inversedBy="residentCreditItems")
      * @ORM\JoinColumns({
@@ -103,49 +117,59 @@ class ResidentCreditItem
     private $creditItem;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_credit_item_add",
-     *     "api_admin_resident_credit_item_edit",
-     *     "api_admin_resident_ledger_edit"
+     *     "api_admin_resident_credit_item_edit"
      * })
      * @Assert\DateTime(groups={
      *     "api_admin_resident_credit_item_add",
-     *     "api_admin_resident_credit_item_edit",
-     *     "api_admin_resident_ledger_edit"
+     *     "api_admin_resident_credit_item_edit"
      * })
-     * @ORM\Column(name="date", type="datetime")
+     * @ORM\Column(name="start", type="datetime")
      * @Groups({
      *     "api_admin_resident_credit_item_list",
      *     "api_admin_resident_credit_item_get",
      *     "api_admin_resident_ledger_get"
      * })
      */
-    private $date;
+    private $start;
+
+    /**
+     * @var DateTime
+     * @Assert\DateTime(groups={
+     *     "api_admin_resident_credit_item_add",
+     *     "api_admin_resident_credit_item_edit"
+     * })
+     * @ORM\Column(name="end", type="datetime", nullable=true)
+     * @Groups({
+     *     "api_admin_resident_credit_item_list",
+     *     "api_admin_resident_credit_item_get",
+     *     "api_admin_resident_ledger_get"
+     * })
+     */
+    private $end;
 
     /**
      * @var float
      * @ORM\Column(name="amount", type="float", length=10)
      * @Assert\NotBlank(groups={
      *     "api_admin_resident_credit_item_add",
-     *     "api_admin_resident_credit_item_edit",
-     *     "api_admin_resident_ledger_edit"
+     *     "api_admin_resident_credit_item_edit"
      * })
      * @Assert\Regex(
      *      pattern="/(^[1-9][0-9]*$)|(^[0-9]+(\.[0-9]{1,2})$)/",
      *      message="The value entered is not a valid type. Examples of valid entries: '2000, 0.55, 100.34'.",
      *      groups={
      *          "api_admin_resident_credit_item_add",
-     *          "api_admin_resident_credit_item_edit",
-     *          "api_admin_resident_ledger_edit"
+     *          "api_admin_resident_credit_item_edit"
      * })
      * @Assert\Length(
      *      max = 10,
      *      maxMessage = "Amount cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_resident_credit_item_add",
-     *          "api_admin_resident_credit_item_edit",
-     *          "api_admin_resident_ledger_edit"
+     *          "api_admin_resident_credit_item_edit"
      * })
      * @Groups({
      *     "api_admin_resident_credit_item_list",
@@ -163,8 +187,7 @@ class ResidentCreditItem
      *      maxMessage = "Notes cannot be longer than {{ limit }} characters",
      *      groups={
      *          "api_admin_resident_credit_item_add",
-     *          "api_admin_resident_credit_item_edit",
-     *          "api_admin_resident_ledger_edit"
+     *          "api_admin_resident_credit_item_edit"
      * })
      * @Groups({
      *     "api_admin_resident_credit_item_list",
@@ -191,19 +214,19 @@ class ResidentCreditItem
     }
 
     /**
-     * @return ResidentLedger|null
+     * @return Resident|null
      */
-    public function getLedger(): ?ResidentLedger
+    public function getResident(): ?Resident
     {
-        return $this->ledger;
+        return $this->resident;
     }
 
     /**
-     * @param ResidentLedger|null $ledger
+     * @param Resident|null $resident
      */
-    public function setLedger(?ResidentLedger $ledger): void
+    public function setResident(?Resident $resident): void
     {
-        $this->ledger = $ledger;
+        $this->resident = $resident;
     }
 
     /**
@@ -223,19 +246,35 @@ class ResidentCreditItem
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null
      */
-    public function getDate(): ?\DateTime
+    public function getStart(): ?DateTime
     {
-        return $this->date;
+        return $this->start;
     }
 
     /**
-     * @param \DateTime|null $date
+     * @param DateTime|null $start
      */
-    public function setDate(?\DateTime $date): void
+    public function setStart(?DateTime $start): void
     {
-        $this->date = $date;
+        $this->start = $start;
+    }
+
+    /**
+     * @return DateTime|null
+     */
+    public function getEnd(): ?DateTime
+    {
+        return $this->end;
+    }
+
+    /**
+     * @param DateTime|null $end
+     */
+    public function setEnd(?DateTime $end): void
+    {
+        $this->end = $end;
     }
 
     /**
@@ -274,8 +313,7 @@ class ResidentCreditItem
      * @param ExecutionContextInterface $context
      * @Assert\Callback(groups={
      *     "api_admin_resident_credit_item_add",
-     *     "api_admin_resident_credit_item_edit",
-     *     "api_admin_resident_ledger_edit"
+     *     "api_admin_resident_credit_item_edit"
      * })
      */
     public function areAmountValid(ExecutionContextInterface $context): void

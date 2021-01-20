@@ -6,7 +6,6 @@ use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\DiscountItem;
 use App\Entity\Resident;
 use App\Entity\ResidentDiscountItem;
-use App\Entity\ResidentLedger;
 use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
@@ -28,16 +27,10 @@ class ResidentDiscountItemRepository extends EntityRepository implements Related
         $queryBuilder
             ->from(ResidentDiscountItem::class, 'rdi')
             ->innerJoin(
-                ResidentLedger::class,
-                'rl',
-                Join::WITH,
-                'rl = rdi.ledger'
-            )
-            ->innerJoin(
                 Resident::class,
                 'r',
                 Join::WITH,
-                'r = rl.resident'
+                'r = rdi.resident'
             )
             ->innerJoin(
                 DiscountItem::class,
@@ -65,7 +58,7 @@ class ResidentDiscountItemRepository extends EntityRepository implements Related
         }
 
         $queryBuilder
-            ->orderBy('rdi.date', 'DESC')
+            ->orderBy('rdi.start', 'DESC')
             ->groupBy('rdi.id');
     }
 
@@ -80,18 +73,12 @@ class ResidentDiscountItemRepository extends EntityRepository implements Related
         $qb = $this
             ->createQueryBuilder('rdi')
             ->innerJoin(
-                ResidentLedger::class,
-                'rl',
-                Join::WITH,
-                'rl = rdi.ledger'
-            )
-            ->innerJoin(
                 Resident::class,
                 'r',
                 Join::WITH,
-                'r = rl.resident'
+                'r = rdi.resident'
             )
-            ->where('rl.id = :id')
+            ->where('r.id = :id')
             ->setParameter('id', $id);
 
         if ($space !== null) {
@@ -113,7 +100,7 @@ class ResidentDiscountItemRepository extends EntityRepository implements Related
         }
 
         return $qb
-            ->orderBy('rdi.date', 'DESC')
+            ->orderBy('rdi.start', 'DESC')
             ->getQuery()
             ->getResult();
     }
@@ -129,16 +116,10 @@ class ResidentDiscountItemRepository extends EntityRepository implements Related
         $qb = $this
             ->createQueryBuilder('rdi')
             ->innerJoin(
-                ResidentLedger::class,
-                'rl',
-                Join::WITH,
-                'rl = rdi.ledger'
-            )
-            ->innerJoin(
                 Resident::class,
                 'r',
                 Join::WITH,
-                'r = rl.resident'
+                'r = rdi.resident'
             )
             ->innerJoin(
                 Space::class,
@@ -182,16 +163,10 @@ class ResidentDiscountItemRepository extends EntityRepository implements Related
         if ($space !== null) {
             $qb
                 ->innerJoin(
-                    ResidentLedger::class,
-                    'rl',
-                    Join::WITH,
-                    'rl = rdi.ledger'
-                )
-                ->innerJoin(
                     Resident::class,
                     'r',
                     Join::WITH,
-                    'r = rl.resident'
+                    'r = rdi.resident'
                 )
                 ->innerJoin(
                     Space::class,
@@ -249,16 +224,10 @@ class ResidentDiscountItemRepository extends EntityRepository implements Related
         if ($space !== null) {
             $qb
                 ->innerJoin(
-                    ResidentLedger::class,
-                    'rl',
-                    Join::WITH,
-                    'rl = rdi.ledger'
-                )
-                ->innerJoin(
                     Resident::class,
                     'r',
                     Join::WITH,
-                    'r = rl.resident'
+                    'r = rdi.resident'
                 )
                 ->innerJoin(
                     Space::class,
@@ -295,19 +264,14 @@ class ResidentDiscountItemRepository extends EntityRepository implements Related
             ->createQueryBuilder('rdi')
             ->select('rdi.amount')
             ->innerJoin(
-                ResidentLedger::class,
-                'rl',
-                Join::WITH,
-                'rl = rdi.ledger'
-            )
-            ->innerJoin(
                 Resident::class,
                 'r',
                 Join::WITH,
-                'r = rl.resident'
+                'r = rdi.resident'
             )
-            ->where('rl.id = :id')
-            ->andWhere('rdi.date >= :startDate AND rdi.date <= :endDate')
+            ->where('r.id = :id')
+            ->andWhere('rdi.end IS NULL OR rdi.end >= :startDate')
+            ->andWhere('rdi.start <= :endDate')
             ->setParameter('startDate', $startDate)
             ->setParameter('endDate', $endDate)
             ->setParameter('id', $id);
@@ -331,7 +295,7 @@ class ResidentDiscountItemRepository extends EntityRepository implements Related
         }
 
         return $qb
-            ->orderBy('rdi.date', 'DESC')
+            ->orderBy('rdi.start', 'DESC')
             ->getQuery()
             ->getResult();
     }

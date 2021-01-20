@@ -28,16 +28,10 @@ class ResidentCreditItemRepository extends EntityRepository implements RelatedIn
         $queryBuilder
             ->from(ResidentCreditItem::class, 'rci')
             ->innerJoin(
-                ResidentLedger::class,
-                'rl',
-                Join::WITH,
-                'rl = rci.ledger'
-            )
-            ->innerJoin(
                 Resident::class,
                 'r',
                 Join::WITH,
-                'r = rl.resident'
+                'r = rci.resident'
             )
             ->innerJoin(
                 CreditItem::class,
@@ -65,7 +59,7 @@ class ResidentCreditItemRepository extends EntityRepository implements RelatedIn
         }
 
         $queryBuilder
-            ->orderBy('rci.date', 'DESC')
+            ->orderBy('rci.start', 'DESC')
             ->groupBy('rci.id');
     }
 
@@ -80,18 +74,12 @@ class ResidentCreditItemRepository extends EntityRepository implements RelatedIn
         $qb = $this
             ->createQueryBuilder('rci')
             ->innerJoin(
-                ResidentLedger::class,
-                'rl',
-                Join::WITH,
-                'rl = rci.ledger'
-            )
-            ->innerJoin(
                 Resident::class,
                 'r',
                 Join::WITH,
-                'r = rl.resident'
+                'r = rci.resident'
             )
-            ->where('rl.id = :id')
+            ->where('r.id = :id')
             ->setParameter('id', $id);
 
         if ($space !== null) {
@@ -113,7 +101,7 @@ class ResidentCreditItemRepository extends EntityRepository implements RelatedIn
         }
 
         return $qb
-            ->orderBy('rci.date', 'DESC')
+            ->orderBy('rci.start', 'DESC')
             ->getQuery()
             ->getResult();
     }
@@ -129,16 +117,10 @@ class ResidentCreditItemRepository extends EntityRepository implements RelatedIn
         $qb = $this
             ->createQueryBuilder('rci')
             ->innerJoin(
-                ResidentLedger::class,
-                'rl',
-                Join::WITH,
-                'rl = rci.ledger'
-            )
-            ->innerJoin(
                 Resident::class,
                 'r',
                 Join::WITH,
-                'r = rl.resident'
+                'r = rci.resident'
             )
             ->innerJoin(
                 Space::class,
@@ -182,16 +164,10 @@ class ResidentCreditItemRepository extends EntityRepository implements RelatedIn
         if ($space !== null) {
             $qb
                 ->innerJoin(
-                    ResidentLedger::class,
-                    'rl',
-                    Join::WITH,
-                    'rl = rci.ledger'
-                )
-                ->innerJoin(
                     Resident::class,
                     'r',
                     Join::WITH,
-                    'r = rl.resident'
+                    'r = rci.resident'
                 )
                 ->innerJoin(
                     Space::class,
@@ -249,16 +225,10 @@ class ResidentCreditItemRepository extends EntityRepository implements RelatedIn
         if ($space !== null) {
             $qb
                 ->innerJoin(
-                    ResidentLedger::class,
-                    'rl',
-                    Join::WITH,
-                    'rl = rci.ledger'
-                )
-                ->innerJoin(
                     Resident::class,
                     'r',
                     Join::WITH,
-                    'r = rl.resident'
+                    'r = rci.resident'
                 )
                 ->innerJoin(
                     Space::class,
@@ -295,19 +265,14 @@ class ResidentCreditItemRepository extends EntityRepository implements RelatedIn
             ->createQueryBuilder('rci')
             ->select('rci.amount')
             ->innerJoin(
-                ResidentLedger::class,
-                'rl',
-                Join::WITH,
-                'rl = rci.ledger'
-            )
-            ->innerJoin(
                 Resident::class,
                 'r',
                 Join::WITH,
-                'r = rl.resident'
+                'r = rci.resident'
             )
-            ->where('rl.id = :id')
-            ->andWhere('rci.date >= :startDate AND rci.date <= :endDate')
+            ->where('r.id = :id')
+            ->andWhere('rci.end IS NULL OR rci.end >= :startDate')
+            ->andWhere('rci.start <= :endDate')
             ->setParameter('startDate', $startDate)
             ->setParameter('endDate', $endDate)
             ->setParameter('id', $id);
@@ -331,7 +296,7 @@ class ResidentCreditItemRepository extends EntityRepository implements RelatedIn
         }
 
         return $qb
-            ->orderBy('rci.date', 'DESC')
+            ->orderBy('rci.start', 'DESC')
             ->getQuery()
             ->getResult();
     }

@@ -36,7 +36,7 @@ class ResidentCreditItemController extends BaseController
             ResidentCreditItem::class,
             'api_admin_resident_credit_item_grid',
             $residentCreditItemService,
-            ['ledger_id' => $request->get('ledger_id')]
+            ['resident_id' => $request->get('resident_id')]
         );
     }
 
@@ -65,7 +65,7 @@ class ResidentCreditItemController extends BaseController
             ResidentCreditItem::class,
             'api_admin_resident_credit_item_list',
             $residentCreditItemService,
-            ['ledger_id' => $request->get('ledger_id')]
+            ['resident_id' => $request->get('resident_id')]
         );
     }
 
@@ -100,9 +100,10 @@ class ResidentCreditItemController extends BaseController
     {
         $id = $residentCreditItemService->add(
             [
-                'ledger_id' => $request->get('ledger_id'),
+                'resident_id' => $request->get('resident_id'),
                 'credit_item_id' => $request->get('credit_item_id'),
-                'date' => $request->get('date'),
+                'start' => $request->get('start'),
+                'end' => $request->get('end'),
                 'amount' => $request->get('amount'),
                 'notes' => $request->get('notes') ?? '',
             ]
@@ -130,9 +131,10 @@ class ResidentCreditItemController extends BaseController
         $residentCreditItemService->edit(
             $id,
             [
-                'ledger_id' => $request->get('ledger_id'),
+                'resident_id' => $request->get('resident_id'),
                 'credit_item_id' => $request->get('credit_item_id'),
-                'date' => $request->get('date'),
+                'start' => $request->get('start'),
+                'end' => $request->get('end'),
                 'amount' => $request->get('amount'),
                 'notes' => $request->get('notes') ?? '',
             ]

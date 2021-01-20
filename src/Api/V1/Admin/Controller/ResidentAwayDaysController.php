@@ -154,11 +154,12 @@ class ResidentAwayDaysController extends BaseController
      * @param Request $request
      * @param $id
      * @param ResidentAwayDaysService $residentAwayDaysService
+     * @param ResidentLedgerService $residentLedgerService
      * @return JsonResponse
      */
-    public function deleteAction(Request $request, $id, ResidentAwayDaysService $residentAwayDaysService): JsonResponse
+    public function deleteAction(Request $request, $id, ResidentAwayDaysService $residentAwayDaysService, ResidentLedgerService $residentLedgerService): JsonResponse
     {
-        $residentAwayDaysService->remove($id);
+        $residentAwayDaysService->remove($id, $residentLedgerService);
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT
@@ -172,11 +173,12 @@ class ResidentAwayDaysController extends BaseController
      *
      * @param Request $request
      * @param ResidentAwayDaysService $residentAwayDaysService
+     * @param ResidentLedgerService $residentLedgerService
      * @return JsonResponse
      */
-    public function deleteBulkAction(Request $request, ResidentAwayDaysService $residentAwayDaysService): JsonResponse
+    public function deleteBulkAction(Request $request, ResidentAwayDaysService $residentAwayDaysService, ResidentLedgerService $residentLedgerService): JsonResponse
     {
-        $residentAwayDaysService->removeBulk($request->get('ids'));
+        $residentAwayDaysService->removeBulk($request->get('ids'), $residentLedgerService);
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT

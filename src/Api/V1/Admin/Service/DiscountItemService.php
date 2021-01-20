@@ -8,10 +8,8 @@ use App\Api\V1\Common\Service\Exception\DiscountItemNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\DiscountItem;
-use App\Entity\ResidentLedger;
 use App\Entity\Space;
 use App\Repository\DiscountItemRepository;
-use App\Repository\ResidentLedgerRepository;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -38,22 +36,10 @@ class DiscountItemService extends BaseService implements IGridService
      */
     public function list($params)
     {
-        $validThroughDate = null;
-        if (!empty($params) || !empty($params[0]['ledger_id'])) {
-            /** @var ResidentLedgerRepository $ledgerRepo */
-            $ledgerRepo = $this->em->getRepository(ResidentLedger::class);
-            /** @var ResidentLedger $ledger */
-            $ledger = $ledgerRepo->find($params[0]['ledger_id']);
-
-            if ($ledger->getCreatedAt() !== null) {
-                $validThroughDate = new \DateTime($ledger->getCreatedAt()->format('Y-m-01 00:00:00'));
-            }
-        }
-
         /** @var DiscountItemRepository $repo */
         $repo = $this->em->getRepository(DiscountItem::class);
 
-        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(DiscountItem::class), $validThroughDate);
+        return $repo->list($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(DiscountItem::class));
     }
 
     /**
@@ -98,16 +84,6 @@ class DiscountItemService extends BaseService implements IGridService
                 throw new CanBeChangedIsRequiredException();
             }
             $discountItem->setCanBeChanged($canBeChanged);
-
-            $date = $params['valid_through_date'];
-            if (!empty($date)) {
-                $date = new \DateTime($params['valid_through_date']);
-                $date->setTime(0, 0, 0);
-
-                $discountItem->setValidThroughDate($date);
-            } else {
-                $discountItem->setValidThroughDate(null);
-            }
 
             $this->validate($discountItem, null, ['api_admin_discount_item_add']);
 
@@ -164,16 +140,6 @@ class DiscountItemService extends BaseService implements IGridService
                 throw new CanBeChangedIsRequiredException();
             }
             $entity->setCanBeChanged($canBeChanged);
-
-            $date = $params['valid_through_date'];
-            if (!empty($date)) {
-                $date = new \DateTime($params['valid_through_date']);
-                $date->setTime(0, 0, 0);
-
-                $entity->setValidThroughDate($date);
-            } else {
-                $entity->setValidThroughDate(null);
-            }
 
             $this->validate($entity, null, ['api_admin_discount_item_edit']);
 

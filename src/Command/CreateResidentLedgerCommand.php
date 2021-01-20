@@ -11,11 +11,15 @@ use App\Entity\Facility;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
 use App\Entity\ResidentAwayDays;
+use App\Entity\ResidentCreditItem;
+use App\Entity\ResidentDiscountItem;
 use App\Entity\ResidentExpenseItem;
 use App\Entity\ResidentLedger;
 use App\Model\GroupType;
 use App\Repository\ResidentAdmissionRepository;
 use App\Repository\ResidentAwayDaysRepository;
+use App\Repository\ResidentCreditItemRepository;
+use App\Repository\ResidentDiscountItemRepository;
 use App\Repository\ResidentExpenseItemRepository;
 use App\Repository\ResidentLedgerRepository;
 use App\Repository\ResidentRepository;
@@ -131,6 +135,10 @@ class CreateResidentLedgerCommand extends Command
                         $residentRepo = $this->em->getRepository(Resident::class);
                         /** @var ResidentExpenseItemRepository $residentExpenseItemRepo */
                         $residentExpenseItemRepo = $this->em->getRepository(ResidentExpenseItem::class);
+                        /** @var ResidentCreditItemRepository $residentCreditItemRepo */
+                        $residentCreditItemRepo = $this->em->getRepository(ResidentCreditItem::class);
+                        /** @var ResidentDiscountItemRepository $residentDiscountItemRepo */
+                        $residentDiscountItemRepo = $this->em->getRepository(ResidentDiscountItem::class);
 
                         foreach ($residentIds as $residentId) {
                             $now = new \DateTime('now');
@@ -157,6 +165,24 @@ class CreateResidentLedgerCommand extends Command
                                     }
                                 }
 
+                                $residentCreditItems = $residentCreditItemRepo->getByInterval($currentSpace, null, $residentId, $dateStart, $dateEnd);
+
+                                $creditItemAmount = 0;
+                                if (!empty($residentCreditItems)) {
+                                    foreach ($residentCreditItems as $creditItem) {
+                                        $creditItemAmount += $creditItem['amount'];
+                                    }
+                                }
+
+                                $residentDiscountItems = $residentDiscountItemRepo->getByInterval($currentSpace, null, $residentId, $dateStart, $dateEnd);
+
+                                $discountItemAmount = 0;
+                                if (!empty($residentDiscountItems)) {
+                                    foreach ($residentDiscountItems as $discountItem) {
+                                        $discountItemAmount += $discountItem['amount'];
+                                    }
+                                }
+
                                 /** @var ResidentAwayDaysRepository $residentAwayDaysRepo */
                                 $residentAwayDaysRepo = $this->em->getRepository(ResidentAwayDays::class);
                                 $residentAwayDays = $residentAwayDaysRepo->getByInterval($currentSpace, null, $residentId, $dateStart, $dateEnd);
@@ -177,7 +203,7 @@ class CreateResidentLedgerCommand extends Command
                                     $residentLedger->setUpdatedAt($priorDate);
 
                                     //Calculate Privat Pay Balance Due
-                                    $currentMonthPrivatPayBalanceDue = $amountData['privatPayAmount'] + $expenseItemAmount;
+                                    $currentMonthPrivatPayBalanceDue = $amountData['privatPayAmount'] + $expenseItemAmount - $creditItemAmount - $discountItemAmount;
                                     //Calculate Not Privat Pay Balance Due
                                     $currentMonthNotPrivatPayBalanceDue = $amountData['notPrivatPayAmount'];
 

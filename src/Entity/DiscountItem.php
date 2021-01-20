@@ -50,11 +50,6 @@ use App\Annotation\Grid;
  *              "field"      = "di.canBeChanged"
  *          },
  *          {
- *              "id"         = "valid_through_date",
- *              "type"       = "date",
- *              "field"      = "di.validThroughDate"
- *          },
- *          {
  *              "id"         = "space",
  *              "type"       = "string",
  *              "field"      = "s.name"
@@ -145,25 +140,6 @@ class DiscountItem
     private $canBeChanged;
 
     /**
-     * @var \DateTime
-     * @Assert\NotBlank(groups={
-     *     "api_admin_discount_item_add",
-     *     "api_admin_discount_item_edit"
-     * })
-     * @Assert\DateTime(groups={
-     *     "api_admin_discount_item_add",
-     *     "api_admin_discount_item_edit"
-     * })
-     * @ORM\Column(name="valid_through_date", type="datetime")
-     * @Groups({
-     *     "api_admin_discount_item_get",
-     *     "api_admin_discount_item_list",
-     *     "api_admin_resident_ledger_get"
-     * })
-     */
-    private $validThroughDate;
-
-    /**
      * @var Space
      * @Assert\NotNull(message = "Please select a Space", groups={
      *     "api_admin_discount_item_add",
@@ -237,22 +213,6 @@ class DiscountItem
     public function setCanBeChanged(bool $canBeChanged): void
     {
         $this->canBeChanged = $canBeChanged;
-    }
-
-    /**
-     * @return \DateTime|null
-     */
-    public function getValidThroughDate(): ?\DateTime
-    {
-        return $this->validThroughDate;
-    }
-
-    /**
-     * @param \DateTime|null $validThroughDate
-     */
-    public function setValidThroughDate(?\DateTime $validThroughDate): void
-    {
-        $this->validThroughDate = $validThroughDate;
     }
 
     /**

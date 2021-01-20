@@ -15,7 +15,10 @@ use App\Repository\ExpenseItemRepository;
 use App\Repository\ResidentExpenseItemRepository;
 use App\Repository\ResidentLedgerRepository;
 use App\Repository\ResidentRepository;
+use Doctrine\DBAL\ConnectionException;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\QueryBuilder;
+use Throwable;
 
 /**
  * Class ResidentExpenseItemService
@@ -79,8 +82,8 @@ class ResidentExpenseItemService extends BaseService implements IGridService
      * @param ResidentLedgerService $residentLedgerService
      * @param array $params
      * @return int|null
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws ConnectionException
+     * @throws NonUniqueResultException
      */
     public function add(ResidentLedgerService $residentLedgerService, array $params): ?int
     {
@@ -153,7 +156,7 @@ class ResidentExpenseItemService extends BaseService implements IGridService
      * @param $currentSpace
      * @param $residentId
      * @param $date
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      */
     private function recalculateLedger(ResidentLedgerService $residentLedgerService, $currentSpace, $residentId, $date): void
     {
@@ -180,8 +183,8 @@ class ResidentExpenseItemService extends BaseService implements IGridService
      * @param $id
      * @param ResidentLedgerService $residentLedgerService
      * @param array $params
-     * @throws \Doctrine\DBAL\ConnectionException
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws ConnectionException
+     * @throws NonUniqueResultException
      */
     public function edit($id, ResidentLedgerService $residentLedgerService, array $params): void
     {
@@ -256,25 +259,37 @@ class ResidentExpenseItemService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Throwable
+     * @param ResidentLedgerService $residentLedgerService
+     * @throws ConnectionException
+     * @throws NonUniqueResultException
+     * @throws Throwable
      */
-    public function remove($id)
+    public function remove($id, ResidentLedgerService $residentLedgerService)
     {
         try {
             $this->em->getConnection()->beginTransaction();
+
+            $currentSpace = $this->grantService->getCurrentSpace();
 
             /** @var ResidentExpenseItemRepository $repo */
             $repo = $this->em->getRepository(ResidentExpenseItem::class);
 
             /** @var ResidentExpenseItem $entity */
-            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentExpenseItem::class), $id);
+            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentExpenseItem::class), $id);
 
             if ($entity === null) {
                 throw new ResidentExpenseItemNotFoundException();
             }
 
+            $residentId = $entity->getResident() !== null ? $entity->getResident()->getId() : 0;
+            $date = $entity->getDate();
+
             $this->em->remove($entity);
             $this->em->flush();
+
+            //Re-Calculate Ledger
+            $this->recalculateLedger($residentLedgerService, $currentSpace, $residentId, $date);
+
             $this->em->getConnection()->commit();
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
@@ -285,9 +300,11 @@ class ResidentExpenseItemService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Throwable
+     * @param ResidentLedgerService $residentLedgerService
+     * @throws ConnectionException
+     * @throws Throwable
      */
-    public function removeBulk(array $ids): void
+    public function removeBulk(array $ids, ResidentLedgerService $residentLedgerService): void
     {
         try {
             $this->em->getConnection()->beginTransaction();
@@ -296,23 +313,38 @@ class ResidentExpenseItemService extends BaseService implements IGridService
                 throw new ResidentExpenseItemNotFoundException();
             }
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             /** @var ResidentExpenseItemRepository $repo */
             $repo = $this->em->getRepository(ResidentExpenseItem::class);
 
-            $residentExpenseItems = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentExpenseItem::class), $ids);
+            $residentExpenseItems = $repo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentExpenseItem::class), $ids);
 
             if (empty($residentExpenseItems)) {
                 throw new ResidentExpenseItemNotFoundException();
             }
 
+            $dates = [];
+            $residentId = 0;
             /**
              * @var ResidentExpenseItem $residentExpenseItem
              */
             foreach ($residentExpenseItems as $residentExpenseItem) {
+                $residentId = $residentExpenseItem->getResident() !== null ? $residentExpenseItem->getResident()->getId() : 0;
+                $dates[] = $residentExpenseItem->getDate();
+
                 $this->em->remove($residentExpenseItem);
             }
 
             $this->em->flush();
+
+            if (!empty($dates)) {
+                foreach ($dates as $date) {
+                    //Re-Calculate Ledger
+                    $this->recalculateLedger($residentLedgerService, $currentSpace, $residentId, $date);
+                }
+            }
+
             $this->em->getConnection()->commit();
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();

@@ -10,8 +10,6 @@ use App\Api\V1\Common\Service\Exception\ResidentLedgerNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Api\V1\Component\Rent\RentPeriodFactory;
-use App\Entity\CreditItem;
-use App\Entity\DiscountItem;
 use App\Entity\LatePayment;
 use App\Entity\PaymentSource;
 use App\Entity\ResidentAwayDays;
@@ -26,8 +24,6 @@ use App\Entity\ResidentLedger;
 use App\Entity\ResidentResponsiblePerson;
 use App\Entity\RpPaymentType;
 use App\Model\RentPeriod;
-use App\Repository\CreditItemRepository;
-use App\Repository\DiscountItemRepository;
 use App\Repository\LatePaymentRepository;
 use App\Repository\PaymentSourceRepository;
 use App\Repository\ResidentAwayDaysRepository;
@@ -260,9 +256,31 @@ class ResidentLedgerService extends BaseService implements IGridService
                 }
             }
 
+            /** @var ResidentCreditItemRepository $residentCreditItemRepo */
+            $residentCreditItemRepo = $this->em->getRepository(ResidentCreditItem::class);
+            $residentCreditItems = $residentCreditItemRepo->getByInterval($currentSpace, null, $residentId, $dateStart, $dateEnd);
+
+            $creditItemAmount = 0;
+            if (!empty($residentCreditItems)) {
+                foreach ($residentCreditItems as $creditItem) {
+                    $creditItemAmount += $creditItem['amount'];
+                }
+            }
+
+            /** @var ResidentDiscountItemRepository $residentDiscountItemRepo */
+            $residentDiscountItemRepo = $this->em->getRepository(ResidentDiscountItem::class);
+            $residentDiscountItems = $residentDiscountItemRepo->getByInterval($currentSpace, null, $residentId, $dateStart, $dateEnd);
+
+            $discountItemAmount = 0;
+            if (!empty($residentDiscountItems)) {
+                foreach ($residentDiscountItems as $discountItem) {
+                    $discountItemAmount += $discountItem['amount'];
+                }
+            }
+
             $amountData = $this->calculateAmountAndGetPaymentSources($currentSpace, $residentId, $now, $awayDays);
             //Calculate Privat Pay Balance Due
-            $currentMonthPrivatPayBalanceDue = $amountData['privatPayAmount'] + $expenseItemAmount;
+            $currentMonthPrivatPayBalanceDue = $amountData['privatPayAmount'] + $expenseItemAmount - $creditItemAmount - $discountItemAmount;
             //Calculate Not Privat Pay Balance Due
             $currentMonthNotPrivatPayBalanceDue = $amountData['notPrivatPayAmount'];
 
@@ -501,7 +519,7 @@ class ResidentLedgerService extends BaseService implements IGridService
 
         /** @var ResidentCreditItemRepository $residentCreditItemRepo */
         $residentCreditItemRepo = $this->em->getRepository(ResidentCreditItem::class);
-        $residentCreditItems = $residentCreditItemRepo->getByInterval($currentSpace, null, $ledgerId, $dateStart, $dateEnd);
+        $residentCreditItems = $residentCreditItemRepo->getByInterval($currentSpace, null, $residentId, $dateStart, $dateEnd);
 
         $creditItemAmount = 0;
         if (!empty($residentCreditItems)) {
@@ -512,7 +530,7 @@ class ResidentLedgerService extends BaseService implements IGridService
 
         /** @var ResidentDiscountItemRepository $residentDiscountItemRepo */
         $residentDiscountItemRepo = $this->em->getRepository(ResidentDiscountItem::class);
-        $residentDiscountItems = $residentDiscountItemRepo->getByInterval($currentSpace, null, $ledgerId, $dateStart, $dateEnd);
+        $residentDiscountItems = $residentDiscountItemRepo->getByInterval($currentSpace, null, $residentId, $dateStart, $dateEnd);
 
         $discountItemAmount = 0;
         if (!empty($residentDiscountItems)) {
@@ -603,144 +621,6 @@ class ResidentLedgerService extends BaseService implements IGridService
                 $entity->setLatePayment($latePayment);
             } else {
                 $entity->setLatePayment(null);
-            }
-
-            //////////Credit Item/////////////////////////////////////////////////////
-            /** @var CreditItemRepository $creditItemRepo */
-            $creditItemRepo = $this->em->getRepository(CreditItem::class);
-            $addedCreditItems = [];
-            $editedCreditItems = [];
-            $editedCreditItemsIds = [];
-            if (!empty($params['resident_credit_items'])) {
-                foreach ($params['resident_credit_items'] as $creditItem) {
-                    if (empty($creditItem['id'])) {
-                        $addedCreditItems[] = $creditItem;
-                    } else {
-                        $editedCreditItems[$creditItem['id']] = $creditItem;
-                        $editedCreditItemsIds[] = $creditItem['id'];
-                    }
-                }
-            }
-
-            if ($entity->getResidentCreditItems() !== null) {
-                /** @var ResidentCreditItem $existingCreditItem */
-                foreach ($entity->getResidentCreditItems() as $existingCreditItem) {
-                    if (\in_array($existingCreditItem->getId(), $editedCreditItemsIds, false)) {
-                        $existingCreditItemDate = new \DateTime($editedCreditItems[$existingCreditItem->getId()]['date']);
-                        if ($entity->getCreatedAt()->format('Y') !== $existingCreditItemDate->format('Y') || $entity->getCreatedAt()->format('m') !== $existingCreditItemDate->format('m')) {
-                            throw new InvalidEffectiveDateException();
-                        }
-
-                        $creditItemId = $editedCreditItems[$existingCreditItem->getId()]['credit_item_id'] ?? 0;
-
-                        /** @var CreditItem $creditItem */
-                        $creditItem = $creditItemRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CreditItem::class), $creditItemId);
-
-                        $existingCreditItem->setCreditItem($creditItem);
-                        $existingCreditItem->setDate($existingCreditItemDate);
-                        $existingCreditItem->setAmount($editedCreditItems[$existingCreditItem->getId()]['amount']);
-                        $existingCreditItem->setNotes($editedCreditItems[$existingCreditItem->getId()]['notes'] ?? '');
-
-                        $this->em->persist($existingCreditItem);
-                    } else {
-                        $entity->removeResidentCreditItem($existingCreditItem);
-                        $this->em->remove($existingCreditItem);
-                    }
-                }
-            }
-
-            if (!empty($addedCreditItems)) {
-                foreach ($addedCreditItems as $addedCreditItem) {
-                    $creditItemDate = new \DateTime($addedCreditItem['date']);
-                    if ($entity->getCreatedAt()->format('Y') !== $creditItemDate->format('Y') || $entity->getCreatedAt()->format('m') !== $creditItemDate->format('m')) {
-                        throw new InvalidEffectiveDateException();
-                    }
-
-                    $newCreditItem = new ResidentCreditItem();
-
-                    $creditItemId = $addedCreditItem['credit_item_id'] ?? 0;
-
-                    /** @var CreditItem $creditItem */
-                    $creditItem = $creditItemRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(CreditItem::class), $creditItemId);
-
-                    $newCreditItem->setCreditItem($creditItem);
-                    $newCreditItem->setDate($creditItemDate);
-                    $newCreditItem->setAmount($addedCreditItem['amount']);
-                    $newCreditItem->setNotes($addedCreditItem['notes'] ?? '');
-                    $newCreditItem->setLedger($entity);
-                    $entity->addResidentCreditItem($newCreditItem);
-
-                    $this->em->persist($newCreditItem);
-                }
-            }
-
-            //////////Discount Item/////////////////////////////////////////////////////
-            /** @var DiscountItemRepository $discountItemRepo */
-            $discountItemRepo = $this->em->getRepository(DiscountItem::class);
-            $addedDiscountItems = [];
-            $editedDiscountItems = [];
-            $editedDiscountItemsIds = [];
-            if (!empty($params['resident_discount_items'])) {
-                foreach ($params['resident_discount_items'] as $discountItem) {
-                    if (empty($discountItem['id'])) {
-                        $addedDiscountItems[] = $discountItem;
-                    } else {
-                        $editedDiscountItems[$discountItem['id']] = $discountItem;
-                        $editedDiscountItemsIds[] = $discountItem['id'];
-                    }
-                }
-            }
-
-            if ($entity->getResidentDiscountItems() !== null) {
-                /** @var ResidentDiscountItem $existingDiscountItem */
-                foreach ($entity->getResidentDiscountItems() as $existingDiscountItem) {
-                    if (\in_array($existingDiscountItem->getId(), $editedDiscountItemsIds, false)) {
-                        $existingDiscountItemDate = new \DateTime($editedDiscountItems[$existingDiscountItem->getId()]['date']);
-                        if ($entity->getCreatedAt()->format('Y') !== $existingDiscountItemDate->format('Y') || $entity->getCreatedAt()->format('m') !== $existingDiscountItemDate->format('m')) {
-                            throw new InvalidEffectiveDateException();
-                        }
-
-                        $discountItemId = $editedDiscountItems[$existingDiscountItem->getId()]['discount_item_id'] ?? 0;
-
-                        /** @var DiscountItem $discountItem */
-                        $discountItem = $discountItemRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(DiscountItem::class), $discountItemId);
-
-                        $existingDiscountItem->setDiscountItem($discountItem);
-                        $existingDiscountItem->setDate($existingDiscountItemDate);
-                        $existingDiscountItem->setAmount($editedDiscountItems[$existingDiscountItem->getId()]['amount']);
-                        $existingDiscountItem->setNotes($editedDiscountItems[$existingDiscountItem->getId()]['notes'] ?? '');
-
-                        $this->em->persist($existingDiscountItem);
-                    } else {
-                        $entity->removeResidentDiscountItem($existingDiscountItem);
-                        $this->em->remove($existingDiscountItem);
-                    }
-                }
-            }
-
-            if (!empty($addedDiscountItems)) {
-                foreach ($addedDiscountItems as $addedDiscountItem) {
-                    $discountItemDate = new \DateTime($addedDiscountItem['date']);
-                    if ($entity->getCreatedAt()->format('Y') !== $discountItemDate->format('Y') || $entity->getCreatedAt()->format('m') !== $discountItemDate->format('m')) {
-                        throw new InvalidEffectiveDateException();
-                    }
-
-                    $newDiscountItem = new ResidentDiscountItem();
-
-                    $discountItemId = $addedDiscountItem['discount_item_id'] ?? 0;
-
-                    /** @var DiscountItem $discountItem */
-                    $discountItem = $discountItemRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(DiscountItem::class), $discountItemId);
-
-                    $newDiscountItem->setDiscountItem($discountItem);
-                    $newDiscountItem->setDate($discountItemDate);
-                    $newDiscountItem->setAmount($addedDiscountItem['amount']);
-                    $newDiscountItem->setNotes($addedDiscountItem['notes'] ?? '');
-                    $newDiscountItem->setLedger($entity);
-                    $entity->addResidentDiscountItem($newDiscountItem);
-
-                    $this->em->persist($newDiscountItem);
-                }
             }
 
             //////////Payment Received Item/////////////////////////////////////////////////////

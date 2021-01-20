@@ -63,8 +63,7 @@ class CreditItemController extends BaseController
             $request,
             CreditItem::class,
             'api_admin_credit_item_list',
-            $creditItemService,
-            ['ledger_id' => $request->get('ledger_id')]
+            $creditItemService
         );
     }
 
@@ -102,7 +101,6 @@ class CreditItemController extends BaseController
                 'title' => $request->get('title'),
                 'amount' => $request->get('amount'),
                 'can_be_changed' => $request->get('can_be_changed'),
-                'valid_through_date' => $request->get('valid_through_date'),
                 'space_id' => $request->get('space_id')
             ]
         );
@@ -132,7 +130,6 @@ class CreditItemController extends BaseController
                 'title' => $request->get('title'),
                 'amount' => $request->get('amount'),
                 'can_be_changed' => $request->get('can_be_changed'),
-                'valid_through_date' => $request->get('valid_through_date'),
                 'space_id' => $request->get('space_id')
             ]
         );

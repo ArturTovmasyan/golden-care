@@ -63,12 +63,6 @@ class ResidentLedger implements PreviousAndNextItemsService
      * @Groups({
      *     "api_admin_resident_ledger_list",
      *     "api_admin_resident_ledger_get",
-     *     "api_admin_resident_expense_item_list",
-     *     "api_admin_resident_expense_item_get",
-     *     "api_admin_resident_credit_item_list",
-     *     "api_admin_resident_credit_item_get",
-     *     "api_admin_resident_discount_item_list",
-     *     "api_admin_resident_discount_item_get",
      *     "api_admin_resident_private_pay_payment_received_item_list",
      *     "api_admin_resident_private_pay_payment_received_item_get",
      *     "api_admin_resident_not_private_pay_payment_received_item_list",
@@ -200,32 +194,6 @@ class ResidentLedger implements PreviousAndNextItemsService
      * })
      */
     private $awayDays = [];
-
-    /**
-     * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\ResidentCreditItem", mappedBy="ledger", cascade={"remove", "persist"})
-     * @ORM\OrderBy({"date" = "ASC"})
-     * @Assert\Valid(groups={
-     *     "api_admin_resident_ledger_edit"
-     * })
-     * @Groups({
-     *     "api_admin_resident_ledger_get"
-     * })
-     */
-    private $residentCreditItems;
-
-    /**
-     * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="App\Entity\ResidentDiscountItem", mappedBy="ledger", cascade={"remove", "persist"})
-     * @ORM\OrderBy({"date" = "ASC"})
-     * @Assert\Valid(groups={
-     *     "api_admin_resident_ledger_edit"
-     * })
-     * @Groups({
-     *     "api_admin_resident_ledger_get"
-     * })
-     */
-    private $residentDiscountItems;
 
     /**
      * @var ArrayCollection
@@ -366,12 +334,75 @@ class ResidentLedger implements PreviousAndNextItemsService
 
         $filteredExpenseItems = [];
         if (!empty($residentExpenseItems)) {
-            $filteredExpenseItems = $residentExpenseItems->filter(function(ResidentExpenseItem $residentExpenseItem) use ($createdAt) {
-                    return $residentExpenseItem->getDate()->format('Y') === $createdAt->format('Y') && $residentExpenseItem->getDate()->format('m') === $createdAt->format('m');
-                });
+            /** @var ResidentExpenseItem $residentExpenseItem */
+            foreach ($residentExpenseItems as $residentExpenseItem) {
+                $date = $residentExpenseItem->getDate();
+
+                if ($date !== null && $createdAt !== null && $date->format('Y') === $createdAt->format('Y') && $date->format('m') === $createdAt->format('m')) {
+                    $filteredExpenseItems[] = $residentExpenseItem;
+                }
+            }
         }
 
         return $filteredExpenseItems;
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("resident_credit_items")
+     * @Serializer\Groups({
+     *     "api_admin_resident_ledger_get"
+     * })
+     * @return mixed
+     */
+    public function getCreditItems()
+    {
+        $createdAt = $this->getCreatedAt();
+        $residentCreditItems = $this->resident->getResidentCreditItems();
+
+        $filteredCreditItems = [];
+        if (!empty($residentCreditItems)) {
+            /** @var ResidentCreditItem $residentCreditItem */
+            foreach ($residentCreditItems as $residentCreditItem) {
+                $start = $residentCreditItem->getStart();
+                $end = $residentCreditItem->getEnd();
+
+                if ($start <= $createdAt && ($end === null || $end >= $createdAt)) {
+                    $filteredCreditItems[] = $residentCreditItem;
+                }
+            }
+        }
+
+        return $filteredCreditItems;
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("resident_discount_items")
+     * @Serializer\Groups({
+     *     "api_admin_resident_ledger_get"
+     * })
+     * @return mixed
+     */
+    public function getDiscountItems()
+    {
+        $createdAt = $this->getCreatedAt();
+        $residentDiscountItems = $this->resident->getResidentDiscountItems();
+
+        $filteredDiscountItems = [];
+        if (!empty($residentDiscountItems)) {
+            /** @var ResidentDiscountItem $residentDiscountItem */
+            foreach ($residentDiscountItems as $residentDiscountItem) {
+                $start = $residentDiscountItem->getStart();
+                $end = $residentDiscountItem->getEnd();
+
+                if ($start <= $createdAt && ($end === null || $end >= $createdAt)) {
+                    $filteredDiscountItems[] = $residentDiscountItem;
+                }
+            }
+        }
+
+        return $filteredDiscountItems;
     }
 
     /**
@@ -532,72 +563,6 @@ class ResidentLedger implements PreviousAndNextItemsService
     public function setAwayDays(array $awayDays): void
     {
         $this->awayDays = $awayDays;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getResidentCreditItems()
-    {
-        return $this->residentCreditItems;
-    }
-
-    /**
-     * @param ArrayCollection $residentCreditItems
-     */
-    public function setResidentCreditItems(ArrayCollection $residentCreditItems): void
-    {
-        $this->residentCreditItems = $residentCreditItems;
-    }
-
-    /**
-     * @param ResidentCreditItem $residentCreditItem
-     */
-    public function addResidentCreditItem($residentCreditItem): void
-    {
-        $residentCreditItem->setLedger($this);
-        $this->residentCreditItems->add($residentCreditItem);
-    }
-
-    /**
-     * @param ResidentCreditItem $residentCreditItem
-     */
-    public function removeResidentCreditItem($residentCreditItem): void
-    {
-        $this->residentCreditItems->removeElement($residentCreditItem);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getResidentDiscountItems()
-    {
-        return $this->residentDiscountItems;
-    }
-
-    /**
-     * @param ArrayCollection $residentDiscountItems
-     */
-    public function setResidentDiscountItems(ArrayCollection $residentDiscountItems): void
-    {
-        $this->residentDiscountItems = $residentDiscountItems;
-    }
-
-    /**
-     * @param ResidentDiscountItem $residentDiscountItem
-     */
-    public function addResidentDiscountItem($residentDiscountItem): void
-    {
-        $residentDiscountItem->setLedger($this);
-        $this->residentDiscountItems->add($residentDiscountItem);
-    }
-
-    /**
-     * @param ResidentDiscountItem $residentDiscountItem
-     */
-    public function removeResidentDiscountItem($residentDiscountItem): void
-    {
-        $this->residentDiscountItems->removeElement($residentDiscountItem);
     }
 
     /**

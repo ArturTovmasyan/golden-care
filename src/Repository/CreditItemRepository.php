@@ -50,10 +50,9 @@ class CreditItemRepository extends EntityRepository implements RelatedInfoInterf
     /**
      * @param Space|null $space
      * @param array|null $entityGrants
-     * @param null $validThroughDate
      * @return int|mixed|string
      */
-    public function list(Space $space = null, array $entityGrants = null, $validThroughDate = null)
+    public function list(Space $space = null, array $entityGrants = null)
     {
         $qb = $this
             ->createQueryBuilder('ci')
@@ -63,12 +62,6 @@ class CreditItemRepository extends EntityRepository implements RelatedInfoInterf
                 Join::WITH,
                 's = ci.space'
             );
-
-        if ($validThroughDate !== null) {
-            $qb
-                ->andWhere('ci.validThroughDate >= :validThroughDate')
-                ->setParameter('validThroughDate', $validThroughDate);
-        }
 
         if ($space !== null) {
             $qb

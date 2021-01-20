@@ -7,6 +7,7 @@ use App\Entity\ResidentLedger;
 use App\Entity\Resident;
 use App\Entity\Space;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
@@ -347,7 +348,7 @@ class ResidentLedgerRepository extends EntityRepository implements RelatedInfoIn
      * @param $id
      * @param $date
      * @return int|mixed|string|null
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      */
     public function getAddedYearAndMonthLedger(Space $space = null, array $entityGrants = null, $id, $date)
     {
@@ -402,7 +403,7 @@ class ResidentLedgerRepository extends EntityRepository implements RelatedInfoIn
      * @param $startDate
      * @param $endDate
      * @return int|mixed|string|null
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      */
     public function getResidentLedgerByDate(Space $space = null, array $entityGrants = null, $id, $startDate, $endDate)
     {
@@ -443,6 +444,59 @@ class ResidentLedgerRepository extends EntityRepository implements RelatedInfoIn
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $id
+     * @param $startDate
+     * @param $endDate
+     * @return int|mixed|string
+     */
+    public function getResidentLedgersByDateInterval(Space $space = null, array $entityGrants = null, $id, $startDate, $endDate)
+    {
+        $qb = $this
+            ->createQueryBuilder('rl')
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'r = rl.resident'
+            )
+            ->where('r.id=:id')
+            ->andWhere('rl.createdAt >= :startDate')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('id', $id);
+
+        if ($endDate !== null) {
+            $qb
+                ->andWhere('rl.createdAt <= :endDate')
+                ->setParameter('endDate', $endDate);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rl.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->orderBy('rl.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 
     /**

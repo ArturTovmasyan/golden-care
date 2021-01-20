@@ -16,7 +16,9 @@ use App\Repository\ResidentAwayDaysRepository;
 use App\Repository\ResidentLedgerRepository;
 use App\Repository\ResidentRepository;
 use App\Util\Common\ImtDateTimeInterval;
+use Doctrine\DBAL\ConnectionException;
 use Doctrine\ORM\QueryBuilder;
+use Throwable;
 
 /**
  * Class ResidentAwayDaysService
@@ -80,7 +82,7 @@ class ResidentAwayDaysService extends BaseService implements IGridService
      * @param array $params
      * @param ResidentLedgerService $residentLedgerService
      * @return int|null
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws ConnectionException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function add(ResidentLedgerService $residentLedgerService, array $params): ?int
@@ -201,7 +203,7 @@ class ResidentAwayDaysService extends BaseService implements IGridService
      * @param $id
      * @param ResidentLedgerService $residentLedgerService
      * @param array $params
-     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws ConnectionException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function edit($id, ResidentLedgerService $residentLedgerService, array $params): void
@@ -305,25 +307,36 @@ class ResidentAwayDaysService extends BaseService implements IGridService
 
     /**
      * @param $id
-     * @throws \Throwable
+     * @param ResidentLedgerService $residentLedgerService
+     * @throws ConnectionException
+     * @throws Throwable
      */
-    public function remove($id)
+    public function remove($id, ResidentLedgerService $residentLedgerService)
     {
         try {
             $this->em->getConnection()->beginTransaction();
+
+            $currentSpace = $this->grantService->getCurrentSpace();
 
             /** @var ResidentAwayDaysRepository $repo */
             $repo = $this->em->getRepository(ResidentAwayDays::class);
 
             /** @var ResidentAwayDays $entity */
-            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAwayDays::class), $id);
+            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAwayDays::class), $id);
 
             if ($entity === null) {
                 throw new ResidentAwayDaysNotFoundException();
             }
 
+            $residentId = $entity->getResident() !== null ? $entity->getResident()->getId() : 0;
+            $startDate = $entity->getStart();
+
             $this->em->remove($entity);
             $this->em->flush();
+
+            //Re-Calculate Ledger
+            $this->recalculateLedger($residentLedgerService, $currentSpace, $residentId, $startDate);
+
             $this->em->getConnection()->commit();
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();
@@ -334,9 +347,11 @@ class ResidentAwayDaysService extends BaseService implements IGridService
 
     /**
      * @param array $ids
-     * @throws \Throwable
+     * @param ResidentLedgerService $residentLedgerService
+     * @throws ConnectionException
+     * @throws Throwable
      */
-    public function removeBulk(array $ids): void
+    public function removeBulk(array $ids, ResidentLedgerService $residentLedgerService): void
     {
         try {
             $this->em->getConnection()->beginTransaction();
@@ -345,23 +360,38 @@ class ResidentAwayDaysService extends BaseService implements IGridService
                 throw new ResidentAwayDaysNotFoundException();
             }
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             /** @var ResidentAwayDaysRepository $repo */
             $repo = $this->em->getRepository(ResidentAwayDays::class);
 
-            $data = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentAwayDays::class), $ids);
+            $data = $repo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAwayDays::class), $ids);
 
             if (empty($data)) {
                 throw new ResidentAwayDaysNotFoundException();
             }
 
+            $dates = [];
+            $residentId = 0;
             /**
              * @var ResidentAwayDays $residentAwayDays
              */
             foreach ($data as $residentAwayDays) {
+                $residentId = $residentAwayDays->getResident() !== null ? $residentAwayDays->getResident()->getId() : 0;
+                $dates[] = $residentAwayDays->getStart();
+
                 $this->em->remove($residentAwayDays);
             }
 
             $this->em->flush();
+
+            if (!empty($dates)) {
+                foreach ($dates as $date) {
+                    //Re-Calculate Ledger
+                    $this->recalculateLedger($residentLedgerService, $currentSpace, $residentId, $date);
+                }
+            }
+
             $this->em->getConnection()->commit();
         } catch (\Throwable $e) {
             $this->em->getConnection()->rollBack();

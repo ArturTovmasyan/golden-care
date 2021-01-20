@@ -156,11 +156,12 @@ class ResidentExpenseItemController extends BaseController
      * @param Request $request
      * @param $id
      * @param ResidentExpenseItemService $residentExpenseItemService
+     * @param ResidentLedgerService $residentLedgerService
      * @return JsonResponse
      */
-    public function deleteAction(Request $request, $id, ResidentExpenseItemService $residentExpenseItemService): JsonResponse
+    public function deleteAction(Request $request, $id, ResidentExpenseItemService $residentExpenseItemService, ResidentLedgerService $residentLedgerService): JsonResponse
     {
-        $residentExpenseItemService->remove($id);
+        $residentExpenseItemService->remove($id, $residentLedgerService);
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT
@@ -174,11 +175,12 @@ class ResidentExpenseItemController extends BaseController
      *
      * @param Request $request
      * @param ResidentExpenseItemService $residentExpenseItemService
+     * @param ResidentLedgerService $residentLedgerService
      * @return JsonResponse
      */
-    public function deleteBulkAction(Request $request, ResidentExpenseItemService $residentExpenseItemService): JsonResponse
+    public function deleteBulkAction(Request $request, ResidentExpenseItemService $residentExpenseItemService, ResidentLedgerService $residentLedgerService): JsonResponse
     {
-        $residentExpenseItemService->removeBulk($request->get('ids'));
+        $residentExpenseItemService->removeBulk($request->get('ids'), $residentLedgerService);
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT

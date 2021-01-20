@@ -4,17 +4,21 @@ namespace App\Api\V1\Admin\Service;
 
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\CreditItemNotFoundException;
-use App\Api\V1\Common\Service\Exception\InvalidEffectiveDateException;
-use App\Api\V1\Common\Service\Exception\ResidentLedgerNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentCreditItemNotFoundException;
+use App\Api\V1\Common\Service\Exception\ResidentNotFoundException;
+use App\Api\V1\Common\Service\Exception\StartGreaterEndDateException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\CreditItem;
+use App\Entity\Resident;
 use App\Entity\ResidentCreditItem;
 use App\Entity\ResidentLedger;
 use App\Repository\CreditItemRepository;
 use App\Repository\ResidentCreditItemRepository;
 use App\Repository\ResidentLedgerRepository;
+use App\Repository\ResidentRepository;
+use Doctrine\DBAL\ConnectionException;
 use Doctrine\ORM\QueryBuilder;
+use Exception;
 
 /**
  * Class ResidentCreditItemService
@@ -28,15 +32,15 @@ class ResidentCreditItemService extends BaseService implements IGridService
      */
     public function gridSelect(QueryBuilder $queryBuilder, $params): void
     {
-        if (empty($params) || empty($params[0]['ledger_id'])) {
-            throw new ResidentLedgerNotFoundException();
+        if (empty($params) || empty($params[0]['resident_id'])) {
+            throw new ResidentNotFoundException();
         }
 
-        $ledgerId = $params[0]['ledger_id'];
+        $residentId = $params[0]['resident_id'];
 
         $queryBuilder
-            ->where('rci.ledger = :ledgerId')
-            ->setParameter('ledgerId', $ledgerId);
+            ->where('rci.resident = :residentId')
+            ->setParameter('residentId', $residentId);
 
         /** @var ResidentCreditItemRepository $repo */
         $repo = $this->em->getRepository(ResidentCreditItem::class);
@@ -50,16 +54,16 @@ class ResidentCreditItemService extends BaseService implements IGridService
      */
     public function list($params)
     {
-        if (!empty($params) && !empty($params[0]['ledger_id'])) {
-            $ledgerId = $params[0]['ledger_id'];
+        if (!empty($params) && !empty($params[0]['resident_id'])) {
+            $residentId = $params[0]['resident_id'];
 
             /** @var ResidentCreditItemRepository $repo */
             $repo = $this->em->getRepository(ResidentCreditItem::class);
 
-            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentCreditItem::class), $ledgerId);
+            return $repo->getBy($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentCreditItem::class), $residentId);
         }
 
-        throw new ResidentLedgerNotFoundException();
+        throw new ResidentNotFoundException();
     }
 
     /**
@@ -77,7 +81,7 @@ class ResidentCreditItemService extends BaseService implements IGridService
     /**
      * @param array $params
      * @return int|null
-     * @throws \Throwable
+     * @throws ConnectionException
      */
     public function add(array $params): ?int
     {
@@ -87,16 +91,16 @@ class ResidentCreditItemService extends BaseService implements IGridService
 
             $currentSpace = $this->grantService->getCurrentSpace();
 
-            $ledgerId = $params['ledger_id'] ?? 0;
+            $residentId = $params['resident_id'] ?? 0;
 
-            /** @var ResidentLedgerRepository $residentLedgerRepo */
-            $residentLedgerRepo = $this->em->getRepository(ResidentLedger::class);
+            /** @var ResidentRepository $residentRepo */
+            $residentRepo = $this->em->getRepository(Resident::class);
 
-            /** @var ResidentLedger $ledger */
-            $ledger = $residentLedgerRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentLedger::class), $ledgerId);
+            /** @var Resident $resident */
+            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $residentId);
 
-            if ($ledger === null) {
-                throw new ResidentLedgerNotFoundException();
+            if ($resident === null) {
+                throw new ResidentNotFoundException();
             }
 
             $creditItemId = $params['credit_item_id'] ?? 0;
@@ -112,32 +116,46 @@ class ResidentCreditItemService extends BaseService implements IGridService
             }
 
             $residentCreditItem = new ResidentCreditItem();
-            $residentCreditItem->setLedger($ledger);
+            $residentCreditItem->setResident($resident);
             $residentCreditItem->setCreditItem($creditItem);
             $residentCreditItem->setAmount($params['amount']);
 
-            $date = null;
-            if (!empty($params['date'])) {
-                $date = new \DateTime($params['date']);
-                $date->setTime(0, 0, 0);
+            $start = null;
+            if (!empty($params['start'])) {
+                $startDate = new \DateTime($params['start']);
+                $start = new \DateTime($startDate->format('y-m-01'));
+                $start->setTime(0, 0, 0);
+            }
 
-                if ($ledger->getCreatedAt()->format('Y') !== $date->format('Y') || $ledger->getCreatedAt()->format('m') !== $date->format('m')) {
-                    throw new InvalidEffectiveDateException();
+            $residentCreditItem->setStart($start);
+
+            $end = null;
+            if (!empty($params['end'])) {
+                $endDate = new \DateTime($params['end']);
+                $end = new \DateTime($endDate->format('y-m-t'));
+                $end->setTime(23, 59, 59);
+
+                if ($start > $end) {
+                    throw new StartGreaterEndDateException();
                 }
             }
 
-            $residentCreditItem->setDate($date);
+            $residentCreditItem->setEnd($end);
+
             $residentCreditItem->setNotes($params['notes']);
 
             $this->validate($residentCreditItem, null, ['api_admin_resident_credit_item_add']);
 
             $this->em->persist($residentCreditItem);
-
             $this->em->flush();
+
+            //Re-Calculate Ledger
+            $this->recalculateLedger($currentSpace, $residentId, $residentCreditItem->getStart(), $residentCreditItem->getEnd(), $residentCreditItem->getAmount(), 0);
+
             $this->em->getConnection()->commit();
 
             $insert_id = $residentCreditItem->getId();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->em->getConnection()->rollBack();
 
             throw $e;
@@ -147,9 +165,37 @@ class ResidentCreditItemService extends BaseService implements IGridService
     }
 
     /**
+     * @param $currentSpace
+     * @param $residentId
+     * @param $startDate
+     * @param $endDate
+     * @param $newAmount
+     * @param $oldAmount
+     * @throws Exception
+     */
+    private function recalculateLedger($currentSpace, $residentId, $startDate, $endDate, $newAmount, $oldAmount): void
+    {
+        /** @var ResidentLedgerRepository $ledgerRepo */
+        $ledgerRepo = $this->em->getRepository(ResidentLedger::class);
+        $ledgers = $ledgerRepo->getResidentLedgersByDateInterval($currentSpace, null, $residentId, $startDate, $endDate);
+
+        if (!empty($ledgers)) {
+            /** @var ResidentLedger $ledger */
+            foreach ($ledgers as $ledger) {
+                $newPrivatePayBalanceDue = $ledger->getPrivatePayBalanceDue() - $newAmount + $oldAmount;
+                $ledger->setPrivatePayBalanceDue(round($newPrivatePayBalanceDue, 2));
+
+                $this->em->persist($ledger);
+            }
+
+            $this->em->flush();
+        }
+    }
+
+    /**
      * @param $id
      * @param array $params
-     * @throws \Throwable
+     * @throws ConnectionException
      */
     public function edit($id, array $params): void
     {
@@ -169,16 +215,16 @@ class ResidentCreditItemService extends BaseService implements IGridService
                 throw new ResidentCreditItemNotFoundException();
             }
 
-            $ledgerId = $params['ledger_id'] ?? 0;
+            $residentId = $params['resident_id'] ?? 0;
 
-            /** @var ResidentLedgerRepository $residentLedgerRepo */
-            $residentLedgerRepo = $this->em->getRepository(ResidentLedger::class);
+            /** @var ResidentRepository $residentRepo */
+            $residentRepo = $this->em->getRepository(Resident::class);
 
-            /** @var ResidentLedger $ledger */
-            $ledger = $residentLedgerRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentLedger::class), $ledgerId);
+            /** @var Resident $resident */
+            $resident = $residentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $residentId);
 
-            if ($ledger === null) {
-                throw new ResidentLedgerNotFoundException();
+            if ($resident === null) {
+                throw new ResidentNotFoundException();
             }
 
             $creditItemId = $params['credit_item_id'] ?? 0;
@@ -193,30 +239,52 @@ class ResidentCreditItemService extends BaseService implements IGridService
                 throw new CreditItemNotFoundException();
             }
 
-            $entity->setLedger($ledger);
+            $entity->setResident($resident);
             $entity->setCreditItem($creditItem);
             $entity->setAmount($params['amount']);
 
-            $date = null;
-            if (!empty($params['date'])) {
-                $date = new \DateTime($params['date']);
-                $date->setTime(0, 0, 0);
+            $start = null;
+            if (!empty($params['start'])) {
+                $startDate = new \DateTime($params['start']);
+                $start = new \DateTime($startDate->format('y-m-01'));
+                $start->setTime(0, 0, 0);
+            }
 
-                if ($ledger->getCreatedAt()->format('Y') !== $date->format('Y') || $ledger->getCreatedAt()->format('m') !== $date->format('m')) {
-                    throw new InvalidEffectiveDateException();
+            $entity->setStart($start);
+
+            $end = null;
+            if (!empty($params['end'])) {
+                $endDate = new \DateTime($params['end']);
+                $end = new \DateTime($endDate->format('y-m-t'));
+                $end->setTime(23, 59, 59);
+
+                if ($start > $end) {
+                    throw new StartGreaterEndDateException();
                 }
             }
 
-            $entity->setDate($date);
+            $entity->setEnd($end);
+
             $entity->setNotes($params['notes']);
 
             $this->validate($entity, null, ['api_admin_resident_credit_item_edit']);
 
             $this->em->persist($entity);
 
+            //Re-Calculate Ledger
+            $uow = $this->em->getUnitOfWork();
+            $uow->computeChangeSets();
+
+            $entityChangeSet = $uow->getEntityChangeSet($entity);
+
+            if (!empty($entityChangeSet) && array_key_exists('amount', $entityChangeSet)) {
+                $this->recalculateLedger($currentSpace, $residentId, $entity->getStart(), $entity->getEnd(), $entityChangeSet['amount']['1'], $entityChangeSet['amount']['0']);
+            }
+
             $this->em->flush();
+
             $this->em->getConnection()->commit();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->em->getConnection()->rollBack();
 
             throw $e;
@@ -232,15 +300,22 @@ class ResidentCreditItemService extends BaseService implements IGridService
         try {
             $this->em->getConnection()->beginTransaction();
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             /** @var ResidentCreditItemRepository $repo */
             $repo = $this->em->getRepository(ResidentCreditItem::class);
 
             /** @var ResidentCreditItem $entity */
-            $entity = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentCreditItem::class), $id);
+            $entity = $repo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentCreditItem::class), $id);
 
             if ($entity === null) {
                 throw new ResidentCreditItemNotFoundException();
             }
+
+            $residentId = $entity->getResident() !== null ? $entity->getResident()->getId() : 0;
+
+            //Re-Calculate Ledger
+            $this->recalculateLedger($currentSpace, $residentId, $entity->getStart(), $entity->getEnd(), 0, $entity->getAmount());
 
             $this->em->remove($entity);
             $this->em->flush();
@@ -265,10 +340,12 @@ class ResidentCreditItemService extends BaseService implements IGridService
                 throw new ResidentCreditItemNotFoundException();
             }
 
+            $currentSpace = $this->grantService->getCurrentSpace();
+
             /** @var ResidentCreditItemRepository $repo */
             $repo = $this->em->getRepository(ResidentCreditItem::class);
 
-            $residentCreditItems = $repo->findByIds($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentCreditItem::class), $ids);
+            $residentCreditItems = $repo->findByIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentCreditItem::class), $ids);
 
             if (empty($residentCreditItems)) {
                 throw new ResidentCreditItemNotFoundException();
@@ -278,6 +355,11 @@ class ResidentCreditItemService extends BaseService implements IGridService
              * @var ResidentCreditItem $residentCreditItem
              */
             foreach ($residentCreditItems as $residentCreditItem) {
+                $residentId = $residentCreditItem->getResident() !== null ? $residentCreditItem->getResident()->getId() : 0;
+
+                //Re-Calculate Ledger
+                $this->recalculateLedger($currentSpace, $residentId, $residentCreditItem->getStart(), $residentCreditItem->getEnd(), 0, $residentCreditItem->getAmount());
+
                 $this->em->remove($residentCreditItem);
             }
 

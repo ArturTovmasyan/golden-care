@@ -36,7 +36,7 @@ class ResidentDiscountItemController extends BaseController
             ResidentDiscountItem::class,
             'api_admin_resident_discount_item_grid',
             $residentDiscountItemService,
-            ['ledger_id' => $request->get('ledger_id')]
+            ['resident_id' => $request->get('resident_id')]
         );
     }
 
@@ -65,7 +65,7 @@ class ResidentDiscountItemController extends BaseController
             ResidentDiscountItem::class,
             'api_admin_resident_discount_item_list',
             $residentDiscountItemService,
-            ['ledger_id' => $request->get('ledger_id')]
+            ['resident_id' => $request->get('resident_id')]
         );
     }
 
@@ -100,9 +100,10 @@ class ResidentDiscountItemController extends BaseController
     {
         $id = $residentDiscountItemService->add(
             [
-                'ledger_id' => $request->get('ledger_id'),
+                'resident_id' => $request->get('resident_id'),
                 'discount_item_id' => $request->get('discount_item_id'),
-                'date' => $request->get('date'),
+                'start' => $request->get('start'),
+                'end' => $request->get('end'),
                 'amount' => $request->get('amount'),
                 'notes' => $request->get('notes') ?? '',
             ]
@@ -130,9 +131,10 @@ class ResidentDiscountItemController extends BaseController
         $residentDiscountItemService->edit(
             $id,
             [
-                'ledger_id' => $request->get('ledger_id'),
+                'resident_id' => $request->get('resident_id'),
                 'discount_item_id' => $request->get('discount_item_id'),
-                'date' => $request->get('date'),
+                'start' => $request->get('start'),
+                'end' => $request->get('end'),
                 'amount' => $request->get('amount'),
                 'notes' => $request->get('notes') ?? '',
             ]
