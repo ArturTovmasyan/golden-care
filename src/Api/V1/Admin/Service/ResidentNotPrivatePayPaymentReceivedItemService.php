@@ -6,13 +6,16 @@ use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\InvalidEffectiveDateException;
 use App\Api\V1\Common\Service\Exception\ResidentLedgerNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResidentPaymentReceivedItemNotFoundException;
+use App\Api\V1\Common\Service\Exception\ResidentRentNotFoundException;
 use App\Api\V1\Common\Service\Exception\RpPaymentTypeNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\ResidentNotPrivatePayPaymentReceivedItem;
 use App\Entity\ResidentLedger;
+use App\Entity\ResidentRent;
 use App\Entity\RpPaymentType;
 use App\Repository\ResidentNotPrivatePayPaymentReceivedItemRepository;
 use App\Repository\ResidentLedgerRepository;
+use App\Repository\ResidentRentRepository;
 use App\Repository\RpPaymentTypeRepository;
 use Doctrine\ORM\QueryBuilder;
 
@@ -111,9 +114,22 @@ class ResidentNotPrivatePayPaymentReceivedItemService extends BaseService implem
                 throw new RpPaymentTypeNotFoundException();
             }
 
+            $rentId = $params['rent_id'] ?? 0;
+
+            /** @var ResidentRentRepository $rentRepo */
+            $rentRepo = $this->em->getRepository( ResidentRent::class);
+
+            /** @var ResidentRent $rent */
+            $rent = $rentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $rentId);
+
+            if ($rent === null) {
+                throw new ResidentRentNotFoundException();
+            }
+
             $residentPaymentReceivedItem = new ResidentNotPrivatePayPaymentReceivedItem();
             $residentPaymentReceivedItem->setLedger($ledger);
             $residentPaymentReceivedItem->setPaymentType($paymentType);
+            $residentPaymentReceivedItem->setRent($rent);
             $residentPaymentReceivedItem->setAmount($params['amount']);
 
             $date = null;
@@ -194,8 +210,21 @@ class ResidentNotPrivatePayPaymentReceivedItemService extends BaseService implem
                 throw new RpPaymentTypeNotFoundException();
             }
 
+            $rentId = $params['rent_id'] ?? 0;
+
+            /** @var ResidentRentRepository $rentRepo */
+            $rentRepo = $this->em->getRepository( ResidentRent::class);
+
+            /** @var ResidentRent $rent */
+            $rent = $rentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $rentId);
+
+            if ($rent === null) {
+                throw new ResidentRentNotFoundException();
+            }
+
             $entity->setLedger($ledger);
             $entity->setPaymentType($paymentType);
+            $entity->setRent($rent);
             $entity->setAmount($params['amount']);
 
             $date = null;

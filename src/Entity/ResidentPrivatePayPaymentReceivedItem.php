@@ -203,6 +203,25 @@ class ResidentPrivatePayPaymentReceivedItem
     private $notes;
 
     /**
+     * @var ResidentRent
+     * @Assert\NotNull(message = "Please select a Rent", groups={
+     *     "api_admin_resident_private_pay_payment_received_item_add",
+     *     "api_admin_resident_private_pay_payment_received_item_edit",
+     *     "api_admin_resident_ledger_edit"
+     * })
+     * @ORM\ManyToOne(targetEntity="App\Entity\ResidentRent", inversedBy="residentPrivatePayPaymentReceivedItems")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_rent", referencedColumnName="id", onDelete="SET NULL")
+     * })
+     * @Groups({
+     *     "api_admin_resident_private_pay_payment_received_item_list",
+     *     "api_admin_resident_private_pay_payment_received_item_get",
+     *     "api_admin_resident_ledger_get"
+     * })
+     */
+    private $rent;
+
+    /**
      * @var ResidentResponsiblePerson
      * @Assert\NotNull(message = "Please select a Responsible Person", groups={
      *     "api_admin_resident_private_pay_payment_received_item_add",
@@ -331,6 +350,22 @@ class ResidentPrivatePayPaymentReceivedItem
     public function setNotes(?string $notes): void
     {
         $this->notes = $notes;
+    }
+
+    /**
+     * @return ResidentRent|null
+     */
+    public function getRent(): ?ResidentRent
+    {
+        return $this->rent;
+    }
+
+    /**
+     * @param ResidentRent|null $rent
+     */
+    public function setRent(?ResidentRent $rent): void
+    {
+        $this->rent = $rent;
     }
 
     /**

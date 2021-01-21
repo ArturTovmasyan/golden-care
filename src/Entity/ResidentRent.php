@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Model\Persistence\Entity\TimeAwareTrait;
 use App\Model\Persistence\Entity\UserAwareTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
@@ -71,7 +72,8 @@ class ResidentRent
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({
      *     "api_admin_resident_rent_list",
-     *     "api_admin_resident_rent_get"
+     *     "api_admin_resident_rent_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $id;
@@ -148,7 +150,8 @@ class ResidentRent
      * })
      * @Groups({
      *     "api_admin_resident_rent_list",
-     *     "api_admin_resident_rent_get"
+     *     "api_admin_resident_rent_get",
+     *     "api_admin_resident_ledger_get"
      * })
      */
     private $amount;
@@ -199,6 +202,18 @@ class ResidentRent
      * })
      */
     private $reason;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentPrivatePayPaymentReceivedItem", mappedBy="rent", cascade={"remove", "persist"})
+     */
+    private $residentPrivatePayPaymentReceivedItems;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\ResidentNotPrivatePayPaymentReceivedItem", mappedBy="rent", cascade={"remove", "persist"})
+     */
+    private $residentNotPrivatePayPaymentReceivedItems;
 
     /**
      * @return int
@@ -320,5 +335,37 @@ class ResidentRent
     public function setReason(?RentReason $reason): void
     {
         $this->reason = $reason;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentPrivatePayPaymentReceivedItems(): ArrayCollection
+    {
+        return $this->residentPrivatePayPaymentReceivedItems;
+    }
+
+    /**
+     * @param ArrayCollection $residentPrivatePayPaymentReceivedItems
+     */
+    public function setResidentPrivatePayPaymentReceivedItems(ArrayCollection $residentPrivatePayPaymentReceivedItems): void
+    {
+        $this->residentPrivatePayPaymentReceivedItems = $residentPrivatePayPaymentReceivedItems;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getResidentNotPrivatePayPaymentReceivedItems(): ArrayCollection
+    {
+        return $this->residentNotPrivatePayPaymentReceivedItems;
+    }
+
+    /**
+     * @param ArrayCollection $residentNotPrivatePayPaymentReceivedItems
+     */
+    public function setResidentNotPrivatePayPaymentReceivedItems(ArrayCollection $residentNotPrivatePayPaymentReceivedItems): void
+    {
+        $this->residentNotPrivatePayPaymentReceivedItems = $residentNotPrivatePayPaymentReceivedItems;
     }
 }

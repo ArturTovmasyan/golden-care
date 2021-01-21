@@ -106,6 +106,7 @@ class ResidentNotPrivatePayPaymentReceivedItemController extends BaseController
                 'amount' => $request->get('amount'),
                 'transaction_number' => $request->get('transaction_number'),
                 'notes' => $request->get('notes') ?? '',
+                'rent_id' => $request->get('rent_id'),
             ]
         );
 
@@ -137,6 +138,7 @@ class ResidentNotPrivatePayPaymentReceivedItemController extends BaseController
                 'amount' => $request->get('amount'),
                 'transaction_number' => $request->get('transaction_number'),
                 'notes' => $request->get('notes') ?? '',
+                'rent_id' => $request->get('rent_id'),
             ]
         );
 
