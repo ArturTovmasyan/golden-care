@@ -235,7 +235,7 @@ class ResidentRent
                 $start = $this->getStart();
                 $end = $this->getEnd();
 
-                if (($end === null || $createdAt <= $end) && ($createdAt >= $start || ($createdAt !== null && $createdAt->format('m') === $start->format('Y') && $createdAt->format('Y') === $start->format('m')))) {
+                if (($end === null || $createdAt <= $end) && ($createdAt >= $start || ($createdAt !== null && $createdAt->format('m') === $start->format('m') && $createdAt->format('Y') === $start->format('Y')))) {
                     $ledgerId = $ledger->getId();
                 }
             }
