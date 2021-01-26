@@ -231,7 +231,11 @@ class ResidentRent
         if ($resident !== null && $resident->getResidentLedgers() !== null) {
             /** @var ResidentLedger $ledger */
             foreach ($resident->getResidentLedgers() as $ledger) {
-                if ($ledger->getCreatedAt() >= $this->getStart() && ($this->getEnd() === null || ($this->getEnd() !== null && $ledger->getCreatedAt() <= $this->getEnd()))) {
+                $createdAt = $ledger->getCreatedAt();
+                $start = $this->getStart();
+                $end = $this->getEnd();
+
+                if (($end === null || $createdAt <= $end) && ($createdAt >= $start || ($createdAt !== null && $createdAt->format('m') === $start->format('Y') && $createdAt->format('Y') === $start->format('m')))) {
                     $ledgerId = $ledger->getId();
                 }
             }
