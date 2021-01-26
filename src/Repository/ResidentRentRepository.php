@@ -1688,6 +1688,10 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
                 '(CASE
                     WHEN fb.id IS NOT NULL THEN frt.title
                     ELSE \'\' END) as roomType',
+                '(CASE
+                    WHEN fb.id IS NOT NULL THEN f.shorthand
+                    WHEN ab.id IS NOT NULL THEN a.shorthand
+                    ELSE \'\' END) as typeShorthand',
                 '(SELECT l.amount FROM App:FacilityRoomBaseRateCareLevel l JOIN l.careLevel lcl JOIN l.baseRate lbr JOIN lbr.roomType lrt WHERE lcl.id = cl.id AND lrt.id = frt.id AND (lbr.date = (SELECT MAX(mbr.date) FROM App:FacilityRoomBaseRate mbr JOIN mbr.roomType mrt WHERE mbr.date <= :now AND mrt.id = frt.id GROUP BY mrt.id)) GROUP BY lrt.id) as baseRate'
             );
 

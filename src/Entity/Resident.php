@@ -1041,9 +1041,9 @@ class Resident
     }
 
     /**
-     * @return ArrayCollection
+     * @return mixed
      */
-    public function getResidentLedgers(): ArrayCollection
+    public function getResidentLedgers()
     {
         return $this->residentLedgers;
     }

@@ -37,7 +37,8 @@ class ResidentLedgerController extends BaseController
             'api_admin_resident_ledger_grid',
             $residentLedgerService,
             [
-                'resident_id' => $request->get('resident_id')
+                'resident_id' => $request->get('resident_id'),
+                'rent_id' => $request->get('rent_id')
             ]
         );
     }
@@ -83,13 +84,26 @@ class ResidentLedgerController extends BaseController
      */
     public function getAction(Request $request, $id, ResidentLedgerService $residentLedgerService): JsonResponse
     {
-        $gridData = $this->respondQueryBuilderResult(
-            $request,
-            ResidentLedger::class,
-            'api_admin_resident_ledger_grid',
-            $residentLedgerService,
-            ['resident_id' => $request->get('resident_id')]
-        );
+        if ($request->get('breakdown') && $request->get('rent_id')) {
+            $gridData = $this->respondQueryBuilderResult(
+                $request,
+                ResidentLedger::class,
+                'api_admin_resident_ledger_grid',
+                $residentLedgerService,
+                [
+                    'resident_id' => $request->get('resident_id'),
+                    'rent_id' => $request->get('rent_id')
+                ]
+            );
+        } else {
+            $gridData = $this->respondQueryBuilderResult(
+                $request,
+                ResidentLedger::class,
+                'api_admin_resident_ledger_grid',
+                $residentLedgerService,
+                ['resident_id' => $request->get('resident_id')]
+            );
+        }
 
         return $this->respondSuccess(
             Response::HTTP_OK,

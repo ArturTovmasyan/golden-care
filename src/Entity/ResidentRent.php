@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation as Serializer;
 use App\Annotation\Grid;
 
 /**
@@ -214,6 +215,30 @@ class ResidentRent
      * @ORM\OneToMany(targetEntity="App\Entity\ResidentNotPrivatePayPaymentReceivedItem", mappedBy="rent", cascade={"remove", "persist"})
      */
     private $residentNotPrivatePayPaymentReceivedItems;
+
+    /**
+     * @Serializer\VirtualProperty()
+     * @Serializer\SerializedName("ledger_id")
+     * @Serializer\Groups({
+     *     "api_admin_resident_rent_list"
+     * })
+     * @return mixed
+     */
+    public function getMaxLedgerId()
+    {
+        $ledgerId = null;
+        $resident = $this->getResident();
+        if ($resident !== null && $resident->getResidentLedgers() !== null) {
+            /** @var ResidentLedger $ledger */
+            foreach ($resident->getResidentLedgers() as $ledger) {
+                if ($ledger->getCreatedAt() >= $this->getStart() && ($this->getEnd() === null || ($this->getEnd() !== null && $ledger->getCreatedAt() <= $this->getEnd()))) {
+                    $ledgerId = $ledger->getId();
+                }
+            }
+        }
+
+        return $ledgerId;
+    }
 
     /**
      * @return int

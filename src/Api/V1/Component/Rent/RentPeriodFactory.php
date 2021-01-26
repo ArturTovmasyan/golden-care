@@ -189,10 +189,7 @@ class RentPeriodFactory
             new \DateTime($dateTimeStart),
             new \DateTime($dateTimeEnd)
         );
-        $days = $overlappingInterval->getEnd()->diff($overlappingInterval->getStart())->days;
-        if ($overlappingInterval->getEnd()->format('d') === $overlappingInterval->getEnd()->format('t')) {
-            ++$days;
-        }
+        $days = $overlappingInterval->getEnd()->diff($overlappingInterval->getStart())->days + 1;
 
         $residentAwayDays = [];
         $absentDaysArray = [];

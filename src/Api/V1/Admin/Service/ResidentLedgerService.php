@@ -56,16 +56,37 @@ class ResidentLedgerService extends BaseService implements IGridService
             throw new ResidentNotFoundException();
         }
 
+        $currentSpace = $this->grantService->getCurrentSpace();
+
         $residentId = $params[0]['resident_id'];
 
         $queryBuilder
             ->where('rl.resident = :residentId')
             ->setParameter('residentId', $residentId);
 
+        if (!empty($params[0]['rent_id'])) {
+            /** @var ResidentRentRepository $rentRepo */
+            $rentRepo = $this->em->getRepository(ResidentRent::class);
+            /** @var ResidentRent $rent */
+            $rent = $rentRepo->getOne($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentLedger::class), $params[0]['rent_id']);
+
+            if ($rent !== null) {
+                $queryBuilder
+                    ->andWhere('rl.createdAt >= :start')
+                    ->setParameter('start', $rent->getStart());
+
+                if ($rent->getEnd() !== null) {
+                    $queryBuilder
+                        ->andWhere('rl.createdAt <= :end')
+                        ->setParameter('end', $rent->getEnd());
+                }
+            }
+        }
+
         /** @var ResidentLedgerRepository $repo */
         $repo = $this->em->getRepository(ResidentLedger::class);
 
-        $repo->search($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentLedger::class), $queryBuilder);
+        $repo->search($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentLedger::class), $queryBuilder);
     }
 
     /**
@@ -355,6 +376,7 @@ class ResidentLedgerService extends BaseService implements IGridService
                     'room' => $rent['room'],
                     'roomType' => $rent['roomType'],
                     'baseRate' => $rent['baseRate'] ?? 0,
+                    'typeShorthand' => $rent['typeShorthand'] ?? 0,
                 ];
 
                 $discharged = $rent['discharged'] !== null ? new \DateTime($rent['discharged']) : $dateEnd;
@@ -418,7 +440,9 @@ class ResidentLedgerService extends BaseService implements IGridService
                             $privatPayPaymentSources[] = [
                                 'id' => $rentSource['id'],
                                 'amount' => round($calcResults['amount'], 2),
+                                'rent_id' => $rent['rentId'],
                                 'responsible_person_id' => array_key_exists('responsible_person_id', $rentSource) ? $rentSource['responsible_person_id'] : '',
+                                'days' => $calcResults['days'],
                                 'field_text' => array_key_exists('field_text', $rentSource) && array_key_exists($rentSource['id'], $sourceAdditionalFields) ? $sourceAdditionalFields[$rentSource['id']] . ' - ' . $rentSource['field_text'] : '',
                             ];
                         } else {
@@ -434,6 +458,9 @@ class ResidentLedgerService extends BaseService implements IGridService
                             $notPrivatPayPaymentSources[] = [
                                 'id' => $rentSource['id'],
                                 'amount' => round($calcResults['amount'], 2),
+                                'rent_id' => $rent['rentId'],
+                                'days' => $calcResults['days'],
+                                'absent_days' => $calcResults['absentDays'],
                                 'field_text' => array_key_exists('field_text', $rentSource) && array_key_exists($rentSource['id'], $sourceAdditionalFields) ? $sourceAdditionalFields[$rentSource['id']] . ' - ' . $rentSource['field_text'] : '',
                             ];
 
