@@ -440,17 +440,30 @@ class ResidentLedgerService extends BaseService implements IGridService
                             $privatPaySourceAmount += $calcResults['amount'];
 
                             $rentSourceId = $rentSource['id'];
-                            $privatePayArray = [
-                                'id' => $rentSource['id'],
-                                'amount' => array_key_exists($rentSourceId, $privatPayPaymentSources) ? round($privatPayPaymentSources[$rentSourceId]['amount'] + $calcResults['amount'], 2) : round($calcResults['amount'], 2),
-                                'rent_id' => $rent['rentId'],
-                                'responsible_person_id' => array_key_exists('responsible_person_id', $rentSource) ? $rentSource['responsible_person_id'] : '',
-                                'days' => array_key_exists($rentSourceId, $privatPayPaymentSources) ? $privatPayPaymentSources[$rentSourceId]['days'] + $calcResults['days'] : $calcResults['days'],
-                                'field_text' => array_key_exists('field_text', $rentSource) && array_key_exists($rentSource['id'], $sourceAdditionalFields) ? $sourceAdditionalFields[$rentSource['id']] . ' - ' . $rentSource['field_text'] : '',
-                            ];
-                            if (array_key_exists($rentSourceId, $privatPayPaymentSources)) {
+                            $rentId = $rent['rentId'];
+
+                            if (array_key_exists($rentSourceId, $privatPayPaymentSources) && $rentId === $privatPayPaymentSources[$rentSourceId]['rent_id']) {
+                                $privatePayArray = [
+                                    'id' => $rentSource['id'],
+                                    'amount' => round($privatPayPaymentSources[$rentSourceId]['amount'] + $calcResults['amount'], 2),
+                                    'rent_id' => $rentId,
+                                    'responsible_person_id' => array_key_exists('responsible_person_id', $rentSource) ? $rentSource['responsible_person_id'] : '',
+                                    'days' => $privatPayPaymentSources[$rentSourceId]['days'] + $calcResults['days'],
+                                    'field_text' => array_key_exists('field_text', $rentSource) && array_key_exists($rentSource['id'], $sourceAdditionalFields) ? $sourceAdditionalFields[$rentSource['id']] . ' - ' . $rentSource['field_text'] : '',
+                                ];
+
                                 unset($privatPayPaymentSources[$rentSourceId]);
+                            } else {
+                                $privatePayArray = [
+                                    'id' => $rentSource['id'],
+                                    'amount' => round($calcResults['amount'], 2),
+                                    'rent_id' => $rentId,
+                                    'responsible_person_id' => array_key_exists('responsible_person_id', $rentSource) ? $rentSource['responsible_person_id'] : '',
+                                    'days' => $calcResults['days'],
+                                    'field_text' => array_key_exists('field_text', $rentSource) && array_key_exists($rentSource['id'], $sourceAdditionalFields) ? $sourceAdditionalFields[$rentSource['id']] . ' - ' . $rentSource['field_text'] : '',
+                                ];
                             }
+
                             $privatPayPaymentSources[$rentSourceId] = $privatePayArray;
                         } else {
                             $calcResults = $rentPeriodFactory->calculateForRoomRentInterval(
@@ -463,17 +476,30 @@ class ResidentLedgerService extends BaseService implements IGridService
                             $notPrivatPaySourceAmount += $calcResults['amount'];
 
                             $rentSourceId = $rentSource['id'];
-                            $notPrivatePayArray = [
-                                'id' => $rentSource['id'],
-                                'amount' => array_key_exists($rentSourceId, $notPrivatPayPaymentSources) ? round($notPrivatPayPaymentSources[$rentSourceId]['amount'] + $calcResults['amount'], 2) : round($calcResults['amount'], 2),
-                                'rent_id' => $rent['rentId'],
-                                'days' => array_key_exists($rentSourceId, $notPrivatPayPaymentSources) ? $notPrivatPayPaymentSources[$rentSourceId]['days'] + $calcResults['days'] : $calcResults['days'],
-                                'absent_days' => array_key_exists($rentSourceId, $notPrivatPayPaymentSources) ? $notPrivatPayPaymentSources[$rentSourceId]['absent_days'] + $calcResults['absentDays'] : $calcResults['absentDays'],
-                                'field_text' => array_key_exists('field_text', $rentSource) && array_key_exists($rentSource['id'], $sourceAdditionalFields) ? $sourceAdditionalFields[$rentSource['id']] . ' - ' . $rentSource['field_text'] : '',
-                            ];
-                            if (array_key_exists($rentSourceId, $privatPayPaymentSources)) {
+                            $rentId = $rent['rentId'];
+
+                            if (array_key_exists($rentSourceId, $notPrivatPayPaymentSources) && $rentId === $notPrivatPayPaymentSources[$rentSourceId]['rent_id']) {
+                                $notPrivatePayArray = [
+                                    'id' => $rentSource['id'],
+                                    'amount' => round($notPrivatPayPaymentSources[$rentSourceId]['amount'] + $calcResults['amount'], 2),
+                                    'rent_id' => $rentId,
+                                    'days' => $notPrivatPayPaymentSources[$rentSourceId]['days'] + $calcResults['days'],
+                                    'absent_days' => $notPrivatPayPaymentSources[$rentSourceId]['absent_days'] + $calcResults['absentDays'],
+                                    'field_text' => array_key_exists('field_text', $rentSource) && array_key_exists($rentSource['id'], $sourceAdditionalFields) ? $sourceAdditionalFields[$rentSource['id']] . ' - ' . $rentSource['field_text'] : '',
+                                ];
+
                                 unset($notPrivatPayPaymentSources[$rentSourceId]);
+                            } else {
+                                $notPrivatePayArray = [
+                                    'id' => $rentSource['id'],
+                                    'amount' => round($calcResults['amount'], 2),
+                                    'rent_id' => $rentId,
+                                    'days' => $calcResults['days'],
+                                    'absent_days' => $calcResults['absentDays'],
+                                    'field_text' => array_key_exists('field_text', $rentSource) && array_key_exists($rentSource['id'], $sourceAdditionalFields) ? $sourceAdditionalFields[$rentSource['id']] . ' - ' . $rentSource['field_text'] : '',
+                                ];
                             }
+                            
                             $notPrivatPayPaymentSources[$rentSourceId] = $notPrivatePayArray;
 
                             if (!empty($calcResults['residentAwayDays'])) {
