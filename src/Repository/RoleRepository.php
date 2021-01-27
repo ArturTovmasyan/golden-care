@@ -35,7 +35,9 @@ class RoleRepository extends EntityRepository implements RelatedInfoInterface
             ->where('r.id != :id_sc_admin')
             ->setParameter('id_sc_admin', 0);
 
-        return $qb->groupBy('r.id')
+        return $qb
+            ->addOrderBy('r.name', 'ASC')
+            ->groupBy('r.id')
             ->getQuery()
             ->getResult();
     }
