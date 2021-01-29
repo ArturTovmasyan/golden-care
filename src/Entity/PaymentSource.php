@@ -56,7 +56,7 @@ use App\Annotation\Grid;
  *          },
  *          {
  *              "id"         = "amount",
- *              "type"       = "number",
+ *              "type"       = "currency",
  *              "field"      = "ps.amount"
  *          },
  *          {

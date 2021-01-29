@@ -33,12 +33,12 @@ use App\Annotation\Grid;
  *          },
  *          {
  *              "id"         = "private_pay_balance_due",
- *              "type"       = "number",
+ *              "type"       = "currency",
  *              "field"      = "rl.privatePayBalanceDue"
  *          },
  *          {
  *              "id"         = "not_private_pay_balance_due",
- *              "type"       = "number",
+ *              "type"       = "currency",
  *              "field"      = "rl.notPrivatePayBalanceDue"
  *          },
  *          {

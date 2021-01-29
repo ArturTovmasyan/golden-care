@@ -51,7 +51,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
  *          },
  *          {
  *              "id"         = "amount",
- *              "type"       = "number",
+ *              "type"       = "currency",
  *              "field"      = "rci.amount"
  *          },
  *          {
