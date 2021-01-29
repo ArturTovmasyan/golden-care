@@ -3,6 +3,7 @@
 namespace App\Api\V1\Admin\Controller;
 
 use App\Annotation\Grant;
+use App\Api\V1\Admin\Service\ResidentLedgerService;
 use App\Api\V1\Admin\Service\ResidentRentService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\ResidentRent;
@@ -125,12 +126,14 @@ class ResidentRentController extends BaseController
      * @param Request $request
      * @param $id
      * @param ResidentRentService $residentRentService
+     * @param ResidentLedgerService $residentLedgerService
      * @return JsonResponse
      */
-    public function editAction(Request $request, $id, ResidentRentService $residentRentService): JsonResponse
+    public function editAction(Request $request, $id, ResidentRentService $residentRentService, ResidentLedgerService $residentLedgerService): JsonResponse
     {
         $residentRentService->edit(
             $id,
+            $residentLedgerService,
             [
                 'resident_id' => $request->get('resident_id'),
                 'start' => $request->get('start'),

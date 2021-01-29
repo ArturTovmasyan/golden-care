@@ -12,11 +12,15 @@ use App\Api\V1\Common\Service\Exception\StartGreaterEndDateException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\RentReason;
 use App\Entity\Resident;
+use App\Entity\ResidentLedger;
 use App\Entity\ResidentRent;
 use App\Repository\RentReasonRepository;
+use App\Repository\ResidentLedgerRepository;
 use App\Repository\ResidentRentRepository;
 use App\Repository\ResidentRepository;
+use Doctrine\DBAL\ConnectionException;
 use Doctrine\ORM\QueryBuilder;
+use Exception;
 
 /**
  * Class ResidentRentService
@@ -187,7 +191,7 @@ class ResidentRentService extends BaseService implements IGridService
             $this->em->getConnection()->commit();
 
             $insert_id = $residentRent->getId();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->em->getConnection()->rollBack();
 
             throw $e;
@@ -198,10 +202,11 @@ class ResidentRentService extends BaseService implements IGridService
 
     /**
      * @param $id
+     * @param ResidentLedgerService $residentLedgerService
      * @param array $params
-     * @throws \Throwable
+     * @throws ConnectionException
      */
-    public function edit($id, array $params): void
+    public function edit($id, ResidentLedgerService $residentLedgerService, array $params): void
     {
         try {
 
@@ -338,11 +343,43 @@ class ResidentRentService extends BaseService implements IGridService
 
             $this->em->persist($entity);
             $this->em->flush();
+
+            if (!empty($entity->getSource())) {
+                //Re-Calculate Ledger
+                $this->recalculateLedger($currentSpace, $residentLedgerService, $residentId, $entity->getStart(), $entity->getEnd());
+            }
+
             $this->em->getConnection()->commit();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->em->getConnection()->rollBack();
 
             throw $e;
+        }
+    }
+
+    /**
+     * @param $currentSpace
+     * @param ResidentLedgerService $residentLedgerService
+     * @param $residentId
+     * @param $startDate
+     * @param $endDate
+     * @throws Exception
+     */
+    private function recalculateLedger($currentSpace, ResidentLedgerService $residentLedgerService, $residentId, $startDate, $endDate): void
+    {
+        /** @var ResidentLedgerRepository $ledgerRepo */
+        $ledgerRepo = $this->em->getRepository(ResidentLedger::class);
+        $ledgers = $ledgerRepo->getResidentLedgersByDateInterval($currentSpace, null, $residentId, $startDate, $endDate);
+
+        if (!empty($ledgers)) {
+            /** @var ResidentLedger $ledger */
+            foreach ($ledgers as $ledger) {
+                $recalculateLedger = $residentLedgerService->calculateLedgerData($currentSpace, $ledgerRepo, $ledger, $residentId);
+
+                $this->em->persist($recalculateLedger);
+            }
+
+            $this->em->flush();
         }
     }
 
