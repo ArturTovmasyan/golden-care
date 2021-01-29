@@ -46,6 +46,21 @@ use App\Annotation\Grid;
  *              "sortable"   = false,
  *              "type"       = "json",
  *              "field"      = "info"
+ *          },
+ *          {
+ *              "id"         = "expense_item_sum",
+ *              "type"       = "currency",
+ *              "field"      = "(SELECT SUM(rei.amount) FROM \App\Entity\ResidentExpenseItem rei WHERE DATE_FORMAT(rei.date, '%Y-%m-%d') >= DATE_FORMAT(rl.createdAt, '%Y-%m-%01') AND DATE_FORMAT(rei.date, '%Y-%m-%d') <= DATE_FORMAT(rl.createdAt, '%Y-%m-%t'))"
+ *          },
+ *          {
+ *              "id"         = "credit_item_sum",
+ *              "type"       = "currency",
+ *              "field"      = "(SELECT SUM(rci.amount) FROM \App\Entity\ResidentCreditItem rci WHERE DATE_FORMAT(rci.start, '%Y-%m-%d') <= DATE_FORMAT(rl.createdAt, '%Y-%m-%t') AND (rci.end IS NULL OR DATE_FORMAT(rci.end, '%Y-%m-%d') >= DATE_FORMAT(rl.createdAt, '%Y-%m-%01')))"
+ *          },
+ *          {
+ *              "id"         = "discount_item_sum",
+ *              "type"       = "currency",
+ *              "field"      = "(SELECT SUM(rdi.amount) FROM \App\Entity\ResidentDiscountItem rdi WHERE DATE_FORMAT(rdi.start, '%Y-%m-%d') <= DATE_FORMAT(rl.createdAt, '%Y-%m-%t') AND (rdi.end IS NULL OR DATE_FORMAT(rdi.end, '%Y-%m-%d') >= DATE_FORMAT(rl.createdAt, '%Y-%m-%01')))"
  *          }
  *     }
  * )
