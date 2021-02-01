@@ -6,11 +6,12 @@
     {% if data|length > 0 %}
         <table style="border-collapse:collapse;border-spacing:0" width="100%">
             <tbody>
+            <p style="margin-top: 15px;font-size: large;"></p>
+            <strong>The following residents are missing payment sources in their rent records. This prevents the
+                automatic creation of their billing statements. Please add the correct payment source information
+                for these residents.</strong>
             {% for datum in data %}
                 <p style="margin-top: 15px;font-size: large;"></p>
-                <strong>The following residents are missing payment sources in their rent records. This prevents the
-                    automatic creation of their billing statements. Please add the correct payment source information
-                    for these residents.</strong>
                 <tr>
                     <td>
                         <p style="padding:0; margin: 0 0 0 25px;font-size: small;">
@@ -31,6 +32,7 @@
     {% else %}
         <table style="border-collapse:collapse;border-spacing:0" width="100%">
             <tbody>
+            <p style="margin-top: 15px;font-size: large;"></p>
             <tr>
                 <td>
                     <strong>Rent Records for {{ groupName }} have been check for consistency and all are OK.</strong>
