@@ -125,16 +125,15 @@ class InvalidResidentRentCommand extends Command
                 /** @var UserRepository $userRepo */
                 $userRepo = $this->em->getRepository(User::class);
 
-                $groupIds = array_map(static function ($item) {
-                    return $item->getId();
-                }, $groupList);
-
-                $emails = [];
-                foreach ($groupIds as $groupId) {
-                    $roleNames = $groupId !== null ? ['Facility Admin', 'Administrator'] : ['Administrator'];
+                /** @var Facility $group */
+                foreach ($groupList as $group) {
+                    $groupId = $group->getId();
+                    $groupName = $group->getName();
+                    $roleNames = ['Facility Admin', 'Administrator', 'Facility Admin Assistant', 'Facility Admin w/Finance', 'Corporate Facility Admin'];
 
                     $roles = $roleRepo->findByNames($roleNames);
 
+                    $emails = [];
                     if (!empty($roles)) {
                         $roleIds = array_map(static function (Role $item) {
                             return $item->getId();
@@ -162,12 +161,10 @@ class InvalidResidentRentCommand extends Command
                     $groupResidents = $residentAdmissionRepo->getActiveResidents($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, [$groupId]);
 
                     $invalidRents = [];
-                    $groupName = '';
                     if (!empty($groupResidents)) {
                         foreach ($groupResidents as $resident) {
                             $residentId = $resident['id'];
                             $spaceName = $resident['space'];
-                            $groupName = $resident['typeName'];
 
                             $amountData = $this->residentLedgerService->calculateAmountAndGetPaymentSources($currentSpace, $residentId, $now, null);
                             $amountData['rentData'];
@@ -182,12 +179,13 @@ class InvalidResidentRentCommand extends Command
                         }
                     }
 
-                    if (!empty($emails) && !empty($invalidRents)) {
+                    if (!empty($emails)) {
                         $subject = 'Invalid Payment Source' . ' - ' . $groupName . ' - ' . $now->format('m/d/Y');
 
                         $body = $this->container->get('templating')->render('@api_notification/invalid-resident-rent.email.html.twig', array(
                             'data' => $invalidRents,
-                            'subject' => $subject
+                            'subject' => $subject,
+                            'groupName' => $groupName
                         ));
 
                         $status = $this->mailer->sendNotification($emails, $subject, $body, $spaceName);
