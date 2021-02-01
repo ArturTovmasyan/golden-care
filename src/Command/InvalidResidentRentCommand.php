@@ -109,7 +109,7 @@ class InvalidResidentRentCommand extends Command
         $currentDateFormatted = $currentDate->format('m/t/Y');
         $lastDate = new \DateTime($currentDateFormatted);
 
-        if ($now->format('d') !== $lastDate->format('d')) {
+        if ($now->format('d') === $lastDate->format('d')) {
             $currentSpace = $this->grantService->getCurrentSpace();
 
             /** @var ResidentAdmissionRepository $residentAdmissionRepo */
