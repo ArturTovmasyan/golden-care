@@ -595,7 +595,7 @@ class LeadService extends BaseService implements IGridService
             // Set Qualified State
             $lead->setQualified(Qualified::TYPE_NOT_SURE);
 
-            $roleName = 'Marketing';
+            $roleName = $facility !== null ? 'Marketing' : 'Administrator';
             /** @var RoleRepository $roleRepo */
             $roleRepo = $this->em->getRepository(Role::class);
 
