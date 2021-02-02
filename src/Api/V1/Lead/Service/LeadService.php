@@ -520,125 +520,102 @@ class LeadService extends BaseService implements IGridService
     public function addWebLeadFromCommand(array $params, $baseUrl): ?int
     {
         $insert_id = null;
-        try {
-            $this->em->getConnection()->beginTransaction();
 
-            $spaces = $this->em->getRepository(Space::class)->findAll();
+        $spam = true;
+        if (array_key_exists('Spam', $params)) {
+            $spam = (bool)$params['Spam'];
+        }
 
-            $currentSpace = null;
-            if (!empty($spaces)) {
-                $currentSpace = $spaces[0];
-            }
+        if (!$spam) {
+            try {
+                $this->em->getConnection()->beginTransaction();
 
-            if ($currentSpace === null) {
-                throw new SpaceNotFoundException();
-            }
+                $spaces = $this->em->getRepository(Space::class)->findAll();
 
-            $subject = null;
-            if (!empty($params['Subject']) && (stripos($params['Subject'], 'new submission') !== false || stripos($params['Subject'], 'new form entry') !== false)) {
-                $subject = $params['Subject'];
-            }
+                $currentSpace = null;
+                if (!empty($spaces)) {
+                    $currentSpace = $spaces[0];
+                }
 
-            if ($subject === null) {
-                throw new SubjectNotBeBlankException();
-            }
+                if ($currentSpace === null) {
+                    throw new SpaceNotFoundException();
+                }
 
-            $now = new \DateTime('now');
+                $subject = null;
+                if (!empty($params['Subject']) && (stripos($params['Subject'], 'new submission') !== false || stripos($params['Subject'], 'new form entry') !== false)) {
+                    $subject = $params['Subject'];
+                }
 
-            $lead = new Lead();
-            $lead->setWebLead(true);
-            $lead->setSpamUpdated($now);
+                if ($subject === null) {
+                    throw new SubjectNotBeBlankException();
+                }
 
-            $spam = !empty($params['Spam']) ? (bool)$params['Spam'] : false;
-            $lead->setSpam($spam);
+                $now = new \DateTime('now');
 
-            $facility = null;
-            if (!empty($params['From'])) {
-                $from = explode(' <', $params['From']);
-                $potentialName = $from[0];
+                $lead = new Lead();
+                $lead->setWebLead(true);
+                $lead->setSpamUpdated($now);
+                $lead->setSpam($spam);
 
-                /** @var FacilityRepository $facilityRepo */
-                $facilityRepo = $this->em->getRepository(Facility::class);
+                $facility = null;
+                if (!empty($params['From'])) {
+                    $from = explode(' <', $params['From']);
+                    $potentialName = $from[0];
 
-                $facilities = $facilityRepo->findBy(['space' => $currentSpace]);
+                    /** @var FacilityRepository $facilityRepo */
+                    $facilityRepo = $this->em->getRepository(Facility::class);
 
-                if (!empty($facilities)) {
-                    /** @var Facility $value */
-                    foreach ($facilities as $value) {
-                        if (in_array($potentialName, $value->getPotentialNames(), false)) {
-                            $facility = $value;
-                            break;
-                        }
-                    }
+                    $facilities = $facilityRepo->findBy(['space' => $currentSpace]);
 
-                    if ($facility === null) {
+                    if (!empty($facilities)) {
                         /** @var Facility $value */
                         foreach ($facilities as $value) {
-                            if (stripos($params['Subject'], $value->getName()) !== false) {
+                            if (in_array($potentialName, $value->getPotentialNames(), false)) {
                                 $facility = $value;
                                 break;
                             }
                         }
-                    }
-                }
 
-                $lead->setPrimaryFacility($facility);
-            } else {
-                $lead->setPrimaryFacility(null);
-            }
-
-            $lead->setFirstName('Not');
-            $lead->setLastName('Provided');
-            $lead->setCareType(null);
-            $lead->setCareLevel(null);
-            $lead->setPaymentType(null);
-            // Set Qualified State
-            $lead->setQualified(Qualified::TYPE_NOT_SURE);
-
-            $roleName = $facility !== null ? 'Marketing' : 'Corporate Marketing';
-            /** @var RoleRepository $roleRepo */
-            $roleRepo = $this->em->getRepository(Role::class);
-
-            /** @var Role $role */
-            $role = $roleRepo->findOneBy(['name' => strtolower($roleName)]);
-
-            if ($role === null) {
-                throw new RoleNotFoundException();
-            }
-
-            /** @var UserRepository $ownerRepo */
-            $ownerRepo = $this->em->getRepository(User::class);
-
-            $ownerId = 0;
-            if ($facility !== null) {
-                $userFacilityIds = $ownerRepo->getEnabledUserFacilityIdsByRoles($currentSpace, null, [$role->getId()]);
-
-                if (!empty($userFacilityIds)) {
-                    foreach ($userFacilityIds as $userFacilityId) {
-                        if ($userFacilityId['facilityIds'] === null) {
-                            $ownerId = $userFacilityId['id'];
-                            break;
-                        }
-
-                        if ($userFacilityId['facilityIds'] !== null) {
-                            $explodedUserFacilityIds = explode(',', $userFacilityId['facilityIds']);
-
-                            if (\in_array($facility->getId(), $explodedUserFacilityIds, false)) {
-                                $ownerId = $userFacilityId['id'];
-                                break;
+                        if ($facility === null) {
+                            /** @var Facility $value */
+                            foreach ($facilities as $value) {
+                                if (stripos($params['Subject'], $value->getName()) !== false) {
+                                    $facility = $value;
+                                    break;
+                                }
                             }
                         }
                     }
+
+                    $lead->setPrimaryFacility($facility);
                 } else {
-                    $roleName = 'Facility Admin';
+                    $lead->setPrimaryFacility(null);
+                }
 
-                    /** @var Role $role */
-                    $role = $roleRepo->findOneBy(['name' => strtolower($roleName)]);
+                $lead->setFirstName('Not');
+                $lead->setLastName('Provided');
+                $lead->setCareType(null);
+                $lead->setCareLevel(null);
+                $lead->setPaymentType(null);
+                // Set Qualified State
+                $lead->setQualified(Qualified::TYPE_NOT_SURE);
 
-                    if ($role === null) {
-                        throw new RoleNotFoundException();
-                    }
+                $roleName = $facility !== null ? 'Marketing' : 'Corporate Marketing';
+                /** @var RoleRepository $roleRepo */
+                $roleRepo = $this->em->getRepository(Role::class);
 
+                /** @var Role $role */
+                $role = $roleRepo->findOneBy(['name' => strtolower($roleName)]);
+
+                if ($role === null) {
+                    throw new RoleNotFoundException();
+                }
+
+                /** @var UserRepository $ownerRepo */
+                $ownerRepo = $this->em->getRepository(User::class);
+
+                $ownerId = 0;
+                if ($facility !== null) {
                     $userFacilityIds = $ownerRepo->getEnabledUserFacilityIdsByRoles($currentSpace, null, [$role->getId()]);
 
                     if (!empty($userFacilityIds)) {
@@ -657,171 +634,200 @@ class LeadService extends BaseService implements IGridService
                                 }
                             }
                         }
+                    } else {
+                        $roleName = 'Facility Admin';
+
+                        /** @var Role $role */
+                        $role = $roleRepo->findOneBy(['name' => strtolower($roleName)]);
+
+                        if ($role === null) {
+                            throw new RoleNotFoundException();
+                        }
+
+                        $userFacilityIds = $ownerRepo->getEnabledUserFacilityIdsByRoles($currentSpace, null, [$role->getId()]);
+
+                        if (!empty($userFacilityIds)) {
+                            foreach ($userFacilityIds as $userFacilityId) {
+                                if ($userFacilityId['facilityIds'] === null) {
+                                    $ownerId = $userFacilityId['id'];
+                                    break;
+                                }
+
+                                if ($userFacilityId['facilityIds'] !== null) {
+                                    $explodedUserFacilityIds = explode(',', $userFacilityId['facilityIds']);
+
+                                    if (\in_array($facility->getId(), $explodedUserFacilityIds, false)) {
+                                        $ownerId = $userFacilityId['id'];
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    /** @var User $owner */
+                    $owner = $ownerRepo->getOne($currentSpace, null, $ownerId);
+                } else {
+                    $owner = $ownerRepo->getEnabledUserByRoles($currentSpace, null, [$role->getId()]);
+                }
+
+                if ($owner === null) {
+                    throw new UserNotFoundException();
+                }
+
+                $lead->setOwner($owner);
+                $lead->setCreatedBy($owner);
+                $lead->setUpdatedBy($owner);
+
+                $lead->setState(State::TYPE_OPEN);
+                $lead->setInitialContactDate($now);
+                $lead->setBirthday(null);
+                $lead->setSpouseName(null);
+                $lead->setCurrentResidence(null);
+
+                $rpFirstName = '';
+                $rpLastName = '';
+                if (!empty($params['Name'])) {
+                    $name = explode(' ', $params['Name']);
+                    $rpFirstName = $rpLastName = array_pop($name);
+                    if (!empty($name)) {
+                        $rpFirstName = implode(' ', $name);
+                    }
+                }
+                $lead->setResponsiblePersonFirstName($rpFirstName);
+                $lead->setResponsiblePersonLastName($rpLastName);
+                $lead->setResponsiblePersonAddress1(null);
+                $lead->setResponsiblePersonAddress2(null);
+                $lead->setResponsiblePersonCsz(null);
+
+                if (!empty($params['Phone'])) {
+                    if (!empty($params['Message']) && stripos($params['Message'], $params['Phone']) !== false) {
+                        $phone = null;
+                    } else {
+                        $phone = $this->formatPhoneUs($params['Phone']);
+                    }
+
+                    $lead->setResponsiblePersonPhone($phone);
+                } else {
+                    $lead->setResponsiblePersonPhone(null);
+                }
+
+                if (!empty($params['Email'])) {
+                    $lead->setResponsiblePersonEmail($params['Email']);
+                } else {
+                    $lead->setResponsiblePersonEmail(null);
+                }
+
+                if ($lead->getResponsiblePersonPhone() === null && $lead->getResponsiblePersonEmail() === null) {
+                    throw new LeadRpPhoneOrEmailNotBeBlankException();
+                }
+
+                $notes = !empty($params['Message']) ? mb_strimwidth($params['Message'], 0, 2048) : '';
+
+                $lead->setNotes($notes);
+
+                $this->validate($lead, null, ['api_lead_lead_add']);
+
+                $this->em->persist($lead);
+
+                /** @var QualificationRequirementRepository $qualificationRequirementRepo */
+                $qualificationRequirementRepo = $this->em->getRepository(QualificationRequirement::class);
+
+                $qualificationRequirements = $qualificationRequirementRepo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(QualificationRequirement::class));
+
+                if (!empty($qualificationRequirements)) {
+                    /** @var QualificationRequirement $qualificationRequirement */
+                    foreach ($qualificationRequirements as $qualificationRequirement) {
+                        $leadQualificationRequirement = new LeadQualificationRequirement();
+                        $leadQualificationRequirement->setLead($lead);
+                        $leadQualificationRequirement->setQualificationRequirement($qualificationRequirement);
+                        $leadQualificationRequirement->setQualified(Qualified::TYPE_NOT_SURE);
+
+                        $this->em->persist($leadQualificationRequirement);
                     }
                 }
 
-                /** @var User $owner */
-                $owner = $ownerRepo->getOne($currentSpace, null, $ownerId);
-            } else {
-                $owner = $ownerRepo->getEnabledUserByRoles($currentSpace, null, [$role->getId()]);
-            }
-
-            if ($owner === null) {
-                throw new UserNotFoundException();
-            }
-
-            $lead->setOwner($owner);
-            $lead->setCreatedBy($owner);
-            $lead->setUpdatedBy($owner);
-
-            $lead->setState(State::TYPE_OPEN);
-            $lead->setInitialContactDate($now);
-            $lead->setBirthday(null);
-            $lead->setSpouseName(null);
-            $lead->setCurrentResidence(null);
-
-            $rpFirstName = '';
-            $rpLastName = '';
-            if (!empty($params['Name'])) {
-                $name = explode(' ', $params['Name']);
-                $rpFirstName = $rpLastName = array_pop($name);
-                if (!empty($name)) {
-                    $rpFirstName = implode(' ', $name);
-                }
-            }
-            $lead->setResponsiblePersonFirstName($rpFirstName);
-            $lead->setResponsiblePersonLastName($rpLastName);
-            $lead->setResponsiblePersonAddress1(null);
-            $lead->setResponsiblePersonAddress2(null);
-            $lead->setResponsiblePersonCsz(null);
-
-            if (!empty($params['Phone'])) {
-                if (!empty($params['Message']) && stripos($params['Message'], $params['Phone']) !== false) {
-                    $phone = null;
-                } else {
-                    $phone = $this->formatPhoneUs($params['Phone']);
+                // Add lead referral
+                $referrerTypeName = 'Web Lead';
+                if (stripos($subject, 'facebook ad') !== false) {
+                    $referrerTypeName = 'Facebook Ad';
                 }
 
-                $lead->setResponsiblePersonPhone($phone);
-            } else {
-                $lead->setResponsiblePersonPhone(null);
-            }
+                /** @var ReferrerTypeRepository $typeRepo */
+                $typeRepo = $this->em->getRepository(ReferrerType::class);
 
-            if (!empty($params['Email'])) {
-                $lead->setResponsiblePersonEmail($params['Email']);
-            } else {
-                $lead->setResponsiblePersonEmail(null);
-            }
+                /** @var ReferrerType $type */
+                $type = $typeRepo->findOneBy(['title' => strtolower($referrerTypeName), 'space' => $currentSpace]);
 
-            if ($lead->getResponsiblePersonPhone() === null && $lead->getResponsiblePersonEmail() === null) {
-                throw new LeadRpPhoneOrEmailNotBeBlankException();
-            }
-
-            $notes = !empty($params['Message']) ? mb_strimwidth($params['Message'], 0, 2048) : '';
-
-            $lead->setNotes($notes);
-
-            $this->validate($lead, null, ['api_lead_lead_add']);
-
-            $this->em->persist($lead);
-
-            /** @var QualificationRequirementRepository $qualificationRequirementRepo */
-            $qualificationRequirementRepo = $this->em->getRepository(QualificationRequirement::class);
-
-            $qualificationRequirements = $qualificationRequirementRepo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(QualificationRequirement::class));
-
-            if (!empty($qualificationRequirements)) {
-                /** @var QualificationRequirement $qualificationRequirement */
-                foreach ($qualificationRequirements as $qualificationRequirement) {
-                    $leadQualificationRequirement = new LeadQualificationRequirement();
-                    $leadQualificationRequirement->setLead($lead);
-                    $leadQualificationRequirement->setQualificationRequirement($qualificationRequirement);
-                    $leadQualificationRequirement->setQualified(Qualified::TYPE_NOT_SURE);
-
-                    $this->em->persist($leadQualificationRequirement);
+                if ($type === null) {
+                    throw new ReferrerTypeNotFoundException();
                 }
+
+                if ($type->isRepresentativeRequired() || $type->isOrganizationRequired()) {
+                    throw new ReferrerTypeNotFoundException();
+                }
+
+                $referral = new Referral();
+                $referral->setLead($lead);
+                $referral->setType($type);
+                $referral->setOrganization(null);
+                $referral->setContact(null);
+                $referral->setNotes('');
+                $referral->setCreatedBy($lead->getOwner());
+                $referral->setUpdatedBy($lead->getOwner());
+
+                $this->em->persist($referral);
+
+                // Creating lead funnel stage
+                $funnelStageName = 'Contact';
+                /** @var FunnelStageRepository $funnelStageRepo */
+                $funnelStageRepo = $this->em->getRepository(FunnelStage::class);
+
+                /** @var FunnelStage $funnelStage */
+                $funnelStage = $funnelStageRepo->findOneBy(['title' => strtolower($funnelStageName), 'space' => $currentSpace]);
+
+                if ($funnelStage === null) {
+                    throw new FunnelStageNotFoundException();
+                }
+
+                $this->createLeadFunnelStage($lead, $funnelStage->getId());
+
+                // Creating lead temperature
+                $temperatureName = 'None';
+                /** @var TemperatureRepository $temperatureRepo */
+                $temperatureRepo = $this->em->getRepository(Temperature::class);
+
+                /** @var Temperature $temperature */
+                $temperature = $temperatureRepo->findOneBy(['title' => strtolower($temperatureName), 'space' => $currentSpace]);
+
+                if ($temperature === null) {
+                    throw new TemperatureNotFoundException();
+                }
+
+                $this->createLeadTemperature($lead, $temperature->getId());
+
+                // Creating initial contact activity
+                $this->createLeadInitialContactActivity($lead, false);
+
+                $this->em->flush();
+
+                // Creating change log
+                $changeLog = $this->leadAddChangeLog($lead);
+
+                $this->em->flush();
+
+                if ($changeLog !== null) {
+                    $this->sendNewLeadChangeLogNotification($changeLog, $baseUrl);
+                }
+
+                $this->em->getConnection()->commit();
+
+                $insert_id = $lead->getId();
+            } catch (\Exception $e) {
+                $this->em->getConnection()->rollBack();
+
+                throw $e;
             }
-
-            // Add lead referral
-            $referrerTypeName = 'Web Lead';
-            if (stripos($subject, 'facebook ad') !== false) {
-                $referrerTypeName = 'Facebook Ad';
-            }
-
-            /** @var ReferrerTypeRepository $typeRepo */
-            $typeRepo = $this->em->getRepository(ReferrerType::class);
-
-            /** @var ReferrerType $type */
-            $type = $typeRepo->findOneBy(['title' => strtolower($referrerTypeName), 'space' => $currentSpace]);
-
-            if ($type === null) {
-                throw new ReferrerTypeNotFoundException();
-            }
-
-            if ($type->isRepresentativeRequired() || $type->isOrganizationRequired()) {
-                throw new ReferrerTypeNotFoundException();
-            }
-
-            $referral = new Referral();
-            $referral->setLead($lead);
-            $referral->setType($type);
-            $referral->setOrganization(null);
-            $referral->setContact(null);
-            $referral->setNotes('');
-            $referral->setCreatedBy($lead->getOwner());
-            $referral->setUpdatedBy($lead->getOwner());
-            
-            $this->em->persist($referral);
-
-            // Creating lead funnel stage
-            $funnelStageName = 'Contact';
-            /** @var FunnelStageRepository $funnelStageRepo */
-            $funnelStageRepo = $this->em->getRepository(FunnelStage::class);
-
-            /** @var FunnelStage $funnelStage */
-            $funnelStage = $funnelStageRepo->findOneBy(['title' => strtolower($funnelStageName), 'space' => $currentSpace]);
-
-            if ($funnelStage === null) {
-                throw new FunnelStageNotFoundException();
-            }
-
-            $this->createLeadFunnelStage($lead, $funnelStage->getId());
-
-            // Creating lead temperature
-            $temperatureName = 'None';
-            /** @var TemperatureRepository $temperatureRepo */
-            $temperatureRepo = $this->em->getRepository(Temperature::class);
-
-            /** @var Temperature $temperature */
-            $temperature = $temperatureRepo->findOneBy(['title' => strtolower($temperatureName), 'space' => $currentSpace]);
-
-            if ($temperature === null) {
-                throw new TemperatureNotFoundException();
-            }
-
-            $this->createLeadTemperature($lead, $temperature->getId());
-
-            // Creating initial contact activity
-            $this->createLeadInitialContactActivity($lead, false);
-
-            $this->em->flush();
-
-            // Creating change log
-            $changeLog = $this->leadAddChangeLog($lead);
-
-            $this->em->flush();
-
-            if ($changeLog !== null) {
-                $this->sendNewLeadChangeLogNotification($changeLog, $baseUrl);
-            }
-
-            $this->em->getConnection()->commit();
-
-            $insert_id = $lead->getId();
-        } catch (\Exception $e) {
-            $this->em->getConnection()->rollBack();
-
-            throw $e;
         }
 
         return $insert_id;
