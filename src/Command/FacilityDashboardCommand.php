@@ -15,7 +15,6 @@ use App\Entity\Lead\Lead;
 use App\Entity\Lead\LeadTemperature;
 use App\Entity\Lead\Outreach;
 use App\Entity\Lead\ReferrerType;
-use App\Entity\Lead\WebEmail;
 use App\Entity\ResidentAdmission;
 use App\Entity\ResidentEvent;
 use App\Entity\ResidentRent;
@@ -31,7 +30,6 @@ use App\Repository\Lead\LeadRepository;
 use App\Repository\Lead\LeadTemperatureRepository;
 use App\Repository\Lead\OutreachRepository;
 use App\Repository\Lead\ReferrerTypeRepository;
-use App\Repository\Lead\WebEmailRepository;
 use App\Repository\ResidentAdmissionRepository;
 use App\Repository\ResidentEventRepository;
 use App\Repository\ResidentRentRepository;
@@ -170,8 +168,6 @@ class FacilityDashboardCommand extends Command
             $notSureLeads = $leadRepo->getQualifiedLeadsForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate, Qualified::TYPE_NOT_SURE);
             $notQualifiedLeads = $leadRepo->getQualifiedLeadsForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate, Qualified::TYPE_NO);
 
-            /** @var WebEmailRepository $webEmailRepo */
-            $webEmailRepo = $this->em->getRepository(WebEmail::class);
             /** @var ReferrerTypeRepository $referrerTypeRepo */
             $referrerTypeRepo = $this->em->getRepository(ReferrerType::class);
 
@@ -182,7 +178,7 @@ class FacilityDashboardCommand extends Command
             if ($webLeadReferrerType !== null) {
                 $webLeadReferrerTypeId = $webLeadReferrerType->getId();
             }
-            $webPageEmails = $webEmailRepo->getWebEmailsForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate, $webLeadReferrerTypeId);
+            $webPageEmails = $leadRepo->getSocialMediaLeadList($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $startDate, $endDate, [$webLeadReferrerTypeId], null);
 
             $facebookAdReferrerTypeName = 'Facebook Ad';
             /** @var ReferrerType $facebookAdReferrerType */
@@ -191,7 +187,7 @@ class FacilityDashboardCommand extends Command
             if ($facebookAdReferrerType !== null) {
                 $facebookAdReferrerTypeId = $facebookAdReferrerType->getId();
             }
-            $facebookAdsEmails = $webEmailRepo->getWebEmailsForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate, $facebookAdReferrerTypeId);
+            $facebookAdsEmails = $leadRepo->getSocialMediaLeadList($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $startDate, $endDate, [$facebookAdReferrerTypeId], null);
 
             /** @var OutreachRepository $outreachRepo */
             $outreachRepo = $this->em->getRepository(Outreach::class);

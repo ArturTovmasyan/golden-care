@@ -497,6 +497,8 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
         $qb = $this
             ->createQueryBuilder('l')
             ->select(
+                'l.id as id',
+                'f.id as typeId',
                 'f.name as facility',
                 'l.createdAt as createdAt',
                 'rt.title as referrerType',
@@ -557,6 +559,7 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
         }
 
         return $qb
+            ->groupBy('l.id')
             ->addOrderBy('f.name', 'ASC')
             ->addOrderBy('l.createdAt', 'DESC')
             ->addOrderBy('rt.title', 'ASC')
