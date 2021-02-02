@@ -658,6 +658,8 @@ report:
           title: "Lead List Report"
         closed-lead:
           title: "Closed Lead List Report"
+        social-media-lead:
+          title: "Social Media Leads List Report"
         referral:
           title: "Referral List Report"
         outreach:

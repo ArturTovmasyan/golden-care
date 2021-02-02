@@ -11,6 +11,7 @@ use App\Entity\Lead\Lead;
 use App\Entity\Lead\LeadFunnelStage;
 use App\Entity\Lead\Outreach;
 use App\Entity\Lead\Referral;
+use App\Entity\Lead\ReferrerType;
 use App\Entity\Lead\WebEmail;
 use App\Model\Lead\ActivityOwnerType;
 use App\Model\Lead\State;
@@ -29,6 +30,7 @@ use App\Repository\Lead\LeadFunnelStageRepository;
 use App\Repository\Lead\LeadRepository;
 use App\Repository\Lead\OutreachRepository;
 use App\Repository\Lead\ReferralRepository;
+use App\Repository\Lead\ReferrerTypeRepository;
 use App\Repository\Lead\WebEmailRepository;
 
 class LeadReportService extends BaseService
@@ -179,6 +181,70 @@ class LeadReportService extends BaseService
         $repo = $this->em->getRepository(LeadFunnelStage::class);
 
         $leads = $repo->getClosedLeads($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $startDate, $endDate, $typeIds);
+
+        $report = new LeadList();
+        $report->setLeads($leads);
+
+        return $report;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupIds
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @param $assessmentId
+     * @param $assessmentFormId
+     * @return LeadList
+     */
+    public function getSocialMediaLeadReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId): LeadList
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        $currentDate = new \DateTime('now');
+
+        $typeIds = null;
+        if (!empty($groupIds)) {
+            $typeIds = !empty($groupIds[0]) ? $groupIds : [];
+        }
+
+        if (!empty($dateFrom)) {
+            $start = new \DateTime($dateFrom);
+            $startFormatted = $start->format('m/d/Y 00:00:00');
+            $startDate = new \DateTime($startFormatted);
+        } else {
+            $startFormatted = $currentDate->format('m/d/Y 00:00:00');
+            $startDate = new \DateTime($startFormatted);
+        }
+
+        if (!empty($dateTo)) {
+            $end = new \DateTime($dateTo);
+            $endFormatted = $end->format('m/d/Y 23:59:59');
+            $endDate = new \DateTime($endFormatted);
+        } else {
+            $cloneCurrentDate = clone $currentDate;
+            $endFormatted = $cloneCurrentDate->format('m/d/Y 23:59:59');
+            $endDate = new \DateTime($endFormatted);
+        }
+
+        /** @var ReferrerTypeRepository $referrerTypeRepo */
+        $referrerTypeRepo = $this->em->getRepository(ReferrerType::class);
+        $referrerTypeTitles = ['Web Lead', 'Facebook Ad'];
+        $referrerTypes = $referrerTypeRepo->findByTitles($currentSpace, $this->grantService->getCurrentUserEntityGrants(ReferrerType::class), $referrerTypeTitles);
+
+        $referrerTypeIds = array_map(static function (ReferrerType $item) {
+            return $item->getId();
+        }, $referrerTypes);
+
+        /** @var LeadRepository $repo */
+        $repo = $this->em->getRepository(Lead::class);
+
+        $leads = $repo->getSocialMediaLeadList($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $startDate, $endDate, $referrerTypeIds, $typeIds);
 
         $report = new LeadList();
         $report->setLeads($leads);

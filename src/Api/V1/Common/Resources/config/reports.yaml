@@ -647,6 +647,16 @@ lead:
         group:
           select_all: true
           select_multi: true
+    social-media-lead:
+      service: App\Api\V1\Admin\Service\Report\LeadReportService::getSocialMediaLeadReport
+      title: 'Social Media Leads List Report'
+      formats: [ 'csv', 'xls' ]
+      parameters:
+        date_from: "m/Y"
+        date_to: "m/Y"
+        group:
+          select_all: true
+          select_multi: true
     referral:
       service: App\Api\V1\Admin\Service\Report\LeadReportService::getReferralReport
       title: 'Referral List Report'

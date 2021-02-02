@@ -14,6 +14,8 @@ use App\Entity\Lead\Activity;
 use App\Entity\Lead\Lead;
 use App\Entity\Lead\LeadTemperature;
 use App\Entity\Lead\Outreach;
+use App\Entity\Lead\ReferrerType;
+use App\Entity\Lead\WebEmail;
 use App\Entity\ResidentAdmission;
 use App\Entity\ResidentEvent;
 use App\Entity\ResidentRent;
@@ -28,6 +30,8 @@ use App\Repository\Lead\ActivityRepository;
 use App\Repository\Lead\LeadRepository;
 use App\Repository\Lead\LeadTemperatureRepository;
 use App\Repository\Lead\OutreachRepository;
+use App\Repository\Lead\ReferrerTypeRepository;
+use App\Repository\Lead\WebEmailRepository;
 use App\Repository\ResidentAdmissionRepository;
 use App\Repository\ResidentEventRepository;
 use App\Repository\ResidentRentRepository;
@@ -165,6 +169,29 @@ class FacilityDashboardCommand extends Command
             $qualifiedLeads = $leadRepo->getQualifiedLeadsForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate, Qualified::TYPE_YES);
             $notSureLeads = $leadRepo->getQualifiedLeadsForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate, Qualified::TYPE_NOT_SURE);
             $notQualifiedLeads = $leadRepo->getQualifiedLeadsForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate, Qualified::TYPE_NO);
+
+            /** @var WebEmailRepository $webEmailRepo */
+            $webEmailRepo = $this->em->getRepository(WebEmail::class);
+            /** @var ReferrerTypeRepository $referrerTypeRepo */
+            $referrerTypeRepo = $this->em->getRepository(ReferrerType::class);
+
+            $webLeadReferrerTypeName = 'Web Lead';
+            /** @var ReferrerType $webLeadReferrerType */
+            $webLeadReferrerType = $referrerTypeRepo->findOneBy(['title' => strtolower($webLeadReferrerTypeName), 'space' => $currentSpace]);
+            $webLeadReferrerTypeId = 0;
+            if ($webLeadReferrerType !== null) {
+                $webLeadReferrerTypeId = $webLeadReferrerType->getId();
+            }
+            $webPageEmails = $webEmailRepo->getWebEmailsForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate, $webLeadReferrerTypeId);
+
+            $facebookAdReferrerTypeName = 'Facebook Ad';
+            /** @var ReferrerType $facebookAdReferrerType */
+            $facebookAdReferrerType = $referrerTypeRepo->findOneBy(['title' => strtolower($facebookAdReferrerTypeName), 'space' => $currentSpace]);
+            $facebookAdReferrerTypeId = 0;
+            if ($facebookAdReferrerType !== null) {
+                $facebookAdReferrerTypeId = $facebookAdReferrerType->getId();
+            }
+            $facebookAdsEmails = $webEmailRepo->getWebEmailsForFacilityDashboard($currentSpace, null, $monthStartDate, $monthEndDate, $facebookAdReferrerTypeId);
 
             /** @var OutreachRepository $outreachRepo */
             $outreachRepo = $this->em->getRepository(Outreach::class);
@@ -474,6 +501,32 @@ class FacilityDashboardCommand extends Command
                     }
                 }
                 $entity->setNotQualifiedInquiries($notQualifiedInquiries);
+
+                $webPageInquiries = 0;
+                if (!empty($webPageEmails)) {
+                    foreach ($webPageEmails as $webPageEmail) {
+                        $v = 0;
+                        if ($webPageEmail['typeId'] === $facility->getId()) {
+                            $v++;
+
+                            $webPageInquiries += $v;
+                        }
+                    }
+                }
+                $entity->setWebPageInquiries($webPageInquiries);
+
+                $facebookAdsInquiries = 0;
+                if (!empty($facebookAdsEmails)) {
+                    foreach ($facebookAdsEmails as $facebookAdsEmail) {
+                        $w = 0;
+                        if ($facebookAdsEmail['typeId'] === $facility->getId()) {
+                            $w++;
+
+                            $facebookAdsInquiries += $w;
+                        }
+                    }
+                }
+                $entity->setFacebookAdsInquiries($facebookAdsInquiries);
 
                 $outreachPerMonth = 0;
                 if (!empty($finalOutreaches)) {

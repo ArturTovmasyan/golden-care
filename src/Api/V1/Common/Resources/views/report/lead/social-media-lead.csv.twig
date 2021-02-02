@@ -1,0 +1,7 @@
+{% spaceless %}
+Facility,Date,Referral Type,Owner,Temperature,Funnel Stage,Lead,Notes
+{% for lead in data.leads %}
+"{{ lead.facility|raw }}",{{ lead.createdAt|date("m/d/Y") }},"{{ lead.referrerType|raw }}","{{ lead.ownerFullName|raw }}",{% if lead.temperature %}"{{ lead.temperature|raw }}"{% else %}N/A{% endif %},{% if lead.funnelStage %}"{{ lead.funnelStage|raw }}"{% else %}N/A{% endif %},"{{ lead.leadFullName|raw }}",{% if lead.notes %}"{{ lead.notes|raw }}"{% else %}N/A{% endif %}
+
+{% endfor %}
+{% endspaceless %}

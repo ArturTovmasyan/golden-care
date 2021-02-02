@@ -336,34 +336,6 @@ class FacilityDashboard
      *     "api_admin_facility_dashboard_add",
      *     "api_admin_facility_dashboard_edit"
      * })
-     * @ORM\Column(name="web_leads", type="integer")
-     * @Groups({
-     *     "api_admin_facility_dashboard_list",
-     *     "api_admin_facility_dashboard_get"
-     * })
-     */
-    private $webLeads = 0;
-
-    /**
-     * @var int
-     * @Assert\NotBlank(groups={
-     *     "api_admin_facility_dashboard_add",
-     *     "api_admin_facility_dashboard_edit"
-     * })
-     * @ORM\Column(name="hot_leads", type="integer")
-     * @Groups({
-     *     "api_admin_facility_dashboard_list",
-     *     "api_admin_facility_dashboard_get"
-     * })
-     */
-    private $hotLeads = 0;
-
-    /**
-     * @var int
-     * @Assert\NotBlank(groups={
-     *     "api_admin_facility_dashboard_add",
-     *     "api_admin_facility_dashboard_edit"
-     * })
      * @ORM\Column(name="notice_to_vacate", type="integer")
      * @Groups({
      *     "api_admin_facility_dashboard_list",
@@ -420,6 +392,34 @@ class FacilityDashboard
      *     "api_admin_facility_dashboard_add",
      *     "api_admin_facility_dashboard_edit"
      * })
+     * @ORM\Column(name="web_page_inquiries", type="integer")
+     * @Groups({
+     *     "api_admin_facility_dashboard_list",
+     *     "api_admin_facility_dashboard_get"
+     * })
+     */
+    private $webPageInquiries = 0;
+
+    /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_facility_dashboard_add",
+     *     "api_admin_facility_dashboard_edit"
+     * })
+     * @ORM\Column(name="facebook_ads_inquiries", type="integer")
+     * @Groups({
+     *     "api_admin_facility_dashboard_list",
+     *     "api_admin_facility_dashboard_get"
+     * })
+     */
+    private $facebookAdsInquiries = 0;
+
+    /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_facility_dashboard_add",
+     *     "api_admin_facility_dashboard_edit"
+     * })
      * @ORM\Column(name="total_inquiries", type="integer")
      * @Groups({
      *     "api_admin_facility_dashboard_list",
@@ -469,6 +469,34 @@ class FacilityDashboard
      * })
      */
     private $notQualifiedInquiries = 0;
+
+    /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_facility_dashboard_add",
+     *     "api_admin_facility_dashboard_edit"
+     * })
+     * @ORM\Column(name="web_leads", type="integer")
+     * @Groups({
+     *     "api_admin_facility_dashboard_list",
+     *     "api_admin_facility_dashboard_get"
+     * })
+     */
+    private $webLeads = 0;
+
+    /**
+     * @var int
+     * @Assert\NotBlank(groups={
+     *     "api_admin_facility_dashboard_add",
+     *     "api_admin_facility_dashboard_edit"
+     * })
+     * @ORM\Column(name="hot_leads", type="integer")
+     * @Groups({
+     *     "api_admin_facility_dashboard_list",
+     *     "api_admin_facility_dashboard_get"
+     * })
+     */
+    private $hotLeads = 0;
 
     /**
      * @var int
@@ -741,38 +769,6 @@ class FacilityDashboard
     /**
      * @return int|null
      */
-    public function getWebLeads(): ?int
-    {
-        return $this->webLeads;
-    }
-
-    /**
-     * @param int|null $webLeads
-     */
-    public function setWebLeads(?int $webLeads): void
-    {
-        $this->webLeads = $webLeads;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getHotLeads(): ?int
-    {
-        return $this->hotLeads;
-    }
-
-    /**
-     * @param int|null $hotLeads
-     */
-    public function setHotLeads(?int $hotLeads): void
-    {
-        $this->hotLeads = $hotLeads;
-    }
-
-    /**
-     * @return int|null
-     */
     public function getNoticeToVacate(): ?int
     {
         return $this->noticeToVacate;
@@ -837,6 +833,38 @@ class FacilityDashboard
     /**
      * @return int|null
      */
+    public function getWebPageInquiries(): ?int
+    {
+        return $this->webPageInquiries;
+    }
+
+    /**
+     * @param int|null $webPageInquiries
+     */
+    public function setWebPageInquiries(?int $webPageInquiries): void
+    {
+        $this->webPageInquiries = $webPageInquiries;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getFacebookAdsInquiries(): ?int
+    {
+        return $this->facebookAdsInquiries;
+    }
+
+    /**
+     * @param int|null $facebookAdsInquiries
+     */
+    public function setFacebookAdsInquiries(?int $facebookAdsInquiries): void
+    {
+        $this->facebookAdsInquiries = $facebookAdsInquiries;
+    }
+
+    /**
+     * @return int|null
+     */
     public function getTotalInquiries(): ?int
     {
         return $this->totalInquiries;
@@ -896,6 +924,38 @@ class FacilityDashboard
     public function setNotQualifiedInquiries(?int $notQualifiedInquiries): void
     {
         $this->notQualifiedInquiries = $notQualifiedInquiries;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getWebLeads(): ?int
+    {
+        return $this->webLeads;
+    }
+
+    /**
+     * @param int|null $webLeads
+     */
+    public function setWebLeads(?int $webLeads): void
+    {
+        $this->webLeads = $webLeads;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getHotLeads(): ?int
+    {
+        return $this->hotLeads;
+    }
+
+    /**
+     * @param int|null $hotLeads
+     */
+    public function setHotLeads(?int $hotLeads): void
+    {
+        $this->hotLeads = $hotLeads;
     }
 
     /**

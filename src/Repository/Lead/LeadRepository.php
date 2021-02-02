@@ -483,6 +483,87 @@ class LeadRepository extends EntityRepository implements RelatedInfoInterface
             ->getResult(AbstractQuery::HYDRATE_ARRAY);
     }
 
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $startDate
+     * @param $endDate
+     * @param array $referrerTypeIds
+     * @param array|null $typeIds
+     * @return int|mixed|string
+     */
+    public function getSocialMediaLeadList(Space $space = null, array $entityGrants = null, $startDate, $endDate, array $referrerTypeIds, array $typeIds = null)
+    {
+        $qb = $this
+            ->createQueryBuilder('l')
+            ->select(
+                'f.name as facility',
+                'l.createdAt as createdAt',
+                'rt.title as referrerType',
+                "CONCAT(o.firstName, ' ', o.lastName) as ownerFullName",
+                '(SELECT DISTINCT t.title FROM App:Lead\LeadTemperature lt JOIN lt.temperature t JOIN lt.lead ltl
+                WHERE ltl.id=l.id
+                AND lt.date = (SELECT MAX(ltMax.date) FROM App:Lead\LeadTemperature ltMax JOIN ltMax.lead ltlMax WHERE ltlMax.id=l.id)
+                GROUP BY ltl.id
+                ) as temperature',
+                '(SELECT DISTINCT fs.title FROM App:Lead\LeadFunnelStage lfs JOIN lfs.stage fs JOIN lfs.lead fsl
+                WHERE fsl.id=l.id
+                AND lfs.date = (SELECT MAX(lfsMax.date) FROM App:Lead\LeadFunnelStage lfsMax JOIN lfsMax.lead fslMax WHERE fslMax.id=l.id)
+                GROUP BY fsl.id
+                ) as funnelStage',
+                "CONCAT(l.firstName, ' ', l.lastName) as leadFullName",
+                'l.notes as notes'
+            )
+            ->join('l.referral', 'r')
+            ->join('r.type', 'rt')
+            ->innerJoin(
+                User::class,
+                'o',
+                Join::WITH,
+                'o = l.owner'
+            )
+            ->innerJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = l.primaryFacility'
+            )
+            ->where('l.createdAt >= :startDate')->setParameter('startDate', $startDate)
+            ->andWhere('l.createdAt < :endDate')->setParameter('endDate', $endDate)
+            ->andWhere('rt.id IN (:referrerTypeIds)')->setParameter('referrerTypeIds', $referrerTypeIds);
+
+        if ($typeIds) {
+            $qb
+                ->andWhere('f.id IN (:typeIds)')
+                ->setParameter('typeIds', $typeIds);
+        }
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = o.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('l.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->addOrderBy('f.name', 'ASC')
+            ->addOrderBy('l.createdAt', 'DESC')
+            ->addOrderBy('rt.title', 'ASC')
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_ARRAY);
+    }
+
     ///////////// For Facility Dashboard ///////////////////////////////////////////////////////////////////////////////
 
     /**

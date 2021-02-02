@@ -196,17 +196,19 @@ class FacilityDashboardService extends BaseService implements IGridService
                 $moveInsLongTerm = 0;
                 $moveOutsRespite = 0;
                 $moveOutsLongTerm = 0;
-                $webLeads = 0;
-                $hotLeads = 0;
                 $noticeToVacate = 0;
                 $residentEvents = 0;
                 $hospice = 0;
                 $projectedNearTermOccupancy = 0;//?
                 $toursPerMonth = 0;
+                $webPageInquiries = 0;
+                $facebookAdsInquiries = 0;
                 $totalInquiries = 0;
                 $qualifiedInquiries = 0;
                 $notSureInquiries = 0;
                 $notQualifiedInquiries = 0;
+                $webLeads = 0;
+                $hotLeads = 0;
                 $outreachPerMonth = 0;
                 $averageRoomRent = 0;
                 foreach ($dashboards as $dashboard) {
@@ -229,16 +231,18 @@ class FacilityDashboardService extends BaseService implements IGridService
                         $moveInsLongTerm = $dashboard['moveInsLongTerm'];
                         $moveOutsRespite = $dashboard['moveOutsRespite'];
                         $moveOutsLongTerm = $dashboard['moveOutsLongTerm'];
-                        $webLeads = $dashboard['webLeads'];
-                        $hotLeads = $dashboard['hotLeads'];
                         $noticeToVacate = $dashboard['noticeToVacate'];
                         $residentEvents = $dashboard['residentEvents'];
                         $hospice = $dashboard['hospice'];
                         $toursPerMonth = $dashboard['toursPerMonth'];
+                        $webPageInquiries = $dashboard['webPageInquiries'];
+                        $facebookAdsInquiries = $dashboard['facebookAdsInquiries'];
                         $totalInquiries = $dashboard['totalInquiries'];
                         $qualifiedInquiries = $dashboard['qualifiedInquiries'];
                         $notSureInquiries = $dashboard['notSureInquiries'];
                         $notQualifiedInquiries = $dashboard['notQualifiedInquiries'];
+                        $webLeads = $dashboard['webLeads'];
+                        $hotLeads = $dashboard['hotLeads'];
                         $outreachPerMonth = $dashboard['outreachPerMonth'];
                         $averageRoomRent = $dashboard['averageRoomRent'];
                     }
@@ -256,17 +260,19 @@ class FacilityDashboardService extends BaseService implements IGridService
                     'move_ins_long_term' => $moveInsLongTerm,
                     'move_outs_respite' => $moveOutsRespite,
                     'move_outs_long_term' => $moveOutsLongTerm,
-                    'web_leads' => $webLeads,
-                    'hot_leads' => $hotLeads,
                     'notice_to_vacate' => $noticeToVacate,
                     'resident_events' => $residentEvents,
                     'hospice' => $hospice,
                     'projected_near_term_occupancy' => $projectedNearTermOccupancy,
                     'tours_per_month' => $toursPerMonth,
+                    'web_page_inquiries' => $webPageInquiries,
+                    'facebook_ads_inquiries' => $facebookAdsInquiries,
                     'total_inquiries' => $totalInquiries,
                     'qualified_inquiries' => $qualifiedInquiries,
                     'not_sure_inquiries' => $notSureInquiries,
                     'not_qualified_inquiries' => $notQualifiedInquiries,
+                    'web_leads' => $webLeads,
+                    'hot_leads' => $hotLeads,
                     'outreach_per_month' => $outreachPerMonth,
                     'average_room_rent' => $averageRoomRent,
                 ];

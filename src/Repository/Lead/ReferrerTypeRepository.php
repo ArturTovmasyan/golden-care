@@ -210,4 +210,40 @@ class ReferrerTypeRepository extends EntityRepository implements RelatedInfoInte
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $titles
+     * @return int|mixed|string
+     */
+    public function findByTitles(Space $space = null, array $entityGrants = null, $titles)
+    {
+        $qb = $this
+            ->createQueryBuilder('rt')
+            ->where('rt.title IN (:titles)')
+            ->setParameter('titles', $titles);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = rt.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rt.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb->groupBy('rt.id')
+            ->getQuery()
+            ->getResult();
+    }
 }

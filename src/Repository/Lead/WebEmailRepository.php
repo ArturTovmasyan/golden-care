@@ -5,6 +5,7 @@ namespace App\Repository\Lead;
 use App\Api\V1\Component\RelatedInfoInterface;
 use App\Entity\Facility;
 use App\Entity\Lead\EmailReviewType;
+use App\Entity\Lead\ReferrerType;
 use App\Entity\Lead\WebEmail;
 use App\Entity\Space;
 use App\Entity\User;
@@ -497,4 +498,65 @@ class WebEmailRepository extends EntityRepository implements RelatedInfoInterfac
             ->getQuery()
             ->getResult();
     }
+
+    ///////////// For Facility Dashboard ///////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param $startDate
+     * @param $endDate
+     * @param $referrerTypeId
+     * @return int|mixed|string
+     */
+    public function getWebEmailsForFacilityDashboard(Space $space = null, array $entityGrants = null, $startDate, $endDate, $referrerTypeId)
+    {
+        $qb = $this
+            ->createQueryBuilder('we')
+            ->select(
+                'we.id as id',
+                'f.id as typeId'
+            )
+            ->innerJoin(
+                Facility::class,
+                'f',
+                Join::WITH,
+                'f = we.facility'
+            )
+            ->innerJoin(
+                ReferrerType::class,
+                'rt',
+                Join::WITH,
+                'rt = we.type'
+            )
+            ->where('we.createdAt >= :startDate AND we.createdAt <= :endDate')
+            ->andWhere('rt.id = :referrerTypeId')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->setParameter('referrerTypeId', $referrerTypeId);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = we.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('we.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->groupBy('we.id')
+            ->getQuery()
+            ->getResult();
+    }
+    ///////////////// End For Facility Dashboard ///////////////////////////////////////////////////////////////////////
 }
