@@ -869,7 +869,11 @@ class NotifyCommand extends Command
             $finalEmails = array_values($finalEmails);
 
             if ($isEmail && !empty($finalEmails) && !empty($webs)) {
-                $subject = $subjectText . ' - ' . $date->format('m/d/Y');
+                if ($webEmail->getType() !== null && stripos($webEmail->getType()->getTitle(), 'facebook ad') !== false) {
+                    $subject = 'Facebook Ad Alert - ' . $date->format('m/d/Y');
+                } else {
+                    $subject = $subjectText . ' - ' . $date->format('m/d/Y');
+                }
 
                 $body = $this->container->get('templating')->render('@api_notification/web-email.email.html.twig', array(
                     'webs' => $webs,
