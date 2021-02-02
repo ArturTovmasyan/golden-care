@@ -241,6 +241,23 @@ class WebEmail implements PreviousAndNextItemsService
     private $emailed;
 
     /**
+     * @var ReferrerType
+     * @Assert\NotNull(message = "Please select a Type", groups={
+     *          "api_lead_web_email_add",
+     *          "api_lead_web_email_edit"
+     * })
+     * @ORM\ManyToOne(targetEntity="App\Entity\Lead\ReferrerType", inversedBy="webEmails", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id_type", referencedColumnName="id", onDelete="CASCADE")
+     * })
+     * @Groups({
+     *     "api_lead_web_email_list",
+     *     "api_lead_web_email_get"
+     * })
+     */
+    private $type;
+
+    /**
      * @var Space
      * @Assert\NotNull(message = "Please select a Space", groups={
      *     "api_lead_web_email_add",
@@ -443,6 +460,22 @@ class WebEmail implements PreviousAndNextItemsService
     public function setEmailed(bool $emailed): void
     {
         $this->emailed = $emailed;
+    }
+
+    /**
+     * @return ReferrerType|null
+     */
+    public function getType(): ?ReferrerType
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param ReferrerType|null $type
+     */
+    public function setType(?ReferrerType $type): void
+    {
+        $this->type = $type;
     }
 
     /**

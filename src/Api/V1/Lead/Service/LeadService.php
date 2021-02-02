@@ -87,6 +87,7 @@ use App\Repository\PaymentSourceRepository;
 use App\Repository\RoleRepository;
 use App\Repository\SalutationRepository;
 use App\Repository\UserRepository;
+use Doctrine\DBAL\ConnectionException;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -514,7 +515,7 @@ class LeadService extends BaseService implements IGridService
      * @param array $params
      * @param $baseUrl
      * @return int|null
-     * @throws \Exception
+     * @throws ConnectionException
      */
     public function addWebLeadFromCommand(array $params, $baseUrl): ?int
     {
@@ -534,12 +535,8 @@ class LeadService extends BaseService implements IGridService
             }
 
             $subject = null;
-                $isBookATour = false;
-            if (!empty($params['Subject'])) {
+            if (!empty($params['Subject']) && (stripos($params['Subject'], 'new submission') !== false || stripos($params['Subject'], 'new form entry') !== false)) {
                 $subject = $params['Subject'];
-                if (stripos($subject, 'book') !== false) {
-                    $isBookATour = true;
-                }
             }
 
             if ($subject === null) {
@@ -573,6 +570,16 @@ class LeadService extends BaseService implements IGridService
                             break;
                         }
                     }
+
+                    if ($facility === null) {
+                        /** @var Facility $value */
+                        foreach ($facilities as $value) {
+                            if (stripos($params['Subject'], $value->getName()) !== false) {
+                                $facility = $value;
+                                break;
+                            }
+                        }
+                    }
                 }
 
                 $lead->setPrimaryFacility($facility);
@@ -580,15 +587,15 @@ class LeadService extends BaseService implements IGridService
                 $lead->setPrimaryFacility(null);
             }
 
-            $lead->setFirstName('Unknown');
-            $lead->setLastName('Unknown');
+            $lead->setFirstName('Not');
+            $lead->setLastName('Provided');
             $lead->setCareType(null);
             $lead->setCareLevel(null);
             $lead->setPaymentType(null);
             // Set Qualified State
             $lead->setQualified(Qualified::TYPE_NOT_SURE);
 
-            $roleName = $facility !== null ? 'Facility Admin' : 'Administrator';
+            $roleName = 'Marketing';
             /** @var RoleRepository $roleRepo */
             $roleRepo = $this->em->getRepository(Role::class);
 
@@ -619,6 +626,35 @@ class LeadService extends BaseService implements IGridService
                             if (\in_array($facility->getId(), $explodedUserFacilityIds, false)) {
                                 $ownerId = $userFacilityId['id'];
                                 break;
+                            }
+                        }
+                    }
+                } else {
+                    $roleName = 'Facility Admin';
+
+                    /** @var Role $role */
+                    $role = $roleRepo->findOneBy(['name' => strtolower($roleName)]);
+
+                    if ($role === null) {
+                        throw new RoleNotFoundException();
+                    }
+
+                    $userFacilityIds = $ownerRepo->getEnabledUserFacilityIdsByRoles($currentSpace, null, [$role->getId()]);
+
+                    if (!empty($userFacilityIds)) {
+                        foreach ($userFacilityIds as $userFacilityId) {
+                            if ($userFacilityId['facilityIds'] === null) {
+                                $ownerId = $userFacilityId['id'];
+                                break;
+                            }
+
+                            if ($userFacilityId['facilityIds'] !== null) {
+                                $explodedUserFacilityIds = explode(',', $userFacilityId['facilityIds']);
+
+                                if (\in_array($facility->getId(), $explodedUserFacilityIds, false)) {
+                                    $ownerId = $userFacilityId['id'];
+                                    break;
+                                }
                             }
                         }
                     }
@@ -658,7 +694,6 @@ class LeadService extends BaseService implements IGridService
             $lead->setResponsiblePersonAddress1(null);
             $lead->setResponsiblePersonAddress2(null);
             $lead->setResponsiblePersonCsz(null);
-            $lead->setResponsiblePersonCsz(null);
 
             if (!empty($params['Phone'])) {
                 if (!empty($params['Message']) && stripos($params['Message'], $params['Phone']) !== false) {
@@ -690,8 +725,29 @@ class LeadService extends BaseService implements IGridService
 
             $this->em->persist($lead);
 
+            /** @var QualificationRequirementRepository $qualificationRequirementRepo */
+            $qualificationRequirementRepo = $this->em->getRepository(QualificationRequirement::class);
+
+            $qualificationRequirements = $qualificationRequirementRepo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(QualificationRequirement::class));
+
+            if (!empty($qualificationRequirements)) {
+                /** @var QualificationRequirement $qualificationRequirement */
+                foreach ($qualificationRequirements as $qualificationRequirement) {
+                    $leadQualificationRequirement = new LeadQualificationRequirement();
+                    $leadQualificationRequirement->setLead($lead);
+                    $leadQualificationRequirement->setQualificationRequirement($qualificationRequirement);
+                    $leadQualificationRequirement->setQualified(Qualified::TYPE_NOT_SURE);
+
+                    $this->em->persist($leadQualificationRequirement);
+                }
+            }
+
             // Add lead referral
             $referrerTypeName = 'Web Lead';
+            if (stripos($subject, 'facebook ad') !== false) {
+                $referrerTypeName = 'Facebook Ad';
+            }
+
             /** @var ReferrerTypeRepository $typeRepo */
             $typeRepo = $this->em->getRepository(ReferrerType::class);
 
@@ -702,7 +758,7 @@ class LeadService extends BaseService implements IGridService
                 throw new ReferrerTypeNotFoundException();
             }
 
-            if ($type !== null && ($type->isRepresentativeRequired() || $type->isOrganizationRequired())) {
+            if ($type->isRepresentativeRequired() || $type->isOrganizationRequired()) {
                 throw new ReferrerTypeNotFoundException();
             }
 
@@ -752,9 +808,6 @@ class LeadService extends BaseService implements IGridService
 
             // Creating change log
             $changeLog = $this->leadAddChangeLog($lead);
-
-            // Creating task activity
-            $this->createWebLeadTaskActivity($lead, $isBookATour);
 
             $this->em->flush();
 

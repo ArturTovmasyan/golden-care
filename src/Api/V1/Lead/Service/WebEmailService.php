@@ -5,18 +5,22 @@ namespace App\Api\V1\Lead\Service;
 use App\Api\V1\Common\Service\BaseService;
 use App\Api\V1\Common\Service\Exception\FacilityNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\EmailReviewTypeNotFoundException;
+use App\Api\V1\Common\Service\Exception\Lead\ReferrerTypeNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\WebEmailNotFoundException;
 use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\Exception\SubjectNotBeBlankException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Entity\Facility;
 use App\Entity\Lead\EmailReviewType;
+use App\Entity\Lead\ReferrerType;
 use App\Entity\Lead\WebEmail;
 use App\Entity\Space;
 use App\Repository\FacilityRepository;
 use App\Repository\Lead\EmailReviewTypeRepository;
+use App\Repository\Lead\ReferrerTypeRepository;
 use App\Repository\Lead\WebEmailRepository;
 use App\Repository\SpaceRepository;
+use Doctrine\DBAL\ConnectionException;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -70,7 +74,7 @@ class WebEmailService extends BaseService implements IGridService
 
     /**
      * @param array $params
-     * @throws \Exception
+     * @throws ConnectionException
      */
     public function add(array $params)
     {
@@ -174,6 +178,27 @@ class WebEmailService extends BaseService implements IGridService
 
                 $message = !empty($params['Message']) ? mb_strimwidth($params['Message'], 0, 2048) : '';
                 $webEmail->setMessage($message);
+
+                $referrerTypeName = 'Web Lead';
+                if (stripos($subject, 'facebook ad') !== false) {
+                    $referrerTypeName = 'Facebook Ad';
+                }
+
+                /** @var ReferrerTypeRepository $typeRepo */
+                $typeRepo = $this->em->getRepository(ReferrerType::class);
+
+                /** @var ReferrerType $type */
+                $type = $typeRepo->findOneBy(['title' => strtolower($referrerTypeName), 'space' => $space]);
+
+                if ($type === null) {
+                    throw new ReferrerTypeNotFoundException();
+                }
+
+                if ($type->isRepresentativeRequired() || $type->isOrganizationRequired()) {
+                    throw new ReferrerTypeNotFoundException();
+                }
+
+                $webEmail->setType($type);
 
                 $this->validate($webEmail, null, ['api_lead_web_email_add']);
 

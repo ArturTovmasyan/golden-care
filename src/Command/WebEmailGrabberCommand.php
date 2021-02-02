@@ -2,6 +2,8 @@
 
 namespace App\Command;
 
+use App\Api\V1\Lead\Service\ActivityService;
+use App\Api\V1\Lead\Service\LeadService;
 use App\Api\V1\Lead\Service\WebEmailService;
 use Exception;
 use Google_Client;
@@ -25,11 +27,19 @@ class WebEmailGrabberCommand extends Command
     /** @var WebEmailService */
     private $webEmailService;
 
+    /** @var LeadService */
+    private $leadService;
+
+    /** @var ActivityService */
+    private $activityService;
+
     public function __construct(
-        WebEmailService $webEmailService
+        WebEmailService $webEmailService, LeadService $leadService, ActivityService $activityService
     )
     {
         $this->webEmailService = $webEmailService;
+        $this->leadService = $leadService;
+        $this->activityService = $activityService;
 
         parent::__construct();
     }
@@ -66,6 +76,7 @@ class WebEmailGrabberCommand extends Command
             if (count($results->getMessages()) === 0) {
                 print "No messages found.\n";
             } else {
+                $this->leadService->setActivityService($this->activityService);
 
                 print "Messages:\n";
                 foreach ($results->getMessages() as $message_info) {
@@ -86,6 +97,7 @@ class WebEmailGrabberCommand extends Command
 
                         try {
                             $this->webEmailService->add($data);
+                            $this->leadService->addWebLeadFromCommand($data, $baseUrl);
                             $this->markRead($user, $service, $message_info->getId());
                         } catch (\Throwable $ct) {
                             $output->writeln($ct->getMessage());
@@ -134,6 +146,7 @@ class WebEmailGrabberCommand extends Command
             'New Submission from Grand River Villa Contact Form',
             'New Submission from Camlu Assisted Living Community Contact Form',
             'New Form Entry: Camlu Contact Form',
+            'New Submission from Orangeburg Manor Facebook Ad',
         ];
 
         $message_map = [
@@ -200,27 +213,40 @@ class WebEmailGrabberCommand extends Command
                 $div = $dom->find('div[contains(@class, "a3s")]');
                 /** @var Dom\Collection $datum */
                 $datum = $div[0];
-                $parent = $datum->parent;
-                $innerHtml = $parent->innerHtml;
 
-                $innerHtmlArray = explode('---', $innerHtml);
-                $text = $innerHtmlArray[0];
+                if (stripos($subject, 'facebook ad') !== false) {
+                    $text = $datum->text;
 
-                $messageKeyForExplode = 'How Can We Help You?: ';
-                $data[$messageKey] = '';
-                if (stripos($text, $messageKeyForExplode) !== false) {
-                    $textArray = explode($messageKeyForExplode, $text);
+                    $textArray = explode('email:', $text);
+                    $emailArray = explode(' name:', $textArray[1]);
+                    $data['Email'] = $emailArray[0];
+                    $nameArray = explode(' phone #:', $emailArray[1]);
+                    $data['Name'] = $nameArray[0];
+                    $data['Phone'] = $nameArray[1];
+                    $data[$messageKey] = '';
+                } else {
+                    $parent = $datum->parent;
+                    $innerHtml = $parent->innerHtml;
 
-                    $message = preg_replace('#<br\s*/?\s*>#', "\r\n", $textArray[1]);
-                    $data[$messageKey] = $message;
+                    $innerHtmlArray = explode('---', $innerHtml);
+                    $text = $innerHtmlArray[0];
 
-                    $keyValueArray = explode('<br />', $textArray[0]);
+                    $messageKeyForExplode = 'How Can We Help You?: ';
+                    $data[$messageKey] = '';
+                    if (stripos($text, $messageKeyForExplode) !== false) {
+                        $textArray = explode($messageKeyForExplode, $text);
 
-                    if (!empty($keyValueArray)) {
-                        foreach ($keyValueArray as $item) {
-                            $keyValue = explode(': ', $item);
-                            if (count($keyValue) === 2) {
-                                $data[$keyValue[0]] = $keyValue[1];
+                        $message = preg_replace('#<br\s*/?\s*>#', "\r\n", $textArray[1]);
+                        $data[$messageKey] = $message;
+
+                        $keyValueArray = explode('<br />', $textArray[0]);
+
+                        if (!empty($keyValueArray)) {
+                            foreach ($keyValueArray as $item) {
+                                $keyValue = explode(': ', $item);
+                                if (count($keyValue) === 2) {
+                                    $data[$keyValue[0]] = $keyValue[1];
+                                }
                             }
                         }
                     }
@@ -248,6 +274,10 @@ class WebEmailGrabberCommand extends Command
                 if (strpos($data[$messageKey], 'janitorial') !== false || strpos($data[$messageKey], 'janitor') !== false || strpos($data[$messageKey], 'qualityjanitorialservices42@gmail.com') !== false) {
                     $data['Spam'] = true;
                 }
+            }
+
+            if (stripos($subject, 'facebook ad') !== false) {
+                $data['Spam'] = false;
             }
         }
 

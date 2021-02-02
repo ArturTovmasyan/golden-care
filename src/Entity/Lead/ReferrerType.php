@@ -75,7 +75,9 @@ class ReferrerType
      *     "api_lead_organization_get",
      *     "api_lead_referral_list",
      *     "api_lead_referral_get",
-     *     "api_lead_lead_get"
+     *     "api_lead_lead_get",
+     *     "api_lead_web_email_list",
+     *     "api_lead_web_email_get"
      * })
      */
     private $id;
@@ -105,7 +107,9 @@ class ReferrerType
      *     "api_lead_organization_get",
      *     "api_lead_referral_list",
      *     "api_lead_referral_get",
-     *     "api_lead_lead_get"
+     *     "api_lead_lead_get",
+     *     "api_lead_web_email_list",
+     *     "api_lead_web_email_get"
      * })
      */
     private $title;
@@ -165,6 +169,12 @@ class ReferrerType
      * @ORM\OneToMany(targetEntity="App\Entity\Lead\Referral", mappedBy="type", cascade={"remove", "persist"})
      */
     private $referrals;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="App\Entity\Lead\WebEmail", mappedBy="type", cascade={"remove", "persist"})
+     */
+    private $webEmails;
 
     public function getId(): ?int
     {
@@ -265,5 +275,21 @@ class ReferrerType
     public function setReferrals(ArrayCollection $referrals): void
     {
         $this->referrals = $referrals;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getWebEmails(): ArrayCollection
+    {
+        return $this->webEmails;
+    }
+
+    /**
+     * @param ArrayCollection $webEmails
+     */
+    public function setWebEmails(ArrayCollection $webEmails): void
+    {
+        $this->webEmails = $webEmails;
     }
 }
