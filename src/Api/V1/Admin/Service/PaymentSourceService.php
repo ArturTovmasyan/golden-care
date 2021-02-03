@@ -79,18 +79,20 @@ class PaymentSourceService extends BaseService implements IGridService
                 throw new SpaceNotFoundException();
             }
 
+            $privatePay = (bool)$params['private_pay'];
             $period = $params['period'] ? (int)$params['period'] : 0;
             $careLevelAdjustment = (bool)$params['care_level_adjustment'];
+            $fieldName = !$privatePay && !empty($params['field_name']) ? $params['field_name'] : null;
 
             $paymentSource = new PaymentSource();
             $paymentSource->setTitle($params['title']);
-            $paymentSource->setPrivatePay((bool)$params['private_pay']);
+            $paymentSource->setPrivatePay($privatePay);
             $paymentSource->setPeriod($period);
             $paymentSource->setCareLevelAdjustment($careLevelAdjustment);
             $paymentSource->setSpace($space);
             $paymentSource->setResidentName((bool)$params['resident_name']);
             $paymentSource->setDateOfBirth((bool)$params['date_of_birth']);
-            $paymentSource->setFieldName($params['field_name']);
+            $paymentSource->setFieldName($fieldName);
             $paymentSource->setOnlyForOccupiedDays((bool)$params['only_for_occupied_days']);
 
             $this->validate($paymentSource, null, ['api_admin_payment_source_add']);
@@ -147,8 +149,10 @@ class PaymentSourceService extends BaseService implements IGridService
                 throw new SpaceNotFoundException();
             }
 
+            $privatePay = (bool)$params['private_pay'];
             $period = $params['period'] ? (int)$params['period'] : 0;
             $careLevelAdjustment = (bool)$params['care_level_adjustment'];
+            $fieldName = !$privatePay && !empty($params['field_name']) ? $params['field_name'] : null;
 
             if ($careLevelAdjustment) {
                 /** @var CareLevelRepository $careLevelRepo */
@@ -179,13 +183,13 @@ class PaymentSourceService extends BaseService implements IGridService
             }
 
             $entity->setTitle($params['title']);
-            $entity->setPrivatePay((bool)$params['private_pay']);
+            $entity->setPrivatePay($privatePay);
             $entity->setPeriod($period);
             $entity->setCareLevelAdjustment($careLevelAdjustment);
             $entity->setSpace($space);
             $entity->setResidentName((bool)$params['resident_name']);
             $entity->setDateOfBirth((bool)$params['date_of_birth']);
-            $entity->setFieldName($params['field_name']);
+            $entity->setFieldName($fieldName);
             $entity->setOnlyForOccupiedDays((bool)$params['only_for_occupied_days']);
 
             $this->validate($entity, null, ['api_admin_payment_source_edit']);
