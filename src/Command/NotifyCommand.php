@@ -794,7 +794,7 @@ class NotifyCommand extends Command
         foreach ($webEmails as $webEmail) {
             $spaceName = $webEmail->getSpace() !== null ? $webEmail->getSpace()->getName() : '';
 
-            $roleNames = $webEmail->getFacility()  !== null ? ['Facility Admin', 'Marketing'] : ['Administrator', 'Marketing'];
+            $roleNames = $webEmail->getFacility()  !== null ? ['Facility Admin', 'Marketing'] : ['Administrator', 'Corporate Marketing', 'Marketing'];
 
             /** @var RoleRepository $roleRepo */
             $roleRepo = $this->em->getRepository(Role::class);

@@ -368,7 +368,7 @@ room:
   reports:
     payor:
       service: App\Api\V1\Admin\Service\Report\RoomReportService::getPayorReport
-      title: 'Payor Report: Monthly Payor Report'
+      title: 'Payment Source Report: Monthly Payment Sources'
       show_in_resident_list: true
       show_in_group_list: true
       formats: ['pdf', 'csv', 'xls']

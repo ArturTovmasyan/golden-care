@@ -581,7 +581,7 @@ report:
         medication-list-resident-no-admission:
           title: "Medications List Selected Resident: Medications list for selected resident (pre-admit)"
         medication-list-all:
-          title: "Medications List All Residents: Medications list for all residents."
+          title: "Medications List All Residents: Medications list for all residents"
         night-activity:
           title: "Night activity: Night Activity Tracking Form, Daily"
         room-audit:
@@ -589,26 +589,26 @@ report:
         shower-skin-inspection:
           title: "Shower Skin Inspection Selected Resident: Shower Skin Inspection for current selected resident"
         shower-skin-list:
-          title: "Shower Skin Inspection All: Shower Skin Inspection for current selected facility residents, ordered by Room Number."
+          title: "Shower Skin Inspection All: Shower Skin Inspection for current selected facility residents, ordered by Room Number"
     room:
       title: "Room Reports"
       children:
         payor:
-          title: "Payor Report: Monthly Payor Report."
+          title: "Payment Source Report: Monthly Payment Sources"
         room-list:
-          title: "Room: List of Rooms, with occupants and room rent rates."
+          title: "Room: List of Rooms, with occupants and room rent rates"
         room-list-today:
           title: "Room List: List of enabled Rooms/Beds"
         room-rent:
-          title: "Room Rent: Monthly Rent Report."
+          title: "Room Rent: Monthly Rent Report"
         room-rent-obfuscated:
-          title: "Room Rent, Obfuscated: Monthly Rent Report."
+          title: "Room Rent, Obfuscated: Monthly Rent Report"
         room-rent-by-year:
-          title: "Room Rent: Monthly Room Rent by Year."
+          title: "Room Rent: Monthly Room Rent by Year"
         room-rent-master:
-          title: "Room Rent Master: Historical Rent Graphs, Data - for Finance Use only."
+          title: "Room Rent Master: Historical Rent Graphs, Data - for Finance Use only"
         room-rent-master-new:
-          title: "Room Rent Master: New!: Monthly Rent Master Report."
+          title: "Room Rent Master: New!: Monthly Rent Master Report"
         room-vacancy:
           title: "Room Vacancy List: List of Vacant Rooms, by Facility. Calculated as of today"
         room-occupancy:
