@@ -178,7 +178,7 @@ class FacilityDashboardCommand extends Command
             if ($webLeadReferrerType !== null) {
                 $webLeadReferrerTypeId = $webLeadReferrerType->getId();
             }
-            $webPageEmails = $leadRepo->getSocialMediaLeadList($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $startDate, $endDate, [$webLeadReferrerTypeId], null);
+            $webPageEmails = $leadRepo->getSocialMediaLeadList($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $monthStartDate, $monthEndDate, [$webLeadReferrerTypeId], null);
 
             $facebookAdReferrerTypeName = 'Facebook Ad';
             /** @var ReferrerType $facebookAdReferrerType */
@@ -187,7 +187,7 @@ class FacilityDashboardCommand extends Command
             if ($facebookAdReferrerType !== null) {
                 $facebookAdReferrerTypeId = $facebookAdReferrerType->getId();
             }
-            $facebookAdsEmails = $leadRepo->getSocialMediaLeadList($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $startDate, $endDate, [$facebookAdReferrerTypeId], null);
+            $facebookAdsEmails = $leadRepo->getSocialMediaLeadList($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $monthStartDate, $monthEndDate, [$facebookAdReferrerTypeId], null);
 
             /** @var OutreachRepository $outreachRepo */
             $outreachRepo = $this->em->getRepository(Outreach::class);

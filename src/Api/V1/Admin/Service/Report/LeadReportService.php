@@ -215,20 +215,20 @@ class LeadReportService extends BaseService
 
         if (!empty($dateFrom)) {
             $start = new \DateTime($dateFrom);
-            $startFormatted = $start->format('m/d/Y 00:00:00');
+            $startFormatted = $start->format('Y-m-01 00:00:00');
             $startDate = new \DateTime($startFormatted);
         } else {
-            $startFormatted = $currentDate->format('m/d/Y 00:00:00');
+            $startFormatted = $currentDate->format('Y-m-01 00:00:00');
             $startDate = new \DateTime($startFormatted);
         }
 
         if (!empty($dateTo)) {
             $end = new \DateTime($dateTo);
-            $endFormatted = $end->format('m/d/Y 23:59:59');
+            $endFormatted = $end->format('Y-m-t 23:59:59');
             $endDate = new \DateTime($endFormatted);
         } else {
             $cloneCurrentDate = clone $currentDate;
-            $endFormatted = $cloneCurrentDate->format('m/d/Y 23:59:59');
+            $endFormatted = $cloneCurrentDate->format('Y-m-t 23:59:59');
             $endDate = new \DateTime($endFormatted);
         }
 
