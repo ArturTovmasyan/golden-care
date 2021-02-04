@@ -530,7 +530,6 @@ class WebEmailRepository extends EntityRepository implements RelatedInfoInterfac
                 'rt = we.type'
             )
             ->where('we.createdAt >= :startDate AND we.createdAt <= :endDate AND rt.id = :referrerTypeId')
-            ->andWhere('l.spam = 0')
             ->setParameter('startDate', $startDate)
             ->setParameter('endDate', $endDate)
             ->setParameter('referrerTypeId', $referrerTypeId);
