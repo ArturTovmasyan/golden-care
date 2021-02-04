@@ -526,7 +526,16 @@ class LeadService extends BaseService implements IGridService
             $spam = (bool)$params['Spam'];
         }
 
-        if (!$spam) {
+        $subject = null;
+        if (!empty($params['Subject']) && (stripos($params['Subject'], 'new submission') !== false || stripos($params['Subject'], 'new form entry') !== false)) {
+            $subject = $params['Subject'];
+        }
+
+        if ($subject === null) {
+            throw new SubjectNotBeBlankException();
+        }
+
+        if (!$spam && stripos($subject, 'facebook ad') === false) {
             try {
                 $this->em->getConnection()->beginTransaction();
 
@@ -539,15 +548,6 @@ class LeadService extends BaseService implements IGridService
 
                 if ($currentSpace === null) {
                     throw new SpaceNotFoundException();
-                }
-
-                $subject = null;
-                if (!empty($params['Subject']) && (stripos($params['Subject'], 'new submission') !== false || stripos($params['Subject'], 'new form entry') !== false)) {
-                    $subject = $params['Subject'];
-                }
-
-                if ($subject === null) {
-                    throw new SubjectNotBeBlankException();
                 }
 
                 $now = new \DateTime('now');

@@ -15,6 +15,7 @@ use App\Entity\Lead\Lead;
 use App\Entity\Lead\LeadTemperature;
 use App\Entity\Lead\Outreach;
 use App\Entity\Lead\ReferrerType;
+use App\Entity\Lead\WebEmail;
 use App\Entity\ResidentAdmission;
 use App\Entity\ResidentEvent;
 use App\Entity\ResidentRent;
@@ -30,6 +31,7 @@ use App\Repository\Lead\LeadRepository;
 use App\Repository\Lead\LeadTemperatureRepository;
 use App\Repository\Lead\OutreachRepository;
 use App\Repository\Lead\ReferrerTypeRepository;
+use App\Repository\Lead\WebEmailRepository;
 use App\Repository\ResidentAdmissionRepository;
 use App\Repository\ResidentEventRepository;
 use App\Repository\ResidentRentRepository;
@@ -173,7 +175,7 @@ class FacilityDashboardCommand extends Command
 
             $webLeadReferrerTypeName = 'Web Lead';
             /** @var ReferrerType $webLeadReferrerType */
-            $webLeadReferrerType = $referrerTypeRepo->findOneBy(['title' => strtolower($webLeadReferrerTypeName), 'space' => $currentSpace]);
+            $webLeadReferrerType = $referrerTypeRepo->findOneBy(['title' => strtolower($webLeadReferrerTypeName)]);
             $webLeadReferrerTypeId = 0;
             if ($webLeadReferrerType !== null) {
                 $webLeadReferrerTypeId = $webLeadReferrerType->getId();
@@ -182,12 +184,15 @@ class FacilityDashboardCommand extends Command
 
             $facebookAdReferrerTypeName = 'Facebook Ad';
             /** @var ReferrerType $facebookAdReferrerType */
-            $facebookAdReferrerType = $referrerTypeRepo->findOneBy(['title' => strtolower($facebookAdReferrerTypeName), 'space' => $currentSpace]);
+            $facebookAdReferrerType = $referrerTypeRepo->findOneBy(['title' => strtolower($facebookAdReferrerTypeName)]);
             $facebookAdReferrerTypeId = 0;
             if ($facebookAdReferrerType !== null) {
                 $facebookAdReferrerTypeId = $facebookAdReferrerType->getId();
             }
-            $facebookAdsEmails = $leadRepo->getSocialMediaLeadList($currentSpace, $this->grantService->getCurrentUserEntityGrants(Lead::class), $monthStartDate, $monthEndDate, [$facebookAdReferrerTypeId], null);
+
+            /** @var WebEmailRepository $webEmailRepo */
+            $webEmailRepo = $this->em->getRepository(WebEmail::class);
+            $facebookAdsEmails = $webEmailRepo->getFacebookAdWebEmailsForFacilityDashboard($currentSpace, $this->grantService->getCurrentUserEntityGrants(WebEmail::class), $monthStartDate, $monthEndDate, $facebookAdReferrerTypeId);
 
             /** @var OutreachRepository $outreachRepo */
             $outreachRepo = $this->em->getRepository(Outreach::class);

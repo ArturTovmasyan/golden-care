@@ -795,6 +795,9 @@ class NotifyCommand extends Command
             $spaceName = $webEmail->getSpace() !== null ? $webEmail->getSpace()->getName() : '';
 
             $roleNames = $webEmail->getFacility()  !== null ? ['Facility Admin', 'Marketing'] : ['Administrator', 'Corporate Marketing', 'Marketing'];
+            if (stripos($webEmail->getSubject(), 'facebook ad') !== false) {
+                $roleNames = ['Administrator'];
+            }
 
             /** @var RoleRepository $roleRepo */
             $roleRepo = $this->em->getRepository(Role::class);
