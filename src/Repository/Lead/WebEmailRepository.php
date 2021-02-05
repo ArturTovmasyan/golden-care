@@ -509,7 +509,7 @@ class WebEmailRepository extends EntityRepository implements RelatedInfoInterfac
      * @param $referrerTypeId
      * @return mixed
      */
-    public function getFacebookAdWebEmailsForFacilityDashboard(Space $space = null, array $entityGrants = null, $startDate, $endDate, $referrerTypeId)
+    public function getWebEmailsForFacilityDashboard(Space $space = null, array $entityGrants = null, $startDate, $endDate, $referrerTypeId)
     {
         $qb = $this
             ->createQueryBuilder('we')
