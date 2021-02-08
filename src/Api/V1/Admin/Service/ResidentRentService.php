@@ -471,4 +471,24 @@ class ResidentRentService extends BaseService implements IGridService
 
         return $this->getRelatedData(ResidentRent::class, $entities);
     }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function getLastRentByResidentId($id)
+    {
+        $lastRentArray = [];
+
+        /** @var ResidentRentRepository $repo */
+        $repo = $this->em->getRepository(ResidentRent::class);
+        /** @var ResidentRent $lastRent */
+        $lastRent = $repo->getLastRent($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $id);
+        if ($lastRent !== null) {
+            $lastRentArray = ['id' => $lastRent->getId(), 'start' => $lastRent->getStart()];
+
+        }
+
+        return $lastRentArray;
+    }
 }

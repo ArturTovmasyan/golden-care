@@ -12,6 +12,7 @@ use App\Api\V1\Common\Service\Exception\DuplicateResidentException;
 use App\Api\V1\Common\Service\Exception\FacilityBedNotFoundException;
 use App\Api\V1\Common\Service\Exception\IncorrectStrategyTypeException;
 use App\Api\V1\Common\Service\Exception\InvalidBillThroughDateException;
+use App\Api\V1\Common\Service\Exception\InvalidDischargeDateException;
 use App\Api\V1\Common\Service\Exception\InvalidEffectiveDateException;
 use App\Api\V1\Common\Service\Exception\LastResidentAdmissionNotFoundException;
 use App\Api\V1\Common\Service\Exception\RegionCanNotHaveBedException;
@@ -764,7 +765,7 @@ class ResidentAdmissionService extends BaseService implements IGridService
                 }
 
                 if ($admissionType === AdmissionType::DISCHARGE && $lastRent !== null && $date <= $lastRent->getStart()) {
-                    throw new InvalidEffectiveDateException();
+                    throw new InvalidDischargeDateException();
                 }
 
                 $entity->setStart($date);

@@ -204,4 +204,21 @@ class ResidentRentController extends BaseController
             [$relatedData]
         );
     }
+
+    /**
+     * @Route("/{id}/last", requirements={"id"="\d+"}, name="api_admin_resident_rent_get_last", methods={"GET"})
+     *
+     * @param Request $request
+     * @param $id
+     * @param ResidentRentService $residentRentService
+     * @return JsonResponse
+     */
+    public function getResidentLastRentAction(Request $request, $id, ResidentRentService $residentRentService): JsonResponse
+    {
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $residentRentService->getLastRentByResidentId($id)
+        );
+    }
 }
