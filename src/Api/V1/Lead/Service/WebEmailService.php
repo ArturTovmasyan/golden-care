@@ -22,6 +22,7 @@ use App\Repository\Lead\WebEmailRepository;
 use App\Repository\SpaceRepository;
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\ORM\QueryBuilder;
+use Throwable;
 
 /**
  * Class WebEmailService
@@ -213,12 +214,13 @@ class WebEmailService extends BaseService implements IGridService
         }
     }
 
-    private function formatPhoneUs($phone) {
+    private function formatPhoneUs($phone)
+    {
         //strip out everything but numbers
         $phone = preg_replace('/\D/', '', $phone);
         $length = strlen($phone);
 
-        switch($length) {
+        switch ($length) {
             case 7:
                 return preg_replace('/(\d{3})(\d{4})/', '(000) $1-$2', $phone);
                 break;
@@ -236,10 +238,11 @@ class WebEmailService extends BaseService implements IGridService
 
     /**
      * @param $id
+     * @param LeadService $leadService
      * @param array $params
-     * @throws \Throwable
+     * @throws Throwable
      */
-    public function edit($id, array $params): void
+    public function edit($id, LeadService $leadService, array $params): void
     {
         try {
 
@@ -317,6 +320,16 @@ class WebEmailService extends BaseService implements IGridService
             $this->validate($entity, null, ['api_lead_web_email_edit']);
 
             $this->em->persist($entity);
+
+            $uow = $this->em->getUnitOfWork();
+            $uow->computeChangeSets();
+
+            $entityChangeSet = $this->em->getUnitOfWork()->getEntityChangeSet($entity);
+
+            if (!empty($entityChangeSet) && array_key_exists('emailReviewType', $entityChangeSet) && strtolower($entityChangeSet['emailReviewType']['1']->getTitle()) === 'lead') {
+                $leadService->addWebLeadFromWebEmail($entity, $params['base_url']);
+            }
+
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {

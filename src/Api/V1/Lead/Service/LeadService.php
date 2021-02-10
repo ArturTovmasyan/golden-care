@@ -52,6 +52,7 @@ use App\Entity\Lead\Referral;
 use App\Entity\Lead\ReferrerType;
 use App\Entity\Lead\StageChangeReason;
 use App\Entity\Lead\Temperature;
+use App\Entity\Lead\WebEmail;
 use App\Entity\PaymentSource;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
@@ -497,6 +498,247 @@ class LeadService extends BaseService implements IGridService
 
             if ($changeLog !== null) {
                 $this->sendNewLeadChangeLogNotification($changeLog, $params['base_url']);
+            }
+
+            $this->em->getConnection()->commit();
+
+            $insert_id = $lead->getId();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
+
+        return $insert_id;
+    }
+
+    /**
+     * @param WebEmail $webEmail
+     * @param $baseUrl
+     * @return int|null
+     * @throws ConnectionException
+     */
+    public function addWebLeadFromWebEmail(WebEmail $webEmail, $baseUrl): ?int
+    {
+        $insert_id = null;
+
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            $currentSpace = $webEmail->getSpace();
+            $facility = $webEmail->getFacility();
+
+            $lead = new Lead();
+            $lead->setWebLead(true);
+            $lead->setSpamUpdated($webEmail->getDate());
+            $lead->setSpam(false);
+            $lead->setPrimaryFacility($facility);
+            $lead->setFirstName('Not');
+            $lead->setLastName('Provided');
+            $lead->setCareType(null);
+            $lead->setCareLevel(null);
+            $lead->setPaymentType(null);
+            // Set Qualified State
+            $lead->setQualified(Qualified::TYPE_NOT_SURE);
+
+            $roleName = $facility !== null ? 'Marketing' : 'Corporate Marketing';
+            /** @var RoleRepository $roleRepo */
+            $roleRepo = $this->em->getRepository(Role::class);
+
+            /** @var Role $role */
+            $role = $roleRepo->findOneBy(['name' => strtolower($roleName)]);
+
+            if ($role === null) {
+                throw new RoleNotFoundException();
+            }
+
+            /** @var UserRepository $ownerRepo */
+            $ownerRepo = $this->em->getRepository(User::class);
+
+            $ownerId = 0;
+            if ($facility !== null) {
+                $userFacilityIds = $ownerRepo->getEnabledUserFacilityIdsByRoles($currentSpace, null, [$role->getId()]);
+
+                if (!empty($userFacilityIds)) {
+                    foreach ($userFacilityIds as $userFacilityId) {
+                        if ($userFacilityId['facilityIds'] === null) {
+                            $ownerId = $userFacilityId['id'];
+                            break;
+                        }
+
+                        if ($userFacilityId['facilityIds'] !== null) {
+                            $explodedUserFacilityIds = explode(',', $userFacilityId['facilityIds']);
+
+                            if (\in_array($facility->getId(), $explodedUserFacilityIds, false)) {
+                                $ownerId = $userFacilityId['id'];
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    $roleName = 'Facility Admin';
+
+                    /** @var Role $role */
+                    $role = $roleRepo->findOneBy(['name' => strtolower($roleName)]);
+
+                    if ($role === null) {
+                        throw new RoleNotFoundException();
+                    }
+
+                    $userFacilityIds = $ownerRepo->getEnabledUserFacilityIdsByRoles($currentSpace, null, [$role->getId()]);
+
+                    if (!empty($userFacilityIds)) {
+                        foreach ($userFacilityIds as $userFacilityId) {
+                            if ($userFacilityId['facilityIds'] === null) {
+                                $ownerId = $userFacilityId['id'];
+                                break;
+                            }
+
+                            if ($userFacilityId['facilityIds'] !== null) {
+                                $explodedUserFacilityIds = explode(',', $userFacilityId['facilityIds']);
+
+                                if (\in_array($facility->getId(), $explodedUserFacilityIds, false)) {
+                                    $ownerId = $userFacilityId['id'];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                /** @var User $owner */
+                $owner = $ownerRepo->getOne($currentSpace, null, $ownerId);
+            } else {
+                $owner = $ownerRepo->getEnabledUserByRoles($currentSpace, null, [$role->getId()]);
+            }
+
+            if ($owner === null) {
+                throw new UserNotFoundException();
+            }
+
+            $lead->setOwner($owner);
+            $lead->setCreatedBy($owner);
+            $lead->setUpdatedBy($owner);
+            $lead->setState(State::TYPE_OPEN);
+            $lead->setInitialContactDate($webEmail->getDate());
+            $lead->setBirthday(null);
+            $lead->setSpouseName(null);
+            $lead->setCurrentResidence(null);
+
+            $rpFirstName = '';
+            $rpLastName = '';
+            if (!empty($webEmail->getName())) {
+                $name = explode(' ', $webEmail->getName());
+                $rpFirstName = $rpLastName = array_pop($name);
+                if (!empty($name)) {
+                    $rpFirstName = implode(' ', $name);
+                }
+            }
+            $lead->setResponsiblePersonFirstName($rpFirstName);
+            $lead->setResponsiblePersonLastName($rpLastName);
+            $lead->setResponsiblePersonAddress1(null);
+            $lead->setResponsiblePersonAddress2(null);
+            $lead->setResponsiblePersonCsz(null);
+
+            if (!empty($webEmail->getPhone())) {
+                $lead->setResponsiblePersonPhone($webEmail->getPhone());
+            } else {
+                $lead->setResponsiblePersonPhone(null);
+            }
+
+            if (!empty($webEmail->getEmail())) {
+                $lead->setResponsiblePersonEmail($webEmail->getEmail());
+            } else {
+                $lead->setResponsiblePersonEmail(null);
+            }
+
+            if ($lead->getResponsiblePersonPhone() === null && $lead->getResponsiblePersonEmail() === null) {
+                throw new LeadRpPhoneOrEmailNotBeBlankException();
+            }
+
+            $notes = !empty($webEmail->getMessage()) ? mb_strimwidth($webEmail->getMessage(), 0, 2048) : '';
+
+            $lead->setNotes($notes);
+
+            $this->validate($lead, null, ['api_lead_lead_add']);
+
+            $this->em->persist($lead);
+
+            /** @var QualificationRequirementRepository $qualificationRequirementRepo */
+            $qualificationRequirementRepo = $this->em->getRepository(QualificationRequirement::class);
+
+            $qualificationRequirements = $qualificationRequirementRepo->list($currentSpace, $this->grantService->getCurrentUserEntityGrants(QualificationRequirement::class));
+
+            if (!empty($qualificationRequirements)) {
+                /** @var QualificationRequirement $qualificationRequirement */
+                foreach ($qualificationRequirements as $qualificationRequirement) {
+                    $leadQualificationRequirement = new LeadQualificationRequirement();
+                    $leadQualificationRequirement->setLead($lead);
+                    $leadQualificationRequirement->setQualificationRequirement($qualificationRequirement);
+                    $leadQualificationRequirement->setQualified(Qualified::TYPE_NOT_SURE);
+
+                    $this->em->persist($leadQualificationRequirement);
+                }
+            }
+
+            $type = $webEmail->getType();
+            if ($type !== null) {
+                if ($type->isRepresentativeRequired() || $type->isOrganizationRequired()) {
+                    throw new ReferrerTypeNotFoundException();
+                }
+
+                $referral = new Referral();
+                $referral->setLead($lead);
+                $referral->setType($type);
+                $referral->setOrganization(null);
+                $referral->setContact(null);
+                $referral->setNotes('');
+                $referral->setCreatedBy($lead->getOwner());
+                $referral->setUpdatedBy($lead->getOwner());
+
+                $this->em->persist($referral);
+            }
+
+            // Creating lead funnel stage
+            $funnelStageName = 'Contact';
+            /** @var FunnelStageRepository $funnelStageRepo */
+            $funnelStageRepo = $this->em->getRepository(FunnelStage::class);
+
+            /** @var FunnelStage $funnelStage */
+            $funnelStage = $funnelStageRepo->findOneBy(['title' => strtolower($funnelStageName), 'space' => $currentSpace]);
+
+            if ($funnelStage === null) {
+                throw new FunnelStageNotFoundException();
+            }
+
+            $this->createLeadFunnelStage($lead, $funnelStage->getId());
+
+            // Creating lead temperature
+            $temperatureName = 'None';
+            /** @var TemperatureRepository $temperatureRepo */
+            $temperatureRepo = $this->em->getRepository(Temperature::class);
+
+            /** @var Temperature $temperature */
+            $temperature = $temperatureRepo->findOneBy(['title' => strtolower($temperatureName), 'space' => $currentSpace]);
+
+            if ($temperature === null) {
+                throw new TemperatureNotFoundException();
+            }
+
+            $this->createLeadTemperature($lead, $temperature->getId());
+
+            // Creating initial contact activity
+            $this->createLeadInitialContactActivity($lead, false);
+
+            $this->em->flush();
+
+            // Creating change log
+            $changeLog = $this->leadAddChangeLog($lead);
+
+            $this->em->flush();
+
+            if ($changeLog !== null) {
+                $this->sendNewLeadChangeLogNotification($changeLog, $baseUrl);
             }
 
             $this->em->getConnection()->commit();

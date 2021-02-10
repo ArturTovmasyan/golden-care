@@ -3,6 +3,7 @@
 namespace App\Api\V1\Lead\Controller;
 
 use App\Annotation\Grant;
+use App\Api\V1\Lead\Service\LeadService;
 use App\Api\V1\Lead\Service\WebEmailService;
 use App\Api\V1\Common\Controller\BaseController;
 use App\Entity\Lead\WebEmail;
@@ -101,12 +102,14 @@ class WebEmailController extends BaseController
      * @param Request $request
      * @param $id
      * @param WebEmailService $webEmailService
+     * @param LeadService $leadService
      * @return JsonResponse
      */
-    public function editAction(Request $request, $id, WebEmailService $webEmailService): JsonResponse
+    public function editAction(Request $request, $id, WebEmailService $webEmailService, LeadService $leadService): JsonResponse
     {
         $webEmailService->edit(
             $id,
+            $leadService,
             [
                 'date' => $request->get('date'),
                 'facility_id' => $request->get('facility_id'),
@@ -116,7 +119,8 @@ class WebEmailController extends BaseController
                 'email' => $request->get('email'),
                 'phone' => $request->get('phone'),
                 'message' => $request->get('message'),
-                'space_id' => $request->get('space_id')
+                'space_id' => $request->get('space_id'),
+                'base_url' => $request->getSchemeAndHttpHost(),
             ]
         );
 
