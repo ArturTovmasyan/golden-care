@@ -82,6 +82,7 @@ class ResponseCode
     const MISSING_BASE_RATE_FOR_CARE_LEVEL                       = 672;
     const START_GREATER_VALID_THROUGH_DATE_EXCEPTION             = 673;
     const INVALID_DISCHARGE_DATE_EXCEPTION                       = 674;
+    const NAME_NOT_BE_BLANK_EXCEPTION                            = 675;
     const GRID_OPTIONS_NOT_FOUND_EXCEPTION                       = 680;
     const ASSESSMENT_FORM_NOT_FOUND_EXCEPTION                    = 681;
     const EVENT_DEFINITION_NOT_FOUND_EXCEPTION                   = 682;
@@ -268,6 +269,7 @@ class ResponseCode
         self::MISSING_BASE_RATE_FOR_CARE_LEVEL                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Missing Base Rate for some Care Levels.'],
         self::START_GREATER_VALID_THROUGH_DATE_EXCEPTION             => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Start date is always prior to the Valid Through date.'],
         self::INVALID_DISCHARGE_DATE_EXCEPTION                       => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => ''],
+        self::NAME_NOT_BE_BLANK_EXCEPTION                            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Name cannot be blank.'],
         self::RESPONSIBLE_PERSON_ROLE_NOT_FOUND_EXCEPTION            => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Responsible person\'s role not found.'],
         self::RESIDENT_DIAGNOSIS_NOT_FOUND_EXCEPTION                 => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Resident Diagnosis not found.'],
         self::DIAGNOSIS_NOT_SINGLE_EXCEPTION                         => ['httpCode' => Response::HTTP_BAD_REQUEST, 'message' => 'Diagnosis is not single.'],

@@ -17,6 +17,7 @@ use App\Api\V1\Common\Service\Exception\Lead\FunnelStageNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadFunnelStageNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\LeadRpPhoneOrEmailNotBeBlankException;
+use App\Api\V1\Common\Service\Exception\NameNotBeBlankException;
 use App\Api\V1\Common\Service\Exception\Lead\OrganizationNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\QualificationRequirementNotFoundException;
 use App\Api\V1\Common\Service\Exception\Lead\ReferrerTypeNotFoundException;
@@ -625,14 +626,14 @@ class LeadService extends BaseService implements IGridService
             $lead->setSpouseName(null);
             $lead->setCurrentResidence(null);
 
-            $rpFirstName = '';
-            $rpLastName = '';
             if (!empty($webEmail->getName())) {
                 $name = explode(' ', $webEmail->getName());
                 $rpFirstName = $rpLastName = array_pop($name);
                 if (!empty($name)) {
                     $rpFirstName = implode(' ', $name);
                 }
+            } else {
+                throw new NameNotBeBlankException();
             }
             $lead->setResponsiblePersonFirstName($rpFirstName);
             $lead->setResponsiblePersonLastName($rpLastName);
