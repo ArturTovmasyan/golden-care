@@ -97,8 +97,8 @@ class WebEmailGrabberCommand extends Command
 
                         try {
                             $this->webEmailService->add($data);
-                            $this->leadService->addWebLeadFromCommand($data, $baseUrl);
                             $this->markRead($user, $service, $message_info->getId());
+                            $this->leadService->addWebLeadFromCommand($data, $baseUrl);
                         } catch (\Throwable $ct) {
                             $output->writeln($ct->getMessage());
                         }

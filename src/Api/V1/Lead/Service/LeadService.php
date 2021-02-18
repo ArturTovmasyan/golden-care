@@ -576,6 +576,37 @@ class LeadService extends BaseService implements IGridService
                             }
                         }
                     }
+
+                    if ($ownerId < 1) {
+                        $roleName = 'Corporate Marketing';
+
+                        /** @var Role $role */
+                        $role = $roleRepo->findOneBy(['name' => strtolower($roleName)]);
+
+                        if ($role === null) {
+                            throw new RoleNotFoundException();
+                        }
+
+                        $userFacilityIds = $ownerRepo->getEnabledUserFacilityIdsByRoles($currentSpace, null, [$role->getId()]);
+
+                        if (!empty($userFacilityIds)) {
+                            foreach ($userFacilityIds as $userFacilityId) {
+                                if ($userFacilityId['facilityIds'] === null) {
+                                    $ownerId = $userFacilityId['id'];
+                                    break;
+                                }
+
+                                if ($userFacilityId['facilityIds'] !== null) {
+                                    $explodedUserFacilityIds = explode(',', $userFacilityId['facilityIds']);
+
+                                    if (\in_array($facility->getId(), $explodedUserFacilityIds, false)) {
+                                        $ownerId = $userFacilityId['id'];
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 } else {
                     $roleName = 'Facility Admin';
 
@@ -874,6 +905,37 @@ class LeadService extends BaseService implements IGridService
                                 if (\in_array($facility->getId(), $explodedUserFacilityIds, false)) {
                                     $ownerId = $userFacilityId['id'];
                                     break;
+                                }
+                            }
+                        }
+
+                        if ($ownerId < 1) {
+                            $roleName = 'Corporate Marketing';
+
+                            /** @var Role $role */
+                            $role = $roleRepo->findOneBy(['name' => strtolower($roleName)]);
+
+                            if ($role === null) {
+                                throw new RoleNotFoundException();
+                            }
+
+                            $userFacilityIds = $ownerRepo->getEnabledUserFacilityIdsByRoles($currentSpace, null, [$role->getId()]);
+
+                            if (!empty($userFacilityIds)) {
+                                foreach ($userFacilityIds as $userFacilityId) {
+                                    if ($userFacilityId['facilityIds'] === null) {
+                                        $ownerId = $userFacilityId['id'];
+                                        break;
+                                    }
+
+                                    if ($userFacilityId['facilityIds'] !== null) {
+                                        $explodedUserFacilityIds = explode(',', $userFacilityId['facilityIds']);
+
+                                        if (\in_array($facility->getId(), $explodedUserFacilityIds, false)) {
+                                            $ownerId = $userFacilityId['id'];
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                         }
