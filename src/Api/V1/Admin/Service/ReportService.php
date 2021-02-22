@@ -30,7 +30,7 @@ class ReportService
     private static $REPORT_CONFIG_PATH = '/src/Api/V1/Common/Resources/config/reports.yaml';
 
     /** @var array */
-    private $config;
+    public $config;
 
     /** @var ContainerInterface */
     private $container;

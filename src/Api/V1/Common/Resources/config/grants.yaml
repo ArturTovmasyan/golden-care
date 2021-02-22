@@ -36,6 +36,9 @@ persistence:
         user_phone:
           title: 'UserPhone'
           class: App\Entity\UserPhone
+        report_log:
+          title: 'Report Activity Log'
+          class: App\Entity\ReportLog
 
     lead:
       title: 'Lead'

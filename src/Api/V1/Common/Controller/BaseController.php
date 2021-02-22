@@ -9,6 +9,7 @@ use App\Api\V1\Common\Service\Exception\GridOptionsNotFoundException;
 use App\Api\V1\Common\Service\Exception\ResourceNotFoundException;
 use App\Api\V1\Common\Service\GrantService;
 use App\Api\V1\Common\Service\IGridService;
+use App\Entity\ReportLog;
 use App\Entity\Space;
 use App\Entity\UserInvite;
 use App\Model\Grant;
@@ -18,6 +19,7 @@ use App\Util\Mailer;
 use App\Util\MimeUtil;
 use App\Util\StringUtil;
 use Doctrine\Common\Annotations\Reader;
+use Doctrine\DBAL\ConnectionException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -26,8 +28,12 @@ use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
+use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use ReflectionClass;
+use ReflectionException;
+use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,6 +42,10 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Throwable;
+use function array_values;
+use function in_array;
+use function strlen;
 
 class BaseController extends AbstractController
 {
@@ -66,6 +76,9 @@ class BaseController extends AbstractController
     /** @var GrantService */
     protected $grantService;
 
+    /** @var ReportService */
+    protected $reportService;
+
     /**
      * BaseController constructor.
      * @param SerializerInterface $serializer
@@ -77,6 +90,7 @@ class BaseController extends AbstractController
      * @param Mailer $mailer
      * @param Security $security
      * @param GrantService $grantService
+     * @param ReportService $reportService
      */
     public function __construct(
         SerializerInterface $serializer,
@@ -87,7 +101,8 @@ class BaseController extends AbstractController
         Pdf $pdf,
         Mailer $mailer,
         Security $security,
-        GrantService $grantService
+        GrantService $grantService,
+        ReportService $reportService
     )
     {
         $this->serializer = $serializer;
@@ -99,6 +114,7 @@ class BaseController extends AbstractController
         $this->mailer = $mailer;
         $this->security = $security;
         $this->grantService = $grantService;
+        $this->reportService = $reportService;
     }
 
     /**
@@ -106,8 +122,12 @@ class BaseController extends AbstractController
      * @param string $entityName
      * @param string $groupName
      * @param IGridService $service
-     * @param array ...$params
-     * @return PdfResponse|JsonResponse|Response
+     * @param mixed ...$params
+     * @return PdfResponse|JsonResponse|Response|StreamedResponse
+     * @throws ConnectionException
+     * @throws Exception
+     * @throws ReflectionException
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */
     protected function respondList(Request $request, string $entityName, string $groupName, IGridService $service, ...$params)
     {
@@ -116,7 +136,7 @@ class BaseController extends AbstractController
 
             // TODO(haykg): this is temporary solution, need review
             foreach ($fields as &$field) {
-                $field['id'] = preg_replace_callback('/(_\w)/', function ($matches) {
+                $field['id'] = preg_replace_callback('/(_\w)/', static function ($matches) {
                     return ucfirst($matches[1][1]);
                 }, $field['id']);
             }
@@ -126,14 +146,14 @@ class BaseController extends AbstractController
                 $service->list($params),
                 $fields
             );
-        } else {
-            return $this->respondSuccess(
-                Response::HTTP_OK,
-                '',
-                $service->list($params),
-                [$groupName]
-            );
         }
+
+        return $this->respondSuccess(
+            Response::HTTP_OK,
+            '',
+            $service->list($params),
+            [$groupName]
+        );
     }
 
     /**
@@ -141,8 +161,9 @@ class BaseController extends AbstractController
      * @param string $entityName
      * @param string $groupName
      * @param IGridService $service
-     * @param array ...$params
+     * @param mixed ...$params
      * @return JsonResponse
+     * @throws Throwable
      */
     protected function respondGrid(Request $request, string $entityName, string $groupName, IGridService $service, ...$params): JsonResponse
     {
@@ -217,7 +238,10 @@ class BaseController extends AbstractController
      * @param Request $request
      * @param $data
      * @param $fields
-     * @return PdfResponse|Response
+     * @return PdfResponse|Response|StreamedResponse
+     * @throws ConnectionException
+     * @throws Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */
     protected function respondPdf(Request $request, $data, $fields)
     {
@@ -269,13 +293,15 @@ class BaseController extends AbstractController
      * @param $actualName
      * @param $params
      * @return StreamedResponse
+     * @throws Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */
     protected function respondExcel($html, $actualName, $params): StreamedResponse
     {
         $directory = 'excel/';
 
         if (!is_dir($directory) && !mkdir($directory) && !is_dir($directory)) {
-            throw new \RuntimeException(sprintf('Directory "%s" was not created', $directory));
+            throw new RuntimeException(sprintf('Directory "%s" was not created', $directory));
         }
 
         $hash = $params['hash'];
@@ -328,8 +354,10 @@ class BaseController extends AbstractController
      * @param $actualName
      * @param string $format
      * @param array $params
-     * @return PdfResponse|Response
-     * @throws \Exception
+     * @return PdfResponse|Response|StreamedResponse
+     * @throws ConnectionException
+     * @throws Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */
     protected function respondFile($template, $actualName, $format = Report::FORMAT_PDF, array $params = [])
     {
@@ -342,10 +370,12 @@ class BaseController extends AbstractController
         $html = $this->renderView($template, $params);
 
         if ($format === Report::FORMAT_PDF) {
+            $this->saveReportLog($actualName, $format);
             return new PdfResponse($this->pdf->getOutputFromHtml($html, $options), $actualName . '.pdf');
         }
 
         if ($format === Report::FORMAT_CSV) {
+            $this->saveReportLog($actualName, $format);
             return $this->respondCsv($html, $actualName);
         }
 
@@ -353,7 +383,7 @@ class BaseController extends AbstractController
             return $this->respondExcel($html, $actualName, $params);
         }
 
-        throw new \Exception('Support only pdf, csv and xls formats');
+        throw new RuntimeException('Support only pdf, csv and xls formats');
     }
 
     /**
@@ -362,7 +392,10 @@ class BaseController extends AbstractController
      * @param string $alias
      * @param bool $isHash
      * @param ReportService $reportService
-     * @return PdfResponse|Response
+     * @return PdfResponse|Response|StreamedResponse
+     * @throws ConnectionException
+     * @throws Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */
     protected function respondReport(Request $request, string $group, string $alias, bool $isHash, ReportService $reportService)
     {
@@ -392,6 +425,7 @@ class BaseController extends AbstractController
      * @param string $entityName
      * @param string $groupName
      * @return JsonResponse
+     * @throws ReflectionException
      */
     protected function getOptionsByGroupName(Request $request, string $entityName, string $groupName): JsonResponse
     {
@@ -405,16 +439,16 @@ class BaseController extends AbstractController
 
         if (!empty($ignoreFields)) {
             foreach ($options as $key => $option) {
-                if (\in_array($option['id'], $ignoreFields, false)) {
+                if (in_array($option['id'], $ignoreFields, false)) {
                     unset($options[$key]);
                 }
             }
 
-            $options = \array_values($options);
+            $options = array_values($options);
         }
 
         if (!$this->grantService->hasCurrentUserEntityGrant(Space::class, Grant::$LEVEL_VIEW)) {
-            $options = array_values(array_filter($options, function ($value) {
+            $options = array_values(array_filter($options, static function ($value) {
                 return $value['id'] !== 'space';
             }));
         }
@@ -440,8 +474,9 @@ class BaseController extends AbstractController
      * @param string $entityName
      * @param string $groupName
      * @return QueryBuilder
+     * @throws ReflectionException
      */
-    protected function getQueryBuilder(Request $request, string $entityName, string $groupName)
+    protected function getQueryBuilder(Request $request, string $entityName, string $groupName): QueryBuilder
     {
         return $this->getGrid($entityName)
             ->setEntityManager($this->em)
@@ -452,13 +487,14 @@ class BaseController extends AbstractController
     /**
      * @param $entityName
      * @return null|object|Grid
+     * @throws ReflectionException
      */
     private function getGrid($entityName)
     {
         /**
          * @var Grid $annotation
          */
-        $reflectionClass = new \ReflectionClass($entityName);
+        $reflectionClass = new ReflectionClass($entityName);
 
         return $this->reader->getClassAnnotation($reflectionClass, Grid::class);
     }
@@ -481,7 +517,7 @@ class BaseController extends AbstractController
 
             return new Response($data, Response::HTTP_OK, [
                 'Content-Type' => $mimeType,
-                'Content-Length' => \strlen($data),
+                'Content-Length' => strlen($data),
                 'Content-Disposition' => 'attachment; filename="' . StringUtil::slugify($title) . '.' . MimeUtil::mime2ext($mimeType) . '"'
             ]);
         }
@@ -500,7 +536,7 @@ class BaseController extends AbstractController
         if (!empty($data)) {
             return new Response($data, Response::HTTP_OK, [
                 'Content-Type' => $mimeType,
-                'Content-Length' => \strlen($data),
+                'Content-Length' => strlen($data),
                 'Content-Disposition' => 'attachment; filename="' . StringUtil::slugify($title) . '.' . MimeUtil::mime2ext($mimeType) . '"'
             ]);
         }
@@ -518,8 +554,10 @@ class BaseController extends AbstractController
      * @param string $entityName
      * @param string $groupName
      * @param IGridService $service
-     * @param array ...$params
-     * @return mixed
+     * @param mixed ...$params
+     * @return int|mixed|string
+     * @throws ReflectionException
+     * @throws Throwable
      */
     protected function respondQueryBuilderResult(Request $request, string $entityName, string $groupName, IGridService $service, ...$params)
     {
@@ -530,5 +568,35 @@ class BaseController extends AbstractController
         return $queryBuilder
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param $actualName
+     * @param $format
+     * @throws ConnectionException
+     */
+    private function saveReportLog($actualName, $format): void
+    {
+        try {
+            $this->em->getConnection()->beginTransaction();
+
+            $arrayActualName = explode('-', $actualName);
+            $reportGroup = array_shift($arrayActualName);
+            $reportAlias = implode('-', $arrayActualName);
+            $reportTitle = $this->reportService->config[$reportGroup]['reports'][$reportAlias]['title'];
+
+            $reportLog = new ReportLog();
+            $reportLog->setTitle($reportTitle);
+            $reportLog->setFormat($format);
+
+            $this->em->persist($reportLog);
+            $this->em->flush();
+
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollBack();
+
+            throw $e;
+        }
     }
 }
