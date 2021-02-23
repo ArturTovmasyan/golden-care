@@ -536,7 +536,7 @@ class DataHealthReportService extends BaseService
         $residentIds = [];
         $residentsById = [];
 
-        $images = $this->getResidentImages($residentIds);
+        $images = $this->getResidentImages([$residentId]);
 
         foreach ($residents as $resident) {
             $resident['type'] = GroupType::getTypes()[$resident['type']];
