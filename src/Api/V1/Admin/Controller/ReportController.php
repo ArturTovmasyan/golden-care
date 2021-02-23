@@ -72,6 +72,8 @@ class ReportController extends BaseController
 
                 $this->em->getConnection()->commit();
 
+                $this->saveReportLog($params['group'] . '-' . $params['alias'], $params['format']);
+
                 return $this->respondSuccess(
                     Response::HTTP_OK,
                     '',

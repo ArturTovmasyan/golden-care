@@ -380,7 +380,6 @@ class BaseController extends AbstractController
         }
 
         if ($format === Report::FORMAT_XLS) {
-            $this->saveReportLog($actualName, $format);
             return $this->respondExcel($html, $actualName, $params);
         }
 
@@ -576,7 +575,7 @@ class BaseController extends AbstractController
      * @param $format
      * @throws ConnectionException
      */
-    private function saveReportLog($actualName, $format): void
+    public function saveReportLog($actualName, $format): void
     {
         try {
             $this->em->getConnection()->beginTransaction();
