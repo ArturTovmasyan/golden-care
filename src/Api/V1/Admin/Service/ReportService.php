@@ -314,7 +314,7 @@ class ReportService
             }
         }
 
-        if ($configParameter['resident'] === true && $configParameter['group'] === true) {
+        if ($configParameter['resident'] === true && $configParameter['group'] === true && $alias !== 'resident-special') {
             throw new IncorrectReportParameterException([
                 $request_param_map['group_id'],
                 $request_param_map['group_all'],

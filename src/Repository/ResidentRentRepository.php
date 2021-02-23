@@ -302,8 +302,10 @@ class ResidentRentRepository extends EntityRepository implements RelatedInfoInte
             ->select('
                     rr.id as id,
                     rr.start as start,
+                    rr.end as end,
                     rr.amount as amount,
-                    r.id as residentId
+                    r.id as residentId,
+                    rr.source as sources
             ')
             ->innerJoin(
                 Resident::class,

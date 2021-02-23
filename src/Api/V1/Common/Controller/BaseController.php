@@ -350,6 +350,22 @@ class BaseController extends AbstractController
     }
 
     /**
+     * @param $actualName
+     * @param $params
+     * @return Response
+     */
+    protected function respondTxt($actualName, $params): Response
+    {
+        return new Response(json_encode($params['data']), Response::HTTP_OK, [
+            'Content-Type' => 'text/plain',
+            'Content-Disposition' => 'attachment; filename="' . $actualName . '.txt"',
+            'Content-Transfer-Encoding' => 'binary',
+            'Pragma' => 'no-cache',
+            'Expires' => '0',
+        ]);
+    }
+
+    /**
      * @param $template
      * @param $actualName
      * @param string $format
@@ -361,6 +377,11 @@ class BaseController extends AbstractController
      */
     protected function respondFile($template, $actualName, $format = Report::FORMAT_PDF, array $params = [])
     {
+        if ($format === Report::FORMAT_TXT) {
+            $this->saveReportLog($actualName, $format);
+            return $this->respondTxt($actualName, $params);
+        }
+
         $options = [];
 
         if (property_exists($params['data'], 'options')) {
@@ -383,7 +404,7 @@ class BaseController extends AbstractController
             return $this->respondExcel($html, $actualName, $params);
         }
 
-        throw new RuntimeException('Support only pdf, csv and xls formats');
+        throw new RuntimeException('Support only pdf, csv, xls and txt formats');
     }
 
     /**

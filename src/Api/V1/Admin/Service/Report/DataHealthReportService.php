@@ -7,21 +7,45 @@ use App\Entity\Facility;
 use App\Entity\FacilityRoomBaseRate;
 use App\Entity\FacilityRoomBaseRateCareLevel;
 use App\Entity\FacilityRoomType;
+use App\Entity\PhysicianPhone;
 use App\Entity\Resident;
+use App\Entity\ResidentAdmission;
+use App\Entity\ResidentAllergen;
+use App\Entity\ResidentDiagnosis;
+use App\Entity\ResidentDiet;
+use App\Entity\ResidentEvent;
+use App\Entity\ResidentHealthInsurance;
+use App\Entity\ResidentMedicalHistoryCondition;
+use App\Entity\ResidentMedication;
+use App\Entity\ResidentMedicationAllergy;
 use App\Entity\ResidentPhysician;
 use App\Entity\ResidentRent;
 use App\Entity\ResidentResponsiblePerson;
+use App\Entity\ResponsiblePersonPhone;
+use App\Model\AdmissionType;
 use App\Model\GroupType;
 use App\Model\Report\InvalidRentAmount;
 use App\Model\Report\MissingPhysician;
 use App\Model\Report\MissingRentRecords;
 use App\Model\Report\RentsCurrentVsBase;
 use App\Model\Report\ResidentRps;
+use App\Model\Report\ResidentSpecial;
 use App\Repository\FacilityRoomTypeRepository;
+use App\Repository\PhysicianPhoneRepository;
+use App\Repository\ResidentAdmissionRepository;
+use App\Repository\ResidentAllergenRepository;
+use App\Repository\ResidentDiagnosisRepository;
+use App\Repository\ResidentDietRepository;
+use App\Repository\ResidentEventRepository;
+use App\Repository\ResidentHealthInsuranceRepository;
+use App\Repository\ResidentMedicalHistoryConditionRepository;
+use App\Repository\ResidentMedicationAllergyRepository;
+use App\Repository\ResidentMedicationRepository;
 use App\Repository\ResidentPhysicianRepository;
 use App\Repository\ResidentRentRepository;
 use App\Repository\ResidentRepository;
 use App\Repository\ResidentResponsiblePersonRepository;
+use App\Repository\ResponsiblePersonPhoneRepository;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
 
 class DataHealthReportService extends BaseService
@@ -429,9 +453,10 @@ class DataHealthReportService extends BaseService
      * @param $assessmentId
      * @param $assessmentFormId
      * @param $discontinued
+     * @param $special
      * @return MissingPhysician
      */
-    public function getMissingPhysicianReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): MissingPhysician
+    public function getMissingPhysicianReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued, $special): MissingPhysician
     {
         $currentSpace = $this->grantService->getCurrentSpace();
 
@@ -476,5 +501,162 @@ class DataHealthReportService extends BaseService
         $report->setStrategyId($type);
 
         return $report;
+    }
+
+    /**
+     * @param $group
+     * @param bool|null $groupAll
+     * @param $groupIds
+     * @param $groupId
+     * @param bool|null $residentAll
+     * @param $residentId
+     * @param $date
+     * @param $dateFrom
+     * @param $dateTo
+     * @param $assessmentId
+     * @param $assessmentFormId
+     * @param $discontinued
+     * @return array
+     */
+    public function getSpecialResidentReport($group, ?bool $groupAll, $groupIds, $groupId, ?bool $residentAll, $residentId, $date, $dateFrom, $dateTo, $assessmentId, $assessmentFormId, $discontinued): array
+    {
+        $currentSpace = $this->grantService->getCurrentSpace();
+
+        $type = $group;
+        $typeId = $groupId;
+
+        if (!\in_array($type, GroupType::getTypeValues(), false)) {
+            throw new InvalidParameterException('group');
+        }
+
+        /** @var ResidentRepository $repo */
+        $repo = $this->em->getRepository(Resident::class);
+
+        $residents = $repo->getAdmissionResidentsFullInfoByTypeOrId($currentSpace, $this->grantService->getCurrentUserEntityGrants(Resident::class), $type, $typeId, $residentId, $this->getNotGrantResidentIds());
+        $residentIds = [];
+        $residentsById = [];
+
+        $images = $this->getResidentImages($residentIds);
+
+        foreach ($residents as $resident) {
+            $resident['type'] = GroupType::getTypes()[$resident['type']];
+            $resident['state'] = AdmissionType::getTypes()[$resident['state']];
+            $resident['birthday'] = $resident['birthday']->format('Y-m-d');
+            $resident['gender'] = (int)$resident['gender'] > 1 ? 'Female' : 'Male';
+            $resident['ssn'] = !empty($resident['ssn']) ? $resident['ssn'] : '';
+            $resident['image'] = array_key_exists($residentId, $images) ? $images[$residentId] : '';
+
+            $residentIds[] = $resident['id'];
+            $residentsById[$resident['id']] = $resident;
+        }
+
+        /** @var ResidentResponsiblePersonRepository $responsiblePersonRepo */
+        $responsiblePersonRepo = $this->em->getRepository(ResidentResponsiblePerson::class);
+        /** @var ResidentAdmissionRepository $admissionRepo */
+        $admissionRepo = $this->em->getRepository(ResidentAdmission::class);
+        /** @var ResidentEventRepository $eventRepo */
+        $eventRepo = $this->em->getRepository(ResidentEvent::class);
+        /** @var ResidentRentRepository $rentRepo */
+        $rentRepo = $this->em->getRepository(ResidentRent::class);
+
+        $responsiblePersons = $responsiblePersonRepo->getResponsiblePersonByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentResponsiblePerson::class), $residentIds);
+        $admissions = $admissionRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), $residentIds, $type);
+        $events = $eventRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentEvent::class), $residentIds);
+        $rents = $rentRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentRent::class), $residentIds);
+
+        $responsiblePersonPhones = [];
+        if (!empty($responsiblePersons)) {
+            $responsiblePersonIds = array_map(static function (ResidentResponsiblePerson $item) {
+                return $item->getResponsiblePerson() ? $item->getResponsiblePerson()->getId() : 0;
+            }, $responsiblePersons);
+            $responsiblePersonIds = array_unique($responsiblePersonIds);
+
+            /** @var ResponsiblePersonPhoneRepository $responsiblePersonPhoneRepo */
+            $responsiblePersonPhoneRepo = $this->em->getRepository(ResponsiblePersonPhone::class);
+
+            $responsiblePersonPhones = $responsiblePersonPhoneRepo->getByResponsiblePersonIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResponsiblePersonPhone::class), $responsiblePersonIds);
+        }
+
+        $insuranceArray = [];
+        $physicians = [];
+        $physicianPhones = [];
+        $diagnosis = [];
+        $medications = [];
+        $medicationAllergens = [];
+        $allergens = [];
+        $diets = [];
+        $conditions = [];
+        if ($type !== GroupType::TYPE_APARTMENT) {
+            /** @var ResidentHealthInsuranceRepository $insuranceRepo */
+            $insuranceRepo = $this->em->getRepository(ResidentHealthInsurance::class);
+            /** @var ResidentPhysicianRepository $physicianRepo */
+            $physicianRepo = $this->em->getRepository(ResidentPhysician::class);
+            /** @var ResidentDiagnosisRepository $diagnosisRepo */
+            $diagnosisRepo = $this->em->getRepository(ResidentDiagnosis::class);
+            /** @var ResidentMedicationRepository $medicationRepo */
+            $medicationRepo = $this->em->getRepository(ResidentMedication::class);
+            /** @var ResidentMedicationAllergyRepository $medicationAllergenRepo */
+            $medicationAllergenRepo = $this->em->getRepository(ResidentMedicationAllergy::class);
+            /** @var ResidentAllergenRepository $allergenRepo */
+            $allergenRepo = $this->em->getRepository(ResidentAllergen::class);
+            /** @var ResidentDietRepository $dietRepo */
+            $dietRepo = $this->em->getRepository(ResidentDiet::class);
+            /** @var ResidentMedicalHistoryConditionRepository $conditionRepo */
+            $conditionRepo = $this->em->getRepository(ResidentMedicalHistoryCondition::class);
+
+            $insurances = $insuranceRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentHealthInsurance::class), $residentIds);
+            $medications = $medicationRepo->getWithDiscontinuedByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedication::class), $residentIds);
+            $medicationAllergens = $medicationAllergenRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedicationAllergy::class), $residentIds);
+            $allergens = $allergenRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAllergen::class), $residentIds);
+            $diagnosis = $diagnosisRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentDiagnosis::class), $residentIds);
+            $diets = $dietRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentDiet::class), $residentIds);
+            $conditions = $conditionRepo->getByResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentMedicalHistoryCondition::class), $residentIds);
+            $physicians = $physicianRepo->getByAdmissionResidentIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentPhysician::class), $type, $residentIds);
+
+            if (!empty($insurances)) {
+                /** @var ResidentHealthInsurance $insurance */
+                foreach ($insurances as $insurance) {
+                    $insuranceArray[] = [
+                        'id' => $insurance->getId(),
+                        'medicalRecordNumber' => $insurance->getMedicalRecordNumber(),
+                        'groupNumber' => $insurance->getGroupNumber(),
+                        'notes' => $insurance->getNotes(),
+                        'company' => $insurance->getCompany() !== null ? $insurance->getCompany()->getTitle() : 'N/A',
+                        'residentId' => $insurance->getResident() !== null ? $insurance->getResident()->getId() : 0,
+                    ];
+                }
+            }
+
+            if (!empty($physicians)) {
+                $physicianIds = array_map(static function ($item) {
+                    return $item['pId'];
+                }, $physicians);
+                $physicianIds = array_unique($physicianIds);
+
+                /** @var PhysicianPhoneRepository $physicianPhoneRepo */
+                $physicianPhoneRepo = $this->em->getRepository(PhysicianPhone::class);
+
+                $physicianPhones = $physicianPhoneRepo->getByPhysicianIds($currentSpace, $this->grantService->getCurrentUserEntityGrants(PhysicianPhone::class), $physicianIds);
+            }
+        }
+
+        $report = new ResidentSpecial();
+        $report->setResidents($residentsById);
+        $report->setPhysicianPhones($physicianPhones);
+        $report->setResponsiblePersonPhones($responsiblePersonPhones);
+        $report->setResponsiblePersons($responsiblePersons);
+        $report->setInsurances($insuranceArray);
+        $report->setEvents($events);
+        $report->setAdmissions($admissions);
+        $report->setRents($rents);
+        $report->setPhysicians($physicians);
+        $report->setMedications($medications);
+        $report->setDiagnosis($diagnosis);
+        $report->setMedicationAllergens($medicationAllergens);
+        $report->setAllergens($allergens);
+        $report->setConditions($conditions);
+        $report->setDiets($diets);
+
+        return $report->getResidents()[$residentId];
     }
 }

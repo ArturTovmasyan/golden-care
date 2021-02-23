@@ -566,6 +566,20 @@ health:
       parameters:
         group:
           select_all: true
+    resident-special:
+      service: App\Api\V1\Admin\Service\Report\DataHealthReportService::getSpecialResidentReport
+      title: 'Special Resident Report'
+      show_in_al_list: true
+      show_in_il_list: false
+      show_in_resident_list: false
+      show_in_group_list: true
+      formats: ['txt']
+      parameters:
+        special: true
+        group:
+          select_all: false
+        resident:
+          select_all: false
 
 facility:
   title: 'Facility Reports'

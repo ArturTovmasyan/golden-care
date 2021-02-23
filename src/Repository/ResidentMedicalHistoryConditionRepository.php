@@ -253,4 +253,61 @@ class ResidentMedicalHistoryConditionRepository extends EntityRepository impleme
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param Space|null $space
+     * @param array|null $entityGrants
+     * @param array $residentIds
+     * @return mixed
+     */
+    public function getByResidentIds(Space $space = null, array $entityGrants = null, array $residentIds)
+    {
+        $qb = $this->createQueryBuilder('rmhc');
+
+        $qb
+            ->select('
+                    mhc.id as id,
+                    mhc.title as title,
+                    mhc.description as description,
+                    r.id as residentId
+            ')
+            ->innerJoin(
+                MedicalHistoryCondition::class,
+                'mhc',
+                Join::WITH,
+                'mhc = rmhc.condition'
+            )
+            ->innerJoin(
+                Resident::class,
+                'r',
+                Join::WITH,
+                'rmhc.resident = r'
+            )
+            ->where('r.id IN (:residentIds)')
+            ->setParameter('residentIds', $residentIds);
+
+        if ($space !== null) {
+            $qb
+                ->innerJoin(
+                    Space::class,
+                    's',
+                    Join::WITH,
+                    's = r.space'
+                )
+                ->andWhere('s = :space')
+                ->setParameter('space', $space);
+        }
+
+        if ($entityGrants !== null) {
+            $qb
+                ->andWhere('rmhc.id IN (:grantIds)')
+                ->setParameter('grantIds', $entityGrants);
+        }
+
+        return $qb
+            ->orderBy('mhc.title')
+            ->groupBy('rmhc.id')
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -640,6 +640,8 @@ report:
           title: "Room Rents Current vs. Base"
         missing-physician:
           title: "Resident Physicians: List of Active Residents without Physicians"
+        resident-special:
+          title: "Special Resident Report"
     facility:
       title: "Facility Reports"
       children:

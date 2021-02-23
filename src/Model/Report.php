@@ -10,6 +10,7 @@ class Report
     const FORMAT_PDF = 'pdf';
     const FORMAT_CSV = 'csv';
     const FORMAT_XLS = 'xls';
+    const FORMAT_TXT = 'txt';
     /**
      * @var array
      */
@@ -17,6 +18,7 @@ class Report
         self::FORMAT_PDF,
         self::FORMAT_CSV,
         self::FORMAT_XLS,
+        self::FORMAT_TXT,
     ];
 
     /**
