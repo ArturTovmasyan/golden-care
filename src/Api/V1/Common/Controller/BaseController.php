@@ -380,6 +380,7 @@ class BaseController extends AbstractController
         }
 
         if ($format === Report::FORMAT_XLS) {
+            $this->saveReportLog($actualName, $format);
             return $this->respondExcel($html, $actualName, $params);
         }
 
