@@ -534,6 +534,7 @@ class DataHealthReportService extends BaseService
 
         /** @var Resident $resident */
         $resident = $repo->getOne($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants(Resident::class), $residentId);
+
         $image = '';
         if ($resident !== null && $resident->getImage() !== null) {
             $image = $resident->getImage()->getS3Uri();
@@ -543,13 +544,15 @@ class DataHealthReportService extends BaseService
         $residentIds = [];
         $residentsById = [];
 
+        $images = $this->getResidentImages([$residentId]);
+
         foreach ($residents as $resident) {
             $resident['type'] = GroupType::getTypes()[$resident['type']];
             $resident['state'] = AdmissionType::getTypes()[$resident['state']];
             $resident['birthday'] = $resident['birthday']->format('Y-m-d');
             $resident['gender'] = (int)$resident['gender'] > 1 ? 'Female' : 'Male';
             $resident['ssn'] = !empty($resident['ssn']) ? $resident['ssn'] : '';
-            $resident['image'] = $image;
+            $resident['image'] = array_key_exists($residentId, $images) ? $images[$residentId] : '';
 
             $residentIds[] = $resident['id'];
             $residentsById[$resident['id']] = $resident;
