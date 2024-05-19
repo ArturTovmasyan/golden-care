@@ -10,8 +10,8 @@ class Role
     public static function defaultValues()
     {
         return [
-            'not'     => 0,
-            'default' => 1,
+            'false' => 0,
+            'true'  => 1,
         ];
     }
 }

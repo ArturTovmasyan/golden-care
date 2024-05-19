@@ -317,9 +317,48 @@ class RoleController extends BaseController
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Throwable
      */
-    public function removeAction(Request $request, $id, RoleService $roleService)
+    public function deleteAction(Request $request, $id, RoleService $roleService)
     {
         $roleService->removeRole($id);
+
+        return $this->respondSuccess(
+            Response::HTTP_NO_CONTENT
+        );
+    }
+
+    /**
+     * @api {delete} /api/v1.0/admin/role Bulk Delete Roles
+     * @apiVersion 1.0.0
+     * @apiName Bulk Delete Roles
+     * @apiGroup Admin Role
+     * @apiDescription This function is used to bulk remove roles
+     *
+     * @apiHeader {String} Content-Type  application/json
+     * @apiHeader {String} Authorization Bearer ACCESS_TOKEN
+     *
+     * @apiParam {Int[]} ids The unique identifier of the role TODO: review
+     *
+     * @apiSuccessExample {json} Sample Response:
+     *     HTTP/1.1 204 No Content
+     *     {}
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 400 Bad Request
+     *     {
+     *          "code": 611,
+     *          "error": "Role not found"
+     *     }
+     *
+     * @Route("", name="api_admin_role_delete_bulk", methods={"DELETE"})
+     *
+     * @param Request $request
+     * @param RoleService $roleService
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Throwable
+     */
+    public function deleteBulkAction(Request $request, RoleService $roleService)
+    {
+        var_dump($request->get('ids'));die();
 
         return $this->respondSuccess(
             Response::HTTP_NO_CONTENT

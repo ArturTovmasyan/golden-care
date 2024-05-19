@@ -76,22 +76,26 @@ class BaseController extends Controller
     protected function respondGrid(Request $request, string $entityName, string $groupName, IGridService $service, ...$params) {
         $queryBuilder = $this->getQueryBuilder($request, $entityName, $groupName);
 
-        if($request->get('pdf')) {
+        if ($request->get('pdf')) {
             $fields = $this->getGrid($entityName)->getGroupOptions($groupName);
 
             // TODO(haykg): this is temporary solution, need review
-            foreach($fields as &$field) {
-                $field['id'] = preg_replace_callback('/(_\w)/', function($matches) {
+            foreach ($fields as &$field) {
+                $field['id'] = preg_replace_callback('/(_\w)/', function ($matches) {
                     return ucfirst($matches[1][1]);
                 }, $field['id']);
             }
 
-            return $this->respondPdf($fields, $service->getListing($queryBuilder, $params));
+            return $this->respondPdf(
+                $request,
+                $service->getListing($queryBuilder, $params),
+                $fields
+            );
         } else {
             return $this->respondPagination(
                 $request,
                 $service->getListing($queryBuilder, $params),
-                ['api_admin_user_list']
+                [$groupName]
             );
         }
     }
@@ -102,12 +106,19 @@ class BaseController extends Controller
      * @param QueryBuilder $queryBuilder
      * @return PdfResponse
      */
-    protected function respondPdf($fields, Paginator $paginator)
+    protected function respondPdf(Request $request, Paginator $paginator, $fields)
     {
         $data = $paginator->getQuery()->getArrayResult();
 
         // TODO(haykg): this is temporary solution, need to be added title and field lables
-        $html = $this->renderView('@api_grid/grid.html.twig', ['title' => 'Title', 'fields' => $fields, 'data' => $data]);
+        $html = $this->renderView(
+            '@api_grid/grid.html.twig',
+            [
+                'title' => 'Title',
+                'fields' => $fields,
+                'data' => $data
+            ]
+        );
 
         return new PdfResponse($this->pdf->getOutputFromHtml($html));
     }

@@ -75,11 +75,23 @@
     {% for item in data %}
         <tr>
             {% for field in fields %}
-                {% if field.type == 'date' %}
-                    <td>{{ item[field.id]|date("Y-m-d h:i:s") }}</td>
-                {% else %}
-                    <td>{{ item[field.id] }}</td>
-                {% endif %}
+                <td>
+                    {% if item[field.id] is defined %}
+                        {% if field.type == 'date' %}
+                            {{ item[field.id]|date("Y-m-d h:i:s") }}
+                        {% else %}
+                            {% if field.values is defined %} {# TODO: review #}
+                                {% for key in field.values|keys %}
+                                    {% if item[field.id] == field.values[key] %}
+                                        {{ key|trans }}
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                {{ item[field.id]|trans }}
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                </td>
             {% endfor %}
         </tr>
     {% endfor %}

@@ -10,8 +10,8 @@ class User
     public static function completedValues()
     {
         return [
-            'not completed' => 0,
-            'completed'     => 1,
+            'false' => 0,
+            'true'  => 1,
         ];
     }
 
@@ -21,8 +21,8 @@ class User
     public static function enabledValues()
     {
         return [
-            'disabled' => 0,
-            'enabled'  => 1,
+            'false' => 0,
+            'true'  => 1,
         ];
     }
 }
