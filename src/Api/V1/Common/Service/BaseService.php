@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Api\V1\Common\Service;
 
 use App\Annotation\ValidationSerializedName;
@@ -96,25 +97,26 @@ class BaseService
      * @param S3Service $s3Service
      */
     public function __construct(
-        EntityManagerInterface $em,
+        EntityManagerInterface       $em,
         UserPasswordEncoderInterface $encoder,
-        Mailer $mailer,
-        ValidatorInterface $validator,
-        Security $security,
-        Reader $reader,
-        GrantService $grantService,
-        ContainerInterface $container,
-        S3Service $s3Service
-    ) {
-        $this->em           = $em;
-        $this->encoder      = $encoder;
-        $this->mailer       = $mailer;
-        $this->validator    = $validator;
-        $this->security     = $security;
-        $this->reader       = $reader;
+        Mailer                       $mailer,
+        ValidatorInterface           $validator,
+        Security                     $security,
+        Reader                       $reader,
+        GrantService                 $grantService,
+        ContainerInterface           $container,
+        S3Service                    $s3Service
+    )
+    {
+        $this->em = $em;
+        $this->encoder = $encoder;
+        $this->mailer = $mailer;
+        $this->validator = $validator;
+        $this->security = $security;
+        $this->reader = $reader;
         $this->grantService = $grantService;
-        $this->container    = $container;
-        $this->s3Service    = $s3Service;
+        $this->container = $container;
+        $this->s3Service = $s3Service;
     }
 
     /**
@@ -127,7 +129,7 @@ class BaseService
     protected function validate($entity, $constraints = null, $groups = null)
     {
         $validationErrors = $this->validator->validate($entity, $constraints, $groups);
-        $errors           = [];
+        $errors = [];
 
         if ($validationErrors->count() > 0) {
             foreach ($validationErrors as $error) {
@@ -162,13 +164,13 @@ class BaseService
      * @param $spaceId
      * @return Space|null
      */
-    protected function getSpace($spaceId) : ?Space
+    protected function getSpace($spaceId): ?Space
     {
         /** @var Space $space */
         $space = $this->grantService->getCurrentSpace();
 
         // TODO: revisit null case
-        if($spaceId !== null && $this->grantService->hasCurrentUserGrant('persistence-security-space')) {
+        if ($spaceId !== null && $this->grantService->hasCurrentUserGrant('persistence-security-space')) {
             $space = $this->em->getRepository(Space::class)->find($spaceId);
         }
 
@@ -180,7 +182,7 @@ class BaseService
      * @param $entities
      * @return array
      */
-    protected function getRelatedData($className, $entities) : array
+    protected function getRelatedData($className, $entities): array
     {
         $relatedData = [];
         if (!empty($entities)) {
@@ -204,7 +206,9 @@ class BaseService
                             }
 
                             if (\count($getter)) {
-                                $ids = array_map(function($item){return $item->getId();} , $getter->toArray());
+                                $ids = array_map(function ($item) {
+                                    return $item->getId();
+                                }, $getter->toArray());
                             }
                         } else {
                             $mappedBy = $associationMapping['mappedBy'];
@@ -212,13 +216,13 @@ class BaseService
                         }
 
                         if ($associationMapping['type'] === ClassMetadataInfo::MANY_TO_MANY || ($associationMapping['isOwningSide'] === false && ($associationMapping['type'] === ClassMetadataInfo::ONE_TO_MANY || $associationMapping['type'] === ClassMetadataInfo::ONE_TO_ONE))) {
-                            $targetEntityName = explode('\\',$associationMapping['targetEntity']);
+                            $targetEntityName = explode('\\', $associationMapping['targetEntity']);
                             $targetEntityName = lcfirst(end($targetEntityName)) . 's';
 
                             $targetEntityRepo = $this->em->getRepository($associationMapping['targetEntity']);
 
                             $targetEntities = [];
-                            if($targetEntityRepo instanceof RelatedInfoInterface) {
+                            if ($targetEntityRepo instanceof RelatedInfoInterface) {
                                 $targetEntities = $targetEntityRepo->getRelatedData($this->grantService->getCurrentSpace(), null, $mappedBy, $id, $ids);
                             }
 
@@ -231,7 +235,7 @@ class BaseService
 
                             if ($hasAccessToView) {
                                 $targetEntities = [];
-                                if($targetEntityRepo instanceof RelatedInfoInterface) {
+                                if ($targetEntityRepo instanceof RelatedInfoInterface) {
                                     $targetEntities = $targetEntityRepo->getRelatedData($this->grantService->getCurrentSpace(), $this->grantService->getCurrentUserEntityGrants($associationMapping['targetEntity']), $mappedBy, $id, $ids);
                                 }
                             } else {
@@ -383,12 +387,16 @@ class BaseService
                 $facilityBeds = $facilityBedRepo->getBedIdAndTypeIdByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(FacilityBed::class), $roomIds);
 
                 if (\count($facilityBeds)) {
-                    $bedIds = array_map(function($item){return $item['id'];} , $facilityBeds);
+                    $bedIds = array_map(function ($item) {
+                        return $item['id'];
+                    }, $facilityBeds);
 
-                    $admissions = $admissionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants( ResidentAdmission::class), GroupType::TYPE_FACILITY, $bedIds);
+                    $admissions = $admissionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_FACILITY, $bedIds);
 
                     if (!empty($admissions)) {
-                        $occupancyBedIds = array_map(function($item){return $item['bedId'];} , $admissions);
+                        $occupancyBedIds = array_map(function ($item) {
+                            return $item['bedId'];
+                        }, $admissions);
                     }
 
                     foreach ($facilityBeds as $bed) {
@@ -423,12 +431,16 @@ class BaseService
                 $apartmentBeds = $apartmentBedRepo->getBedIdAndTypeIdByRooms($currentSpace, $this->grantService->getCurrentUserEntityGrants(ApartmentBed::class), $roomIds);
 
                 if (\count($apartmentBeds)) {
-                    $bedIds = array_map(function($item){return $item['id'];} , $apartmentBeds);
+                    $bedIds = array_map(function ($item) {
+                        return $item['id'];
+                    }, $apartmentBeds);
 
-                    $admissions = $admissionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants( ResidentAdmission::class), GroupType::TYPE_APARTMENT, $bedIds);
+                    $admissions = $admissionRepo->getBedIdAndTypeId($currentSpace, $this->grantService->getCurrentUserEntityGrants(ResidentAdmission::class), GroupType::TYPE_APARTMENT, $bedIds);
 
                     if (!empty($admissions)) {
-                        $occupancyBedIds = array_map(function($item){return $item['bedId'];} , $admissions);
+                        $occupancyBedIds = array_map(function ($item) {
+                            return $item['bedId'];
+                        }, $admissions);
                     }
 
                     foreach ($apartmentBeds as $bed) {
@@ -445,9 +457,9 @@ class BaseService
 
     /**
      * @param $data
-     * @return mixed|null|string
+     * @throws \ReflectionException
      */
-    public function uploadByChunks($data)
+    public function uploadByChunks($data): void
     {
         // Get request id from data
         $requestId = $data['requestId'];
@@ -460,11 +472,10 @@ class BaseService
         /** @var ChunkFileRepository $chunkFileRepo */
         $chunkFileRepo = $this->em->getRepository(ChunkFile::class);
 
-        /** @var int $existingChunk */
-        $existingChunk = $chunkFileRepo->getChunk($requestId, $data['chunkId'], $data['userId']);
+        //create new chunk
+        $chunkFile = $chunkFileRepo->findOneBy(['requestId' => $requestId, 'chunkId' => $data['chunkId'], 'userId' => $data['userId']]);
 
-        if ($existingChunk === 0) {
-            //create new chunk
+        if ($chunkFile === null) {
             $chunkFile = new ChunkFile();
             $chunkFile->setChunk($data['chunkString']);
             $chunkFile->setChunkId($data['chunkId']);
@@ -491,7 +502,7 @@ class BaseService
 
                 // Remove chunks before image create.
                 // This will prevent photo duplication
-		$this->removeChunks($requestId);
+                $this->removeChunks($requestId);
 
                 foreach ($allChunks as $chunks) {
                     //generate base 64 code
@@ -499,13 +510,20 @@ class BaseService
                 }
 
                 //change base64 plus symbols
-                $base64 = str_replace('-*-', '+', $base64);
-
-                return $base64;
+//                return str_replace('-*-', '+', $base64);
             }
         }
 
-        return null;
+        $chunkFile->setChunk($data['chunkString']);
+        $chunkFile->setChunkId($data['chunkId']);
+        $chunkFile->setTotalChunk($totalChunk);
+        $chunkFile->setRequestId($requestId);
+        $chunkFile->setUserId($data['userId']);
+
+        $this->validate($chunkFile, null, ['api_admin_chunk_file_add']);
+
+        $this->em->persist($chunkFile);
+        $this->em->flush();
     }
 
     /**
@@ -513,7 +531,7 @@ class BaseService
      *
      * @param $requestId
      */
-    private function removeChunks($requestId): void
+    public function removeChunks($requestId): void
     {
         $query = $this->em->createQuery('DELETE App:ChunkFile ch WHERE ch.requestId = :requestId')->setParameter('requestId', $requestId);
         $query->execute();

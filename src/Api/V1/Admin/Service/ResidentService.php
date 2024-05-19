@@ -15,6 +15,7 @@ use App\Api\V1\Common\Service\Exception\SpaceNotFoundException;
 use App\Api\V1\Common\Service\IGridService;
 use App\Api\V1\Common\Service\ImageFilterService;
 use App\Entity\CareLevel;
+use App\Entity\ChunkFile;
 use App\Entity\CityStateZip;
 use App\Entity\Resident;
 use App\Entity\ResidentAdmission;
@@ -24,6 +25,7 @@ use App\Entity\Salutation;
 use App\Entity\Space;
 use App\Model\GroupType;
 use App\Repository\CareLevelRepository;
+use App\Repository\ChunkFileRepository;
 use App\Repository\CityStateZipRepository;
 use App\Repository\ResidentAdmissionRepository;
 use App\Repository\ResidentImageRepository;
@@ -2323,8 +2325,6 @@ class ResidentService extends BaseService implements IGridService
     {
         $insert_id = null;
         try {
-            $this->em->getConnection()->beginTransaction();
-
             $requestId = $params['request_id'];
             $residentId = $params['resident_id'] ?? 0;
             $userId = $params['user_id'] ?? 0;
@@ -2336,6 +2336,8 @@ class ResidentService extends BaseService implements IGridService
             if ($existImage !== null) {
                 $insert_id = $existImage->getResident() ? $existImage->getResident()->getId() : null;
             } else {
+                $this->em->getConnection()->beginTransaction();
+
                 /** @var Resident $resident */
                 $resident = $this->em->getRepository(Resident::class)->find($residentId);
 
@@ -2364,35 +2366,68 @@ class ResidentService extends BaseService implements IGridService
                 }
 
                 //upload file by chunks
-                $base64 = $this->uploadByChunks($data);
+                $this->uploadByChunks($data);
+
+                $this->em->getConnection()->commit();
+
+                $this->em->getConnection()->beginTransaction();
+
+                /** @var ChunkFileRepository $chunkFileRepo */
+                $chunkFileRepo = $this->em->getRepository(ChunkFile::class);
+
+                //get chunk count by requestID
+                $chunkCount = (int) $chunkFileRepo->getChunkCount($requestId, $data['userId']);
 
                 $image = null;
-                // save photo
-                if (!empty($base64)) {
-                    /** @var ResidentImageRepository $imageRepo */
-                    $imageRepo = $this->em->getRepository(ResidentImage::class);
 
-                    $image = $imageRepo->getBy($resident->getId());
+                // If all chunks are recorded then photo can be created.
+                if ($totalChunk === $chunkCount) {
 
-                    if ($image === null) {
-                        $image = new ResidentImage();
+                    //set empty string variable
+                    $base64 = '';
+
+                    //get all chunk for one image
+                    $allChunks = $chunkFileRepo->getChunks($requestId, $data['userId']);
+
+                    foreach ($allChunks as $chunks) {
+                        //generate base 64 code
+                        $base64 .= $chunks['chunk'];
                     }
 
-                    $base64 = 'data:image/' . $extension . ';base64,' . $base64;
+                    //change base64 plus symbols
+                    $base64 = str_replace('-*-', '+', $base64);
 
-                    $image->setResident($resident);
-                    $image->setPhoto($base64);
-                    $image->setRequestId($requestId);
+                    // Remove chunks before image create.
+                    // This will prevent photo duplication.
+                    $this->removeChunks($requestId);
 
-                    $this->em->persist($image);
+                    // save photo
+                    if (!empty($base64)) {
+                        /** @var ResidentImageRepository $imageRepo */
+                        $imageRepo = $this->em->getRepository(ResidentImage::class);
 
-                    $this->imageFilterService->createAllFilterVersion($image);
+                        $image = $imageRepo->getBy($resident->getId());
 
-                    $this->validate($image, null, ['api_admin_resident_image_add_mobile']);
+                        if ($image === null) {
+                            $image = new ResidentImage();
+                        }
 
-                    $this->em->flush();
+                        $base64 = 'data:image/' . $extension . ';base64,' . $base64;
+
+                        $image->setResident($resident);
+                        $image->setPhoto($base64);
+                        $image->setRequestId($requestId);
+
+                        $this->em->persist($image);
+
+                        $this->imageFilterService->createAllFilterVersion($image);
+
+                        $this->validate($image, null, ['api_admin_resident_image_add_mobile']);
+
+                        $this->em->flush();
+                    }
+
                 }
-
                 $this->em->getConnection()->commit();
 
                 $insert_id = $image !== null ? $resident->getId() : null;
